@@ -1,0 +1,55 @@
+/* Kinoteka Startup & Titlebar Preview 1. Two-stage opaque handoff.
+   Match Software Hub / AngelVault: label 1000+200ms, cover 1250+480ms.
+   Keep the native controls visible during the entire handoff. */
+.kinoteka-startup-splash{
+  position:fixed;inset:42px 0 0;z-index:2147482500;
+  display:grid;place-items:center;padding:24px;
+  opacity:1;visibility:visible;pointer-events:auto;
+  background:#020203;
+}
+.kinoteka-startup-content{
+  display:flex;flex-direction:column;align-items:center;
+  max-width:440px;gap:12px;text-align:center;opacity:1;
+}
+.kinoteka-startup-mark{
+  width:34px;height:34px;display:block;margin-bottom:6px;
+  fill:none;stroke:#d9b86c;stroke-width:1.6;
+  stroke-linecap:round;stroke-linejoin:round;
+  filter:drop-shadow(0 0 12px rgba(217,184,108,.18));
+}
+.kinoteka-startup-name{
+  font:700 23px/1.25 Inter,sans-serif;
+  letter-spacing:.015em;color:#f2eff5;
+}
+.kinoteka-startup-status{
+  font:400 12px/1.5 Inter,sans-serif;
+  color:#9d96a8;
+}
+html[data-kinoteka-startup="ready"] .kinoteka-startup-content{
+  opacity:0;transition:opacity 200ms ease-in-out 1000ms;
+}
+html[data-kinoteka-startup="ready"] .kinoteka-startup-splash{
+  opacity:0;visibility:hidden;
+  transition:opacity 480ms ease-in-out 1250ms,visibility 0s linear 1730ms;
+}
+/* Software Hub parity Hotfix 2: keep the approved 1730ms splash handoff.
+   The already-rendered library gains contrast together with the fading cover,
+   instead of snapping to full-density text/cards at the first visible frame.
+   Animate ONLY the library surface: titlebar, canvas particles, and overlays
+   retain their approved appearance and timings. */
+html[data-kinoteka-startup="ready"] main.wrap{
+  animation:kinoteka-startup-library-reveal 480ms cubic-bezier(.22,.61,.36,1) 1250ms both;
+}
+@keyframes kinoteka-startup-library-reveal{
+  from{opacity:.66}
+  to{opacity:1}
+}
+@media(prefers-reduced-motion:reduce){
+  html[data-kinoteka-startup="ready"] .kinoteka-startup-content,
+  html[data-kinoteka-startup="ready"] .kinoteka-startup-splash{
+    transition:none!important;
+  }
+  html[data-kinoteka-startup="ready"] main.wrap{
+    animation:none!important;
+  }
+}

@@ -1,0 +1,153 @@
+/* Global: scrolling remains enabled, but no visible scrollbar is rendered anywhere. */
+*,*::before,*::after{scrollbar-width:none;-ms-overflow-style:none}
+*::-webkit-scrollbar{width:0!important;height:0!important;display:none!important}
+
+/*
+  Kinoteka unified modal motion system.
+  Every project modal uses the same soft fade + lift + scale language.
+  Keep motion here so individual screens do not invent their own modal timing.
+*/
+:root{
+  --kinoteka-modal-open-ms:280ms;
+  --kinoteka-modal-close-ms:260ms;
+  --kinoteka-modal-ease:cubic-bezier(.22,.61,.36,1);
+  --kinoteka-modal-backdrop:rgba(5,4,8,.74);
+  --kinoteka-modal-blur:7px;
+}
+
+/* Standard project modal layers. */
+.kinoteka-modal-overlay,
+.modal-backdrop,
+.modal.year-picker-modal,
+.modal.editor-modal,
+.modal.delete-confirm-modal,
+.trashModal{
+  opacity:0;
+  visibility:hidden!important;
+  pointer-events:none!important;
+  transition:none!important;
+}
+
+.modal-backdrop,
+.modal.year-picker-modal,
+.modal.editor-modal,
+.modal.delete-confirm-modal,
+.trashModal{
+  display:flex!important;
+}
+
+.kinoteka-modal-overlay.open:not(.closing),
+.modal-backdrop.show:not(.closing),
+.modal-backdrop.open:not(.closing),
+.modal.year-picker-modal.open:not(.closing),
+.modal.editor-modal.open:not(.closing),
+.modal.delete-confirm-modal.open:not(.closing),
+.trashModal.open:not(.closing),
+.trashModal.show:not(.closing){
+  visibility:visible!important;
+  pointer-events:auto!important;
+  animation:kinotekaModalBackdropIn var(--kinoteka-modal-open-ms) var(--kinoteka-modal-ease) both!important;
+  will-change:opacity,backdrop-filter;
+}
+
+.kinoteka-modal-overlay.closing,
+.modal-backdrop.closing,
+.modal.year-picker-modal.closing,
+.modal.editor-modal.closing,
+.modal.delete-confirm-modal.closing,
+.trashModal.closing{
+  visibility:visible!important;
+  pointer-events:none!important;
+  animation:kinotekaModalBackdropOut var(--kinoteka-modal-close-ms) var(--kinoteka-modal-ease) both!important;
+  will-change:opacity,backdrop-filter;
+}
+
+/* Standard project modal cards. */
+.modal-backdrop .modal,
+.modal .dialog,
+.trashDialog{
+  will-change:transform,opacity;
+  transform-origin:50% 46%;
+}
+
+.modal-backdrop.show:not(.closing) .modal,
+.modal-backdrop.open:not(.closing) .modal,
+.modal.open:not(.closing) .dialog,
+.trashModal.open:not(.closing) .trashDialog,
+.trashModal.show:not(.closing) .trashDialog{
+  animation:kinotekaModalDialogIn var(--kinoteka-modal-open-ms) var(--kinoteka-modal-ease) both!important;
+}
+
+.modal-backdrop.closing .modal,
+.modal.year-picker-modal.closing .dialog,
+.modal.editor-modal.closing .dialog,
+.modal.delete-confirm-modal.closing .dialog,
+.modal.closing .dialog,
+.trashModal.closing .trashDialog{
+  animation:kinotekaModalDialogOut var(--kinoteka-modal-close-ms) var(--kinoteka-modal-ease) both!important;
+}
+
+/* Runtime alert/confirm dialogs use the exact same motion language. */
+.kinoteka-native-dialog-layer{
+  opacity:0;
+  visibility:hidden!important;
+  pointer-events:none!important;
+  transition:none!important;
+}
+.kinoteka-native-dialog-layer.open:not(.closing){
+  visibility:visible!important;
+  pointer-events:auto!important;
+  animation:kinotekaModalBackdropIn var(--kinoteka-modal-open-ms) var(--kinoteka-modal-ease) both!important;
+}
+.kinoteka-native-dialog-layer.closing{
+  visibility:visible!important;
+  pointer-events:none!important;
+  animation:kinotekaModalBackdropOut var(--kinoteka-modal-close-ms) var(--kinoteka-modal-ease) both!important;
+}
+.kinoteka-native-dialog{
+  transform-origin:50% 46%;
+  transition:none!important;
+  will-change:transform,opacity;
+}
+.kinoteka-native-dialog-layer.open:not(.closing) .kinoteka-native-dialog{
+  animation:kinotekaModalDialogIn var(--kinoteka-modal-open-ms) var(--kinoteka-modal-ease) both!important;
+}
+.kinoteka-native-dialog-layer.closing .kinoteka-native-dialog{
+  animation:kinotekaModalDialogOut var(--kinoteka-modal-close-ms) var(--kinoteka-modal-ease) both!important;
+}
+
+@keyframes kinotekaModalBackdropIn{
+  0%{opacity:0;background-color:rgba(5,4,8,0);backdrop-filter:blur(0);-webkit-backdrop-filter:blur(0)}
+  100%{opacity:1;background-color:var(--kinoteka-modal-backdrop);backdrop-filter:blur(var(--kinoteka-modal-blur));-webkit-backdrop-filter:blur(var(--kinoteka-modal-blur))}
+}
+@keyframes kinotekaModalBackdropOut{
+  0%{opacity:1;background-color:var(--kinoteka-modal-backdrop);backdrop-filter:blur(var(--kinoteka-modal-blur));-webkit-backdrop-filter:blur(var(--kinoteka-modal-blur))}
+  100%{opacity:0;background-color:rgba(5,4,8,0);backdrop-filter:blur(0);-webkit-backdrop-filter:blur(0)}
+}
+@keyframes kinotekaModalDialogIn{
+  0%{opacity:0;transform:translateY(10px) scale(.975)}
+  62%{opacity:.94;transform:translateY(1.5px) scale(.996)}
+  100%{opacity:1;transform:translateY(0) scale(1)}
+}
+@keyframes kinotekaModalDialogOut{
+  0%{opacity:1;transform:translateY(0) scale(1)}
+  38%{opacity:.94;transform:translateY(1.5px) scale(.996)}
+  100%{opacity:0;transform:translateY(10px) scale(.975)}
+}
+
+html.modal-open,body.modal-open{overflow:hidden!important;}
+
+@media(prefers-reduced-motion:reduce){
+  .kinoteka-modal-overlay,
+  .modal-backdrop,
+  .modal,
+  .trashModal,
+  .kinoteka-native-dialog-layer,
+  .kinoteka-native-dialog{
+    animation:none!important;
+    transition:none!important;
+  }
+}
+
+/* Kinoteka native-dialog replacement. Runtime behavior lives in modal-system.js. */
+.kinoteka-dialog-open,.kinoteka-dialog-open body{overflow:hidden!important}

@@ -1,0 +1,16 @@
+KINOTEKA v1.1.0 - CLEAN DATA SOURCE (Windows 11)
+
+This folder has only safe demo SQLite data and source code.
+Private films, series, favorites, trash and personal metadata are NOT included.
+
+1. Run INIT-DEMO-DATA.cmd in a fresh Git clone before first verification.
+2. Run npm ci
+3. Run npm run verify
+4. Run npm run build:dev or BUILD-DEV.cmd
+5. Test Clean Portable from separate archive before publishing GitHub Release.
+6. When ready, run MAKE-FINAL-RELEASE.cmd to build on Windows.
+
+The accepted UI/Startup baseline is Hotfix 6; rejected Hotfix 7 is absent.
+The original EXE in Clean Portable is byte-identical with the verified original.
+Build sources use locally installed Inter or a system font fallback.
+Refer to README.md and GITHUB_PRIVACY_RU.md.

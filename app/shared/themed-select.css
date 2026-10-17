@@ -1,0 +1,370 @@
+/* Kinoteka Desktop — fully themed custom select surface.
+   Native <select> stays as the data/event source; WebView2's native popup is never shown. */
+.kinoteka-native-select-source{
+  position:absolute!important;
+  width:1px!important;
+  height:1px!important;
+  min-width:1px!important;
+  min-height:1px!important;
+  margin:0!important;
+  padding:0!important;
+  opacity:0!important;
+  pointer-events:none!important;
+  clip-path:inset(50%)!important;
+  overflow:hidden!important;
+  border:0!important;
+  background:none!important;
+}
+.kinoteka-select-shell{
+  position:relative;
+  display:block;
+  width:100%;
+  min-width:0;
+  box-sizing:border-box;
+  font:inherit;
+  color:inherit;
+}
+.kinoteka-select-trigger{
+  width:100%;
+  min-width:0;
+  height:100%;
+  min-height:34px;
+  box-sizing:border-box;
+  display:block;
+  padding:0 10px;
+  border:1px solid var(--kinoteka-select-border);
+  border-radius:9px;
+  background:var(--kinoteka-select-bg);
+  color:var(--kinoteka-select-text);
+  font:inherit;
+  line-height:1.2;
+  text-align:left;
+  cursor:pointer;
+  outline:none;
+  box-shadow:none;
+  transition:border-color .14s ease,background .14s ease,box-shadow .14s ease;
+}
+.kinoteka-select-trigger:hover{border-color:var(--kinoteka-select-border-hover);background:var(--kinoteka-select-bg-hover)}
+.kinoteka-select-trigger:focus-visible,
+.kinoteka-select-shell[data-open="1"] .kinoteka-select-trigger{
+  border-color:var(--kinoteka-select-border-focus);
+  background:var(--kinoteka-select-bg-focus);
+  box-shadow:0 0 0 1px var(--kinoteka-select-focus-ring);
+}
+.kinoteka-select-trigger:disabled{opacity:.52;cursor:not-allowed}
+.kinoteka-select-label{display:block;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.kinoteka-select-menu{
+  position:fixed;
+  z-index:40000;
+  box-sizing:border-box;
+  min-width:90px;
+  max-height:min(320px,calc(100vh - 20px));
+  padding:5px;
+  overflow:auto;
+  border:1px solid var(--kinoteka-select-menu-border);
+  border-radius:10px;
+  background:var(--kinoteka-select-menu-bg);
+  color:var(--kinoteka-select-text);
+  box-shadow:0 18px 46px rgba(0,0,0,.50),0 0 0 1px var(--kinoteka-select-menu-inner) inset;
+  scrollbar-width:thin;
+  overscroll-behavior:contain;
+}
+.kinoteka-select-menu[hidden]{display:none!important}
+.kinoteka-select-option{
+  width:100%;
+  min-height:32px;
+  display:flex;
+  align-items:center;
+  justify-content:flex-start;
+  padding:6px 9px;
+  border:0;
+  border-radius:7px;
+  background:transparent;
+  color:var(--kinoteka-select-text);
+  font:inherit;
+  line-height:1.25;
+  text-align:left;
+  cursor:pointer;
+  outline:none;
+  white-space:nowrap;
+}
+.kinoteka-select-option:hover,
+.kinoteka-select-option:focus-visible{background:var(--kinoteka-select-option-hover)}
+.kinoteka-select-option[aria-selected="true"]{background:var(--kinoteka-select-option-selected);color:var(--kinoteka-select-text-strong)}
+.kinoteka-select-option:disabled{opacity:.45;cursor:not-allowed}
+
+/* PATCH 023 — rating menus: centered labels and slightly wider selection surface. */
+.kinoteka-select-menu-rating-table,
+.kinoteka-select-menu-rating-entry{padding-left:3px;padding-right:3px}
+.kinoteka-select-menu-rating-table .kinoteka-select-option,
+.kinoteka-select-menu-rating-entry .kinoteka-select-option{
+  justify-content:center;
+  text-align:center;
+  padding-left:6px;
+  padding-right:6px;
+}
+
+/* Kinoteka — dark violet library palette. */
+.kinoteka-select-theme-library{
+  --kinoteka-select-bg:#17141d;
+  --kinoteka-select-bg-hover:#1b1721;
+  --kinoteka-select-bg-focus:#1d1824;
+  --kinoteka-select-border:#3a3045;
+  --kinoteka-select-border-hover:#594267;
+  --kinoteka-select-border-focus:#6b4a80;
+  --kinoteka-select-focus-ring:rgba(168,85,247,.10);
+  --kinoteka-select-text:#cfc8d8;
+  --kinoteka-select-text-strong:#f0e8f5;
+  --kinoteka-select-menu-bg:#16131b;
+  --kinoteka-select-menu-border:#40334b;
+  --kinoteka-select-menu-inner:rgba(185,155,211,.045);
+  --kinoteka-select-option-hover:#211a29;
+  --kinoteka-select-option-selected:#2b2135;
+}
+
+/* Rating selects keep the project's semantic color language. */
+.kinoteka-select-rating-table{width:max-content;max-width:100%;margin-left:auto;margin-right:auto}
+.kinoteka-select-rating-table .kinoteka-select-trigger{
+  width:max-content;max-width:100%;min-width:116px;
+  min-height:38px;height:38px;
+  border-color:transparent;background:transparent;
+  padding-left:8px;padding-right:8px;
+  text-align:center;
+}
+.kinoteka-select-rating-table .kinoteka-select-label{text-align:center}
+.kinoteka-select-rating-table .kinoteka-select-trigger:hover,
+.kinoteka-select-rating-table[data-open="1"] .kinoteka-select-trigger,
+.kinoteka-select-rating-table .kinoteka-select-trigger:focus-visible{background:#17141d;border-color:#3a3045;box-shadow:none}
+.kinoteka-select-rating-entry{width:100%;height:38px;min-height:38px}
+.kinoteka-select-rating-entry .kinoteka-select-trigger{height:38px;min-height:38px;text-align:center}
+.kinoteka-select-rating-entry .kinoteka-select-label{text-align:center}
+
+/* Kinoteka add-row media type occupies exactly the old select's grid slot. */
+.kinoteka-select-media-category{width:100%;height:38px;min-height:38px;grid-column:2!important;grid-row:1!important}
+.kinoteka-select-media-category .kinoteka-select-trigger{height:38px;min-height:38px;text-align:center}
+.kinoteka-select-media-category .kinoteka-select-label{text-align:center}
+.kinoteka-select-menu-media-category .kinoteka-select-option{justify-content:center;text-align:center}
+@media(max-width:660px){
+  .kinoteka-entry-row > .kinoteka-select-media-category{grid-column:3!important;grid-row:1!important}
+}
+@media(max-width:520px){
+  .kinoteka-entry-row > .kinoteka-select-media-category{grid-column:1!important;grid-row:2!important}
+}
+
+/* Add-row rating uses one clean full-width control; decorative side dots are intentionally absent. */
+/* PATCH 024: the legacy project CSS gives .kinoteka-entry-rating position:relative!important and a full 38px box.
+   Override it with higher specificity once the native select becomes the hidden data source, otherwise the
+   invisible native control still consumes the first 38px and pushes the themed trigger onto a second line. */
+.kinoteka-entry-rating-wrap > select.kinoteka-entry-rating.kinoteka-native-select-source{
+  position:absolute!important;
+  inset:0 auto auto 0!important;
+  width:1px!important;
+  height:1px!important;
+  min-width:1px!important;
+  min-height:1px!important;
+  margin:0!important;
+  padding:0!important;
+  opacity:0!important;
+  pointer-events:none!important;
+  clip-path:inset(50%)!important;
+  overflow:hidden!important;
+  border:0!important;
+  background:none!important;
+  z-index:-1!important;
+}
+.kinoteka-entry-rating-wrap > .kinoteka-select-rating-entry{display:block!important;width:100%!important;min-width:0!important}
+
+/* Semantic rating colors mirror the hidden source select. */
+.rating-select.rating-liked + .kinoteka-select-shell .kinoteka-select-trigger,
+.kinoteka-entry-rating.rating-liked + .kinoteka-select-shell .kinoteka-select-trigger{color:var(--like,#FF5FB8)!important}
+.rating-select.rating-normal + .kinoteka-select-shell .kinoteka-select-trigger,
+.kinoteka-entry-rating.rating-normal + .kinoteka-select-shell .kinoteka-select-trigger{color:var(--normal,#AFA9BD)!important}
+.rating-select.rating-disliked + .kinoteka-select-shell .kinoteka-select-trigger,
+.kinoteka-entry-rating.rating-disliked + .kinoteka-select-shell .kinoteka-select-trigger{color:var(--dislike,#FF5F6D)!important}
+.rating-select.rating-in-progress + .kinoteka-select-shell .kinoteka-select-trigger,
+.kinoteka-entry-rating.rating-in-progress + .kinoteka-select-shell .kinoteka-select-trigger{color:var(--progress,#A970FF)!important}
+.rating-select.rating-planned + .kinoteka-select-shell .kinoteka-select-trigger,
+.kinoteka-entry-rating.rating-planned + .kinoteka-select-shell .kinoteka-select-trigger{color:var(--planned,#5B8CFF)!important}
+.rating-select.rating-favorite + .kinoteka-select-shell .kinoteka-select-trigger,
+.kinoteka-entry-rating.rating-favorite + .kinoteka-select-shell .kinoteka-select-trigger{color:var(--favorite,#FFC94D)!important}
+
+.kinoteka-select-option.rating-liked,
+.kinoteka-select-option[value="Понравилось"]{color:var(--like,#FF5FB8)!important}
+.kinoteka-select-option.rating-normal,
+.kinoteka-select-option[value="Нормально"]{color:var(--normal,#AFA9BD)!important}
+.kinoteka-select-option.rating-disliked,
+.kinoteka-select-option[value="Не понравилось"]{color:var(--dislike,#FF5F6D)!important}
+.kinoteka-select-option.rating-in-progress,
+.kinoteka-select-option[value="Смотрю"]{color:var(--progress,#A970FF)!important}
+.kinoteka-select-option.rating-planned,
+.kinoteka-select-option[value="Запланировано"]{color:var(--planned,#5B8CFF)!important}
+.kinoteka-select-option.rating-favorite,
+.kinoteka-select-option[value="Избранное"]{color:var(--favorite,#FFC94D)!important}
+
+
+/* RC1 Theme Preview 1 — neutral select chrome, colored interaction/semantic states. */
+.kinoteka-select-theme-library{
+  --kinoteka-select-bg:#111214;
+  --kinoteka-select-bg-hover:#17181b;
+  --kinoteka-select-bg-focus:#18151c;
+  --kinoteka-select-border:#303236;
+  --kinoteka-select-border-hover:#644378;
+  --kinoteka-select-border-focus:#8952ae;
+  --kinoteka-select-focus-ring:rgba(168,85,247,.14);
+  --kinoteka-select-text:#d4d5d7;
+  --kinoteka-select-text-strong:#ffffff;
+  --kinoteka-select-menu-bg:#0f1012;
+  --kinoteka-select-menu-border:#303236;
+  --kinoteka-select-menu-inner:rgba(255,255,255,.035);
+  --kinoteka-select-option-hover:#19161d;
+  --kinoteka-select-option-selected:#25172e;
+}
+.kinoteka-select-rating-table .kinoteka-select-trigger:hover,
+.kinoteka-select-rating-table[data-open="1"] .kinoteka-select-trigger,
+.kinoteka-select-rating-table .kinoteka-select-trigger:focus-visible{background:#151619;border-color:#303236}
+
+/* RC1 Theme Preview 7 — Add-row Contextual Select Accent.
+   Media-category dropdowns inherit each add row's semantic rating accent while
+   keeping all passive popup surfaces true-black/graphite. */
+#modal .kinoteka-entry-row .kinoteka-select-media-category{
+  --kinoteka-select-context-accent:var(--entry-accent);
+}
+#modal .kinoteka-entry-row .kinoteka-select-media-category .kinoteka-select-trigger{
+  background:#0b0c0e!important;
+  border-color:#303236!important;
+  color:#d4d6d9!important;
+  box-shadow:none!important;
+}
+#modal .kinoteka-entry-row .kinoteka-select-media-category .kinoteka-select-trigger:hover{
+  background:color-mix(in srgb,var(--entry-accent) 5%,#0b0c0e 95%)!important;
+  border-color:color-mix(in srgb,var(--entry-accent) 55%,#303236 45%)!important;
+  color:color-mix(in srgb,var(--entry-accent) 34%,white 66%)!important;
+}
+#modal .kinoteka-entry-row .kinoteka-select-media-category[data-open="1"] .kinoteka-select-trigger,
+#modal .kinoteka-entry-row .kinoteka-select-media-category .kinoteka-select-trigger:focus-visible{
+  background:color-mix(in srgb,var(--entry-accent) 7%,#0b0c0e 93%)!important;
+  border-color:var(--entry-accent)!important;
+  color:color-mix(in srgb,var(--entry-accent) 42%,white 58%)!important;
+  box-shadow:0 0 0 1px color-mix(in srgb,var(--entry-accent) 14%,transparent),0 0 12px color-mix(in srgb,var(--entry-accent) 12%,transparent)!important;
+}
+.kinoteka-select-menu-media-category{
+  background:#08090b!important;
+  border-color:#303236!important;
+  box-shadow:0 18px 46px rgba(0,0,0,.62),0 0 0 1px rgba(255,255,255,.025) inset!important;
+}
+.kinoteka-select-menu-media-category .kinoteka-select-option{
+  background:transparent!important;
+  color:#d4d6d9!important;
+}
+.kinoteka-select-menu-media-category .kinoteka-select-option:hover,
+.kinoteka-select-menu-media-category .kinoteka-select-option:focus-visible,
+.kinoteka-select-menu-media-category .kinoteka-select-option[data-active="1"]{
+  background:color-mix(in srgb,var(--kinoteka-select-context-accent,#67e8f9) 9%,#0b0c0e 91%)!important;
+  color:color-mix(in srgb,var(--kinoteka-select-context-accent,#67e8f9) 32%,white 68%)!important;
+}
+.kinoteka-select-menu-media-category .kinoteka-select-option[aria-selected="true"]{
+  background:color-mix(in srgb,var(--kinoteka-select-context-accent,#67e8f9) 16%,#0b0c0e 84%)!important;
+  color:color-mix(in srgb,var(--kinoteka-select-context-accent,#67e8f9) 52%,white 48%)!important;
+  box-shadow:0 0 0 1px color-mix(in srgb,var(--kinoteka-select-context-accent,#67e8f9) 42%,transparent) inset!important;
+}
+
+
+
+/* RC1 Theme Preview 8 — Semantic Rating Select Surface.
+   Rating triggers and popup selection backgrounds now use the selected status
+   color instead of the old fixed-violet select chrome. Passive surfaces stay
+   true-black/graphite. */
+.rating-select.rating-liked + .kinoteka-select-shell,
+.kinoteka-entry-rating.rating-liked + .kinoteka-select-shell{--kinoteka-rating-accent:var(--like,#FF5FB8)}
+.rating-select.rating-normal + .kinoteka-select-shell,
+.kinoteka-entry-rating.rating-normal + .kinoteka-select-shell{--kinoteka-rating-accent:var(--normal,#AFA9BD)}
+.rating-select.rating-disliked + .kinoteka-select-shell,
+.kinoteka-entry-rating.rating-disliked + .kinoteka-select-shell{--kinoteka-rating-accent:var(--dislike,#FF5F6D)}
+.rating-select.rating-in-progress + .kinoteka-select-shell,
+.kinoteka-entry-rating.rating-in-progress + .kinoteka-select-shell{--kinoteka-rating-accent:var(--progress,#A970FF)}
+.rating-select.rating-planned + .kinoteka-select-shell,
+.kinoteka-entry-rating.rating-planned + .kinoteka-select-shell{--kinoteka-rating-accent:var(--planned,#5B8CFF)}
+.rating-select.rating-favorite + .kinoteka-select-shell,
+.kinoteka-entry-rating.rating-favorite + .kinoteka-select-shell{--kinoteka-rating-accent:var(--favorite,#FFC94D)}
+
+#modal .kinoteka-select-rating-entry .kinoteka-select-trigger{
+  background:#0b0c0e!important;
+  border-color:#303236!important;
+  box-shadow:none!important;
+}
+#modal .kinoteka-select-rating-entry .kinoteka-select-trigger:hover{
+  background:color-mix(in srgb,var(--kinoteka-rating-accent,#AFA9BD) 5%,#0b0c0e 95%)!important;
+  border-color:color-mix(in srgb,var(--kinoteka-rating-accent,#AFA9BD) 58%,#303236 42%)!important;
+}
+#modal .kinoteka-select-rating-entry[data-open="1"] .kinoteka-select-trigger,
+#modal .kinoteka-select-rating-entry .kinoteka-select-trigger:focus-visible{
+  background:color-mix(in srgb,var(--kinoteka-rating-accent,#AFA9BD) 7%,#0b0c0e 93%)!important;
+  border-color:var(--kinoteka-rating-accent,#AFA9BD)!important;
+  box-shadow:0 0 0 1px color-mix(in srgb,var(--kinoteka-rating-accent,#AFA9BD) 14%,transparent),0 0 12px color-mix(in srgb,var(--kinoteka-rating-accent,#AFA9BD) 12%,transparent)!important;
+}
+
+.kinoteka-select-menu-rating-entry,
+.kinoteka-select-menu-rating-table{
+  background:#08090b!important;
+  border-color:#303236!important;
+  box-shadow:0 18px 46px rgba(0,0,0,.62),0 0 0 1px rgba(255,255,255,.025) inset!important;
+}
+.kinoteka-select-menu-rating-entry .kinoteka-select-option,
+.kinoteka-select-menu-rating-table .kinoteka-select-option{
+  --kinoteka-rating-option-accent:#AFA9BD;
+  background:transparent!important;
+}
+.kinoteka-select-menu-rating-entry .kinoteka-select-option.rating-liked,
+.kinoteka-select-menu-rating-table .kinoteka-select-option.rating-liked,
+.kinoteka-select-menu-rating-entry .kinoteka-select-option[value="Понравилось"],
+.kinoteka-select-menu-rating-table .kinoteka-select-option[value="Понравилось"]{--kinoteka-rating-option-accent:var(--like,#FF5FB8)}
+.kinoteka-select-menu-rating-entry .kinoteka-select-option.rating-normal,
+.kinoteka-select-menu-rating-table .kinoteka-select-option.rating-normal,
+.kinoteka-select-menu-rating-entry .kinoteka-select-option[value="Нормально"],
+.kinoteka-select-menu-rating-table .kinoteka-select-option[value="Нормально"]{--kinoteka-rating-option-accent:var(--normal,#AFA9BD)}
+.kinoteka-select-menu-rating-entry .kinoteka-select-option.rating-disliked,
+.kinoteka-select-menu-rating-table .kinoteka-select-option.rating-disliked,
+.kinoteka-select-menu-rating-entry .kinoteka-select-option[value="Не понравилось"],
+.kinoteka-select-menu-rating-table .kinoteka-select-option[value="Не понравилось"]{--kinoteka-rating-option-accent:var(--dislike,#FF5F6D)}
+.kinoteka-select-menu-rating-entry .kinoteka-select-option.rating-in-progress,
+.kinoteka-select-menu-rating-table .kinoteka-select-option.rating-in-progress,
+.kinoteka-select-menu-rating-entry .kinoteka-select-option[value="Смотрю"],
+.kinoteka-select-menu-rating-table .kinoteka-select-option[value="Смотрю"]{--kinoteka-rating-option-accent:var(--progress,#A970FF)}
+.kinoteka-select-menu-rating-entry .kinoteka-select-option.rating-planned,
+.kinoteka-select-menu-rating-table .kinoteka-select-option.rating-planned,
+.kinoteka-select-menu-rating-entry .kinoteka-select-option[value="Запланировано"],
+.kinoteka-select-menu-rating-table .kinoteka-select-option[value="Запланировано"]{--kinoteka-rating-option-accent:var(--planned,#5B8CFF)}
+.kinoteka-select-menu-rating-entry .kinoteka-select-option.rating-favorite,
+.kinoteka-select-menu-rating-table .kinoteka-select-option.rating-favorite,
+.kinoteka-select-menu-rating-entry .kinoteka-select-option[value="Избранное"],
+.kinoteka-select-menu-rating-table .kinoteka-select-option[value="Избранное"]{--kinoteka-rating-option-accent:var(--favorite,#FFC94D)}
+
+.kinoteka-select-menu-rating-entry .kinoteka-select-option:hover,
+.kinoteka-select-menu-rating-entry .kinoteka-select-option:focus-visible,
+.kinoteka-select-menu-rating-entry .kinoteka-select-option[data-active="1"],
+.kinoteka-select-menu-rating-table .kinoteka-select-option:hover,
+.kinoteka-select-menu-rating-table .kinoteka-select-option:focus-visible,
+.kinoteka-select-menu-rating-table .kinoteka-select-option[data-active="1"]{
+  background:color-mix(in srgb,var(--kinoteka-rating-option-accent) 9%,#0b0c0e 91%)!important;
+}
+.kinoteka-select-menu-rating-entry .kinoteka-select-option[aria-selected="true"],
+.kinoteka-select-menu-rating-table .kinoteka-select-option[aria-selected="true"]{
+  background:color-mix(in srgb,var(--kinoteka-rating-option-accent) 18%,#0b0c0e 82%)!important;
+  box-shadow:0 0 0 1px color-mix(in srgb,var(--kinoteka-rating-option-accent) 44%,transparent) inset,0 0 12px color-mix(in srgb,var(--kinoteka-rating-option-accent) 8%,transparent)!important;
+}
+
+
+/* RC1 Theme Preview 15 Hotfix 2 — comfortable rating popup width.
+   Rating menus are deliberately wider than the compact trigger so long labels never clip or create a horizontal scrollbar. */
+.kinoteka-select-menu-rating-table,
+.kinoteka-select-menu-rating-entry{
+  min-width:176px!important;
+  overflow-x:hidden!important;
+  overflow-y:auto!important;
+}
+.kinoteka-select-menu-rating-table .kinoteka-select-option,
+.kinoteka-select-menu-rating-entry .kinoteka-select-option{
+  min-width:0!important;
+  padding-left:10px!important;
+  padding-right:10px!important;
+}

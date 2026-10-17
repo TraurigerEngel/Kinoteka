@@ -1,0 +1,8 @@
+/* Unified Kinoteka route transition. */
+.kinoteka-route-overlay{
+  position:fixed;inset:0;z-index:10001;pointer-events:none;opacity:1;background:#020203;
+  transition:opacity .20s cubic-bezier(.22,.61,.36,1);will-change:opacity;
+}
+body.kinoteka-route-ready .kinoteka-route-overlay{opacity:0}
+body.kinoteka-route-leaving .kinoteka-route-overlay{opacity:1;transition-duration:.08s}
+@media(prefers-reduced-motion:reduce){.kinoteka-route-overlay{transition:none}}
