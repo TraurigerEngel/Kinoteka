@@ -58,6 +58,14 @@ npm run build:dev
 
 **Примечание:** принятая реализация запуска — Hotfix 6, без отклонённого Hotfix 7. Короткий чёрный кадр Windows/WebView2 перед появлением интерфейса может сохраняться.
 
+## Лицензия исходного кода
+
+Авторский исходный код **Kinoteka** распространяется на условиях **MIT License** (© 2026 TraurigerEngel). Полный текст: [LICENSE](LICENSE).
+
+SVG-иконки Lucide/Feather имеют собственные условия: [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md). Другие сторонние библиотеки сохраняют свои лицензии.
+
+**Примечание о релизах:** MIT добавлена в ветку `main` после публикации `v1.1.0`. Старый тег и проверенный Portable ZIP не изменялись; при просмотре исходников по старому тегу см. актуальный файл [LICENSE](https://github.com/TraurigerEngel/Kinoteka/blob/main/LICENSE).
+
 ## Документация
 
 - [CHANGELOG.md](CHANGELOG.md) — история версий.
