@@ -1,7 +1,7 @@
 [package]
 name = "kinoteka-standalone"
-version = "1.1.0"
-description = "Kinoteka Standalone v1.1 Stable"
+version = "1.2.0-preview.1"
+description = "Kinoteka Standalone v1.2 Preview 1 — Library Integration"
 authors = ["Trauriger Engel"]
 edition = "2024"
 rust-version = "1.90"
@@ -21,6 +21,8 @@ tauri-build = { version = "2.7.0", features = [] }
 tauri = { version = "2.12.0", features = [] }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
+base64 = "0.22.1"
+sha2 = "0.10.9"
 rusqlite = { version = "0.40.2", features = ["bundled"] }
 chrono = { version = "0.4", default-features = true, features = ["clock"] }
 

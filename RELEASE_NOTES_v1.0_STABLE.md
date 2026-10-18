@@ -6,12 +6,12 @@ No application behavior, UI styling, SQLite schema, or canonical library data is
 
 ## Canonical data
 
-- 1122 records
-- 18 favorites
+- [количество удалено] records
+- [скрыто] favorites
 - 0 trash
-- revision 123
+- revision [скрыта]
 - live/seed SQLite are byte-identical
-- SHA-256: `2186acc4fbe72b729347af1f7c8e2eafa1c61e74c458ead42cf901657a655b72`
+- SHA-256: `(redacted — historical user DB)`
 
 ## Stable identity
 

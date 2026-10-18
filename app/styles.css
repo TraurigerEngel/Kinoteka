@@ -3871,3 +3871,1407 @@ html{background:#020203!important;background-color:#020203!important}
 @media(prefers-reduced-motion:reduce){
   .toolbar .resetFilters{transition:none!important}
 }
+
+
+/* Hotfix 11 — native poster-style card view, no network or bundled personal images. */
+.kinoteka-view-toggle{display:flex;align-items:center;gap:4px;justify-self:end;border:1px solid #30293a;background:#100e15;border-radius:9px;padding:3px}
+.kinoteka-view-btn{height:25px;min-height:25px;border:0;border-radius:6px;background:transparent;color:#9990a7;font-size:11px;font-weight:600;padding:3px 9px;white-space:nowrap;line-height:1.2}
+.kinoteka-view-btn:hover{background:#221a2b;color:#eee}
+.kinoteka-view-btn.active{background:#2b1d38;color:#f2ddff;box-shadow:inset 0 0 0 1px #765091}
+.kinoteka-view-btn:focus-visible{outline:2px solid var(--accent2);outline-offset:2px}
+.kinoteka-card-grid[hidden]{display:none!important}
+.kinoteka-card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(147px,1fr));gap:22px 14px;padding:14px 2px 28px;align-items:start}
+.kinoteka-film-card{position:relative;min-width:0;max-width:280px;color:var(--text)}
+.kinoteka-card-poster{aspect-ratio:2/3;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;overflow:hidden;border:1px solid #272331;border-radius:9px;background:linear-gradient(145deg,#17141e,#0d0e16 52%,#1d1825);box-shadow:0 8px 22px rgba(0,0,0,.3);transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease}
+.kinoteka-card-poster::before{content:"";position:absolute;inset:13px;border:1px solid rgba(231,223,248,.08);border-radius:4px;pointer-events:none}
+.kinoteka-film-card:hover .kinoteka-card-poster{transform:translateY(-3px);border-color:#5e496d;box-shadow:0 12px 25px rgba(0,0,0,.45)}
+.kinoteka-poster-mark{font-size:clamp(45px,6vw,86px);font-weight:700;line-height:1;color:#d8c7ea;opacity:.36;text-shadow:0 0 38px rgba(168,85,247,.22)}
+.kinoteka-poster-caption{font-size:9px;letter-spacing:.34em;font-weight:600;color:#7f758e}
+.kinoteka-card-favorite{position:absolute;top:9px;right:9px;z-index:1;display:grid;place-items:center;width:31px;height:31px;min-width:31px;padding:0;border:1px solid #41374e;border-radius:9px;background:rgba(7,6,11,.83);font-size:20px;color:#c8c0d0;line-height:1;box-shadow:0 2px 9px #0005}
+.kinoteka-card-favorite.is-on{color:var(--favorite);border-color:#9b8047}
+.kinoteka-card-favorite:disabled{opacity:.4;cursor:not-allowed}
+.kinoteka-card-meta{min-width:0;padding:9px 3px 0}
+.kinoteka-card-title{font-size:13px;font-weight:700;line-height:1.35;overflow:hidden;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;min-height:18px;overflow-wrap:anywhere}
+.kinoteka-card-subline{display:flex;gap:5px;align-items:center;flex-wrap:wrap;margin-top:3px;font-size:11px;color:#a99fb5}
+.kinoteka-card-rating{display:block;margin-top:8px;min-height:28px;width:100%;padding:4px 20px 4px 8px;border:1px solid #30283b;border-radius:7px;background:#17121e;color:#c5bdce;font-size:11px;font-weight:600;line-height:1.25;text-overflow:ellipsis}
+.kinoteka-card-rating.rating-liked{color:var(--like)}.kinoteka-card-rating.rating-normal{color:var(--normal)}.kinoteka-card-rating.rating-disliked{color:var(--dislike)}.kinoteka-card-rating.rating-in-progress{color:var(--progress)}.kinoteka-card-rating.rating-planned{color:var(--planned)}.kinoteka-card-rating.rating-favorite{color:var(--favorite)}
+@media(max-width:690px){.kinoteka-card-grid{grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:15px 9px}.kinoteka-view-btn{font-size:10px;padding:3px 5px}.list-nav{gap:5px}.kinoteka-card-title{font-size:12px}}
+@media(prefers-reduced-motion:reduce){.kinoteka-card-poster{transition:none!important}.kinoteka-film-card:hover .kinoteka-card-poster{transform:none!important}}
+
+
+/* Hotfix 12 — larger Letterboxd-inspired cards, balanced metadata and safe focus. */
+.kinoteka-card-grid{grid-template-columns:repeat(auto-fill,minmax(177px,1fr));column-gap:16px;row-gap:25px;padding:16px 1px 32px}
+.kinoteka-film-card{max-width:none;min-width:0}
+.kinoteka-card-poster{border-radius:10px;box-shadow:0 8px 20px rgba(0,0,0,.28)}
+.kinoteka-film-card:hover .kinoteka-card-poster{transform:translateY(-2px);border-color:#806391;box-shadow:0 15px 25px rgba(0,0,0,.4),0 0 0 1px rgba(177,136,214,.1)}
+.kinoteka-card-meta{padding:10px 3px 0;display:flex;flex-direction:column;gap:0}
+.kinoteka-card-title{font-size:13px;line-height:1.38;min-height:36px;font-weight:650;letter-spacing:-.01em}
+.kinoteka-card-subline{display:flex;align-items:center;gap:7px;margin-top:5px;font-size:11px;flex-wrap:nowrap}
+.kinoteka-card-year{font-variant-numeric:tabular-nums;color:#c0b5c9;white-space:nowrap}
+.kinoteka-card-kind{display:inline-flex;align-items:center;border-radius:4px;border:1px solid #332e3d;background:rgba(161,140,180,.08);padding:1px 5px;color:#b3a9bf;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:10px;line-height:1.4}
+.kinoteka-card-kind.kind-series{border-color:#374354;color:#a5b6cf;background:rgba(97,128,180,.09)}
+.kinoteka-card-kind.kind-animation{border-color:#4a3c57;color:#c5a5d9;background:rgba(160,105,191,.09)}
+.kinoteka-card-rating{margin-top:8px;min-height:30px;font-size:12px;padding-left:9px;border-color:#332f3c;background:#121016}
+.kinoteka-card-rating:focus-visible,.kinoteka-card-favorite:focus-visible{outline:2px solid #b78bcd;outline-offset:3px}
+.kinoteka-card-favorite{top:10px;right:10px;transition:background-color .15s ease,border-color .15s ease}
+.kinoteka-card-favorite:not(:disabled):hover{background:#2c2233;border-color:#9a7db0}
+@media(max-width:690px){.kinoteka-card-grid{grid-template-columns:repeat(auto-fill,minmax(138px,1fr));gap:19px 10px}.kinoteka-card-title{font-size:12px;min-height:33px}.kinoteka-card-subline{gap:4px}.kinoteka-card-kind{font-size:9px;padding:1px 4px}}
+@media(prefers-reduced-motion:reduce){.kinoteka-card-favorite{transition:none}.kinoteka-film-card:hover .kinoteka-card-poster{transform:none}}
+
+/* Hotfix 16 — fully local optional poster images; keep 2:3 layout and original text beneath. */
+.kinoteka-card-poster .kinoteka-poster-image{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;z-index:0}
+.kinoteka-card-poster.has-poster::before,.kinoteka-card-poster.has-poster .kinoteka-poster-mark,.kinoteka-card-poster.has-poster .kinoteka-poster-caption{display:none}
+.kinoteka-poster-choose,.kinoteka-poster-remove{position:absolute;z-index:3;color:#f3ebf9;font:600 11px Inter,system-ui,sans-serif;border:1px solid #6b567b;border-radius:7px;background:rgba(13,10,18,.88);cursor:pointer}
+.kinoteka-poster-choose{bottom:10px;left:11px;right:11px;min-height:28px;padding:5px 9px;opacity:.45;transition:opacity .15s ease,background .15s ease}
+.kinoteka-film-card:hover .kinoteka-poster-choose,.kinoteka-poster-choose:focus-visible{opacity:1}
+.kinoteka-poster-choose:hover,.kinoteka-poster-remove:hover{background:#33233c}
+.kinoteka-poster-remove{left:10px;top:10px;width:28px;height:28px;font-size:18px;line-height:22px;opacity:0}
+.kinoteka-film-card:hover .kinoteka-poster-remove,.kinoteka-poster-remove:focus-visible{opacity:1}
+.kinoteka-poster-remove[hidden]{display:none!important}
+.kinoteka-poster-choose:focus-visible,.kinoteka-poster-remove:focus-visible{outline:2px solid #c29ad7;outline-offset:2px}
+@media(hover:none){.kinoteka-poster-choose{opacity:1}.kinoteka-poster-remove:not([hidden]){opacity:1}}
+@media(prefers-reduced-motion:reduce){.kinoteka-poster-choose{transition:none}}
+
+/* Hotfix 17 — intentional online Commons lookup, image preview and attribution. */
+.kinoteka-card-poster.has-poster .kinoteka-poster-choose{opacity:0;pointer-events:none}
+.kinoteka-film-card:hover .kinoteka-card-poster.has-poster .kinoteka-poster-choose,.kinoteka-poster-choose:focus-visible{opacity:1;pointer-events:auto}
+.kinoteka-poster-auto{position:absolute;z-index:3;left:10px;top:10px;border:1px solid #5e4c68;background:rgba(15,12,22,.88);color:#e2cceb;font:600 10px Inter,system-ui,sans-serif;border-radius:6px;padding:5px 7px;cursor:pointer;opacity:0;transition:opacity .18s ease}
+.kinoteka-film-card:hover .kinoteka-poster-auto,.kinoteka-poster-auto:focus-visible{opacity:1}
+.kinoteka-poster-auto[hidden]{display:none!important}
+.kinoteka-poster-auto:disabled{cursor:wait;opacity:.55}
+.kinoteka-poster-remove{left:auto;right:42px;top:9px}
+.kinoteka-poster-credit{position:absolute;z-index:4;right:11px;bottom:44px;color:white;font-size:17px;text-decoration:none;text-shadow:0 1px 8px black;background:rgba(0,0,0,.65);padding:1px 6px;border-radius:6px}
+.kinoteka-commons-backdrop{position:fixed;inset:0;z-index:11000;background:rgba(0,0,0,.79);display:flex;justify-content:center;align-items:center;padding:18px}
+.kinoteka-commons-dialog{width:min(465px,100%);max-height:95vh;overflow:auto;background:#110e17;border:1px solid #43324f;border-radius:14px;padding:19px;color:#e5dce9;box-shadow:0 28px 70px #0009;font:13px Inter,system-ui,sans-serif}
+.kinoteka-commons-dialog h3{font-size:17px;margin:0 0 9px}.kinoteka-commons-dialog p{color:#b7a9bf;line-height:1.5;margin:10px 0}.kinoteka-commons-dialog a{color:#c3a8ea}
+.kinoteka-commons-preview{display:block;object-fit:contain;max-height:min(45vh,390px);max-width:100%;margin:12px auto;border-radius:9px;background:#221b28}
+.kinoteka-commons-actions{display:flex;gap:9px;justify-content:flex-end;margin-top:17px}
+.kinoteka-commons-actions button{background:#241a30;color:#f2e3ff;border:1px solid #654b7d;border-radius:8px;padding:9px 13px;cursor:pointer}
+.kinoteka-commons-actions button:last-child{background:#432852}
+@media(hover:none){.kinoteka-card-poster.has-poster .kinoteka-poster-choose,.kinoteka-poster-auto{opacity:1;pointer-events:auto}}
+@media(prefers-reduced-motion:reduce){.kinoteka-poster-auto{transition:none}}
+
+.kinoteka-commons-optin{display:inline-flex;align-items:center;gap:6px;color:#aaa0b4;font:500 11px Inter,system-ui,sans-serif;white-space:nowrap;cursor:pointer;user-select:none;margin-right:9px}
+.kinoteka-commons-optin input{accent-color:#8c69a6;width:14px;height:14px;cursor:pointer}
+@media(max-width:920px){.kinoteka-commons-optin{font-size:10px}}
+
+/* Hotfix 18 — several licensed candidates with clear navigation and offline-first retry semantics. */
+.kinoteka-commons-position{font-size:12px;color:#c3b3ce;min-height:18px}
+.kinoteka-commons-actions{flex-wrap:wrap}
+.kinoteka-commons-actions button:disabled{opacity:.45;cursor:not-allowed}
+.kinoteka-commons-dialog{width:min(510px,100%)}
+@media(max-width:570px){.kinoteka-commons-actions{justify-content:stretch}.kinoteka-commons-actions button{flex:1 1 38%;min-width:0}}
+
+
+/* Hotfix 19 — Card View / Table Visual Parity.
+   Semantic rating colours are the same tokens used in the table. No data changes. */
+.kinoteka-film-card{
+  --card-accent:var(--planned);
+  --card-glow:color-mix(in srgb,var(--card-accent) 20%,transparent);
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+  color:var(--text);
+}
+.kinoteka-film-card.rating-liked{--card-accent:var(--like)}
+.kinoteka-film-card.rating-normal{--card-accent:var(--normal)}
+.kinoteka-film-card.rating-disliked{--card-accent:var(--dislike)}
+.kinoteka-film-card.rating-in-progress{--card-accent:var(--progress)}
+.kinoteka-film-card.rating-planned{--card-accent:var(--planned)}
+.kinoteka-film-card.rating-favorite{--card-accent:var(--favorite)}
+/* Always retain one rating-driven accent, including when an existing record is starred. */
+.kinoteka-card-grid{
+  align-items:stretch;
+  row-gap:24px;
+}
+.kinoteka-film-card .kinoteka-card-poster{
+  flex:none;
+  width:100%;
+  box-sizing:border-box;
+  border:1px solid color-mix(in srgb,var(--card-accent) 30%,#28292d);
+  background:linear-gradient(155deg,#111319 0%,#0b0c10 62%,#131118 100%);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.02),0 7px 20px rgba(0,0,0,.26);
+}
+.kinoteka-film-card:hover .kinoteka-card-poster,
+.kinoteka-film-card:focus-within .kinoteka-card-poster{
+  border-color:color-mix(in srgb,var(--card-accent) 65%,#3c3e43);
+  box-shadow:0 10px 23px rgba(0,0,0,.35),0 0 15px var(--card-glow);
+}
+.kinoteka-film-card .kinoteka-poster-mark{
+  color:color-mix(in srgb,var(--card-accent) 42%,#d4d0d8);
+  opacity:.42;
+}
+.kinoteka-film-card .kinoteka-poster-caption{color:#92919b}
+.kinoteka-film-card .kinoteka-card-meta{
+  flex:1;
+  display:grid;
+  grid-template-rows:calc(2 * 1.4em) 24px 34px;
+  align-content:start;
+  padding:10px 3px 0;
+  gap:5px;
+  min-width:0;
+}
+.kinoteka-film-card .kinoteka-card-title{
+  font-size:13px;
+  line-height:1.4;
+  font-weight:700;
+  height:calc(2 * 1.4em);
+  min-height:0;
+  margin:0;
+  overflow:hidden;
+  overflow-wrap:anywhere;
+  display:-webkit-box;
+  -webkit-box-orient:vertical;
+  -webkit-line-clamp:2;
+  color:#f0f0f1;
+}
+.kinoteka-film-card .kinoteka-card-subline{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  min-width:0;
+  min-height:24px;
+  margin:0;
+  flex-wrap:nowrap;
+}
+.kinoteka-film-card .kinoteka-card-year{
+  flex:none;
+  color:var(--card-accent);
+  font-size:12px;
+  font-weight:650;
+  font-variant-numeric:tabular-nums;
+}
+.kinoteka-film-card .kinoteka-card-kind{
+  min-width:0;
+  max-width:100%;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  font-size:10px;
+  padding:2px 6px;
+  font-weight:600;
+  line-height:1.35;
+  border-radius:5px;
+  border-color:color-mix(in srgb,var(--card-accent) 40%,#2c2f33);
+  background:color-mix(in srgb,var(--card-accent) 8%,#0b0c0e);
+  color:var(--card-accent);
+}
+.kinoteka-film-card .kinoteka-card-status{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  min-width:0;
+  width:100%;
+  height:34px;
+  box-sizing:border-box;
+  padding:0 9px;
+  border:1px solid color-mix(in srgb,var(--card-accent) 48%,#2c2f33);
+  border-radius:7px;
+  background:color-mix(in srgb,var(--card-accent) 9%,#0b0c0e);
+  transition:border-color .15s ease,background .15s ease,box-shadow .15s ease;
+}
+.kinoteka-film-card .kinoteka-card-status:hover,
+.kinoteka-film-card .kinoteka-card-status:focus-within{
+  border-color:var(--card-accent);
+  background:color-mix(in srgb,var(--card-accent) 15%,#0b0c0e);
+  box-shadow:0 0 12px var(--card-glow);
+}
+.kinoteka-film-card .kinoteka-card-status-dot{
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  flex:none;
+  background:var(--card-accent);
+  box-shadow:0 0 9px color-mix(in srgb,var(--card-accent) 65%,transparent);
+}
+.kinoteka-film-card select.kinoteka-card-rating{
+  min-width:0;
+  width:100%;
+  height:31px;
+  min-height:31px;
+  padding:0;
+  margin:0;
+  font:600 12px/1.35 Inter,system-ui,sans-serif;
+  appearance:none;
+  -webkit-appearance:none;
+  border:0;
+  border-radius:0;
+  background:transparent;
+  box-shadow:none;
+  color:var(--card-accent);
+  cursor:pointer;
+  text-overflow:ellipsis;
+}
+.kinoteka-film-card select.kinoteka-card-rating:focus-visible{
+  outline:2px solid var(--card-accent);
+  outline-offset:3px;
+  border-radius:3px;
+}
+.kinoteka-film-card .kinoteka-card-favorite{
+  border-color:color-mix(in srgb,var(--card-accent) 30%,#33363b);
+  background:rgba(8,9,12,.88);
+  color:#a9a9b1;
+}
+.kinoteka-film-card .kinoteka-card-favorite.is-on{
+  color:var(--favorite);
+  border-color:color-mix(in srgb,var(--favorite) 68%,#323338);
+  box-shadow:0 0 13px rgba(255,201,77,.15);
+}
+.kinoteka-film-card .kinoteka-poster-choose{
+  opacity:.82;
+  border-color:color-mix(in srgb,var(--card-accent) 30%,#3a3a41);
+  background:rgba(9,10,12,.86);
+  color:#ececf0;
+}
+.kinoteka-film-card .kinoteka-card-poster.has-poster .kinoteka-poster-choose{
+  opacity:0;
+  pointer-events:none;
+}
+.kinoteka-film-card:hover .kinoteka-card-poster.has-poster .kinoteka-poster-choose,
+.kinoteka-film-card:focus-within .kinoteka-card-poster.has-poster .kinoteka-poster-choose{
+  opacity:1;
+  pointer-events:auto;
+}
+.kinoteka-film-card .kinoteka-poster-remove{right:10px}
+/* Commons & automatic poster discovery are paused; only local files are presented. */
+.kinoteka-commons-optin,.kinoteka-poster-auto{display:none!important}
+@media(max-width:690px){
+  .kinoteka-film-card .kinoteka-card-title{font-size:12px}
+  .kinoteka-film-card .kinoteka-card-meta{grid-template-rows:calc(2 * 1.4em) 24px 34px;gap:5px}
+  .kinoteka-film-card .kinoteka-card-subline{gap:5px}
+  .kinoteka-film-card .kinoteka-card-kind{padding:2px 4px;font-size:9px}
+}
+@media(hover:none){
+  .kinoteka-film-card .kinoteka-card-poster.has-poster .kinoteka-poster-choose{opacity:1;pointer-events:auto}
+}
+@media(prefers-reduced-motion:reduce){
+  .kinoteka-film-card .kinoteka-card-status{transition:none}
+}
+
+
+/* Hotfix 20 — Card View Final Polish: calm surfaces and one semantic status outline.
+   In particular, the themed-select adapter wraps the source select with a button:
+   make that button visually transparent *inside card statuses only*. */
+.kinoteka-film-card .kinoteka-card-poster {
+  border-color:color-mix(in srgb,var(--card-accent) 14%,#34353a);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.012),0 7px 19px rgba(0,0,0,.25);
+  transition:border-color .16s ease,box-shadow .16s ease,transform .16s ease;
+}
+.kinoteka-film-card:hover .kinoteka-card-poster,
+.kinoteka-film-card:focus-within .kinoteka-card-poster {
+  border-color:color-mix(in srgb,var(--card-accent) 44%,#34353a);
+  box-shadow:0 10px 22px rgba(0,0,0,.34),0 0 10px color-mix(in srgb,var(--card-accent) 9%,transparent);
+}
+.kinoteka-film-card .kinoteka-card-poster::before {
+  border-color:rgba(220,217,225,.055);
+}
+.kinoteka-film-card .kinoteka-card-meta {
+  padding:9px 3px 0;
+  grid-template-rows:calc(2 * 1.4em) 23px 32px;
+  row-gap:6px;
+}
+.kinoteka-film-card .kinoteka-card-subline {
+  min-height:23px;
+  height:23px;
+  gap:6px;
+}
+.kinoteka-film-card .kinoteka-card-year {
+  font-size:12px;
+  line-height:18px;
+  font-weight:600;
+}
+.kinoteka-film-card .kinoteka-card-kind {
+  min-height:19px;
+  box-sizing:border-box;
+  padding:2px 5px;
+  font-size:10px;
+  line-height:1.3;
+  border-color:color-mix(in srgb,var(--card-accent) 27%,#303036);
+  background:color-mix(in srgb,var(--card-accent) 5%,#0b0c0e);
+}
+/* One border belongs to the status container. Its themed select trigger is frameless. */
+.kinoteka-film-card .kinoteka-card-status {
+  height:32px;
+  min-height:32px;
+  gap:8px;
+  padding:0 10px;
+  border:1px solid color-mix(in srgb,var(--card-accent) 37%,#34363a);
+  background:color-mix(in srgb,var(--card-accent) 6%,#111214);
+  border-radius:7px;
+  box-shadow:none;
+}
+.kinoteka-film-card .kinoteka-card-status:hover,
+.kinoteka-film-card .kinoteka-card-status:focus-within {
+  border-color:color-mix(in srgb,var(--card-accent) 72%,#303237);
+  background:color-mix(in srgb,var(--card-accent) 10%,#111214);
+  box-shadow:none;
+}
+.kinoteka-film-card .kinoteka-card-status:focus-within {
+  outline:2px solid color-mix(in srgb,var(--card-accent) 65%,#72747b);
+  outline-offset:2px;
+}
+.kinoteka-film-card .kinoteka-card-status-dot {
+  height:6px;
+  width:6px;
+  box-shadow:0 0 7px color-mix(in srgb,var(--card-accent) 40%,transparent);
+}
+.kinoteka-film-card .kinoteka-card-status > .kinoteka-select-shell {
+  flex:1 1 auto;
+  height:100%;
+  min-width:0;
+  display:flex;
+  align-items:stretch;
+  background:transparent;
+  border:0;
+  box-shadow:none;
+}
+.kinoteka-film-card .kinoteka-card-status > .kinoteka-select-shell > .kinoteka-select-trigger,
+.kinoteka-film-card .kinoteka-card-status > .kinoteka-select-shell > .kinoteka-select-trigger:hover,
+.kinoteka-film-card .kinoteka-card-status > .kinoteka-select-shell > .kinoteka-select-trigger:focus-visible,
+.kinoteka-film-card .kinoteka-card-status > .kinoteka-select-shell[data-open="1"] > .kinoteka-select-trigger {
+  width:100%;
+  height:100%;
+  min-height:0;
+  padding:0;
+  border:0;
+  border-radius:0;
+  outline:none;
+  background:transparent;
+  background-color:transparent;
+  box-shadow:none;
+  color:var(--card-accent);
+  font-size:12px!important;
+  font-weight:600!important;
+  line-height:1.3;
+  text-align:left;
+}
+.kinoteka-film-card .kinoteka-card-status > .kinoteka-select-shell .kinoteka-select-label {
+  color:var(--card-accent);
+  font-weight:600;
+  line-height:1.3;
+}
+/* Native fallback before the themed-select adapter enhances new cards. */
+.kinoteka-film-card .kinoteka-card-status > select.kinoteka-card-rating:not(.kinoteka-native-select-source) {
+  height:100%;
+  min-height:0;
+  background:transparent;
+  border:0;
+  box-shadow:none;
+  margin:0;
+  padding:0;
+  flex:1 1 auto;
+}
+/* Poster control stays accessible to keyboard users but does not obscure artwork. */
+@media (hover:hover) and (pointer:fine) {
+  .kinoteka-film-card .kinoteka-poster-choose,
+  .kinoteka-film-card .kinoteka-card-poster.has-poster .kinoteka-poster-choose {
+    opacity:0;
+    pointer-events:none;
+    transform:translateY(3px);
+  }
+  .kinoteka-film-card:hover .kinoteka-poster-choose,
+  .kinoteka-film-card:focus-within .kinoteka-poster-choose,
+  .kinoteka-film-card .kinoteka-poster-choose:focus-visible,
+  .kinoteka-film-card:hover .kinoteka-card-poster.has-poster .kinoteka-poster-choose,
+  .kinoteka-film-card:focus-within .kinoteka-card-poster.has-poster .kinoteka-poster-choose {
+    opacity:1;
+    pointer-events:auto;
+    transform:none;
+  }
+}
+@media (hover:none), (pointer:coarse) {
+  .kinoteka-film-card .kinoteka-poster-choose,
+  .kinoteka-film-card .kinoteka-card-poster.has-poster .kinoteka-poster-choose {
+    opacity:1;
+    pointer-events:auto;
+    transform:none;
+  }
+}
+.kinoteka-film-card .kinoteka-poster-choose {
+  color:#dedce2;
+  background:rgba(12,12,15,.91);
+  border-color:#414047;
+  box-shadow:none;
+  transition:opacity .16s ease,transform .16s ease,border-color .16s ease,background .16s ease;
+}
+.kinoteka-film-card .kinoteka-poster-choose:hover,
+.kinoteka-film-card .kinoteka-poster-choose:focus-visible {
+  border-color:color-mix(in srgb,var(--card-accent) 51%,#53545a);
+  background:rgba(24,24,29,.95);
+}
+.kinoteka-film-card .kinoteka-card-favorite:not(.is-on) {
+  border-color:#393a42;
+  background:rgba(10,10,13,.82);
+  color:#96959e;
+  box-shadow:0 2px 8px rgba(0,0,0,.25);
+}
+.kinoteka-film-card .kinoteka-card-favorite.is-on {
+  border-color:color-mix(in srgb,var(--favorite) 55%,#393a42);
+  box-shadow:0 0 9px rgba(255,201,77,.12);
+}
+@media (max-width:690px) {
+  .kinoteka-film-card .kinoteka-card-meta {grid-template-rows:calc(2 * 1.4em) 23px 32px;row-gap:6px}
+  .kinoteka-film-card .kinoteka-card-subline {gap:5px}
+  .kinoteka-film-card .kinoteka-card-kind {font-size:9px;padding:2px 4px}
+}
+@media (prefers-reduced-motion:reduce) {
+  .kinoteka-film-card .kinoteka-poster-choose,
+  .kinoteka-film-card .kinoteka-card-poster {transition:none}
+}
+
+
+/* Hotfix 21 — status text only. Keep the table status dots unchanged. */
+.kinoteka-film-card .kinoteka-card-status{gap:0}
+.kinoteka-film-card .kinoteka-card-status-dot{display:none!important}
+
+
+/* Hotfix 22 — Real Collection Card Polish. Scoped to card mode, no table changes. */
+.kinoteka-film-card .kinoteka-poster-mark{display:none!important}
+.kinoteka-film-card .kinoteka-card-poster:not(.has-poster){gap:0}
+.kinoteka-film-card .kinoteka-poster-caption{letter-spacing:.27em;font-size:10px;text-align:center}
+.kinoteka-film-card .kinoteka-card-meta{
+  grid-template-rows:calc(2 * 1.43em) 23px 32px;
+  row-gap:6px;
+  padding:10px 3px 0;
+}
+.kinoteka-film-card .kinoteka-card-title{
+  line-height:1.43;
+  height:calc(2 * 1.43em);
+  min-height:calc(2 * 1.43em);
+  overflow-wrap:break-word;
+  word-break:normal;
+  -webkit-line-clamp:2;
+}
+.kinoteka-film-card .kinoteka-card-subline{gap:7px}
+#listNav .nav-controls{column-gap:14px!important;gap:14px!important}
+#listNav .kinoteka-view-toggle{flex-shrink:0}
+#listNav .pagination{flex-shrink:0}
+@media(max-width:700px){
+  #listNav .nav-controls{column-gap:8px!important;gap:8px!important}
+}
+@media(max-width:690px){
+  .kinoteka-film-card .kinoteka-card-title{line-height:1.43;height:calc(2 * 1.43em);min-height:calc(2 * 1.43em)}
+  .kinoteka-film-card .kinoteka-card-meta{grid-template-rows:calc(2 * 1.43em) 23px 32px}
+}
+
+
+/* Hotfix 23 — Real collection card readability + year on poster.
+   Keep six columns, consistent 2-line titles, manual poster workflow and table unchanged. */
+.kinoteka-film-card .kinoteka-card-title{
+  font-size:14px;
+  line-height:1.35;
+  height:calc(2 * 1.35em);
+  min-height:calc(2 * 1.35em);
+  font-weight:710;
+  letter-spacing:-.013em;
+  overflow-wrap:break-word;
+  word-break:normal;
+  -webkit-line-clamp:2;
+}
+.kinoteka-film-card .kinoteka-card-meta{
+  grid-template-rows:calc(2 * 1.35em) 23px 32px;
+  row-gap:6px;
+}
+.kinoteka-film-card .kinoteka-card-poster .kinoteka-card-year{
+  position:absolute;
+  top:10px;
+  left:10px;
+  z-index:2;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  height:26px;
+  min-width:43px;
+  padding:0 6px;
+  box-sizing:border-box;
+  border:1px solid color-mix(in srgb,var(--card-accent) 34%,#404147);
+  border-radius:7px;
+  color:var(--card-accent);
+  background:rgba(9,10,13,.86);
+  font:700 11px/1 Inter,system-ui,sans-serif;
+  font-variant-numeric:tabular-nums;
+  box-shadow:0 1px 6px rgba(0,0,0,.24);
+  -webkit-backdrop-filter:blur(5px);
+  backdrop-filter:blur(5px);
+  pointer-events:none;
+}
+/* Removal action only appears when a poster exists; keep it next to the star,
+   never over the year or the title. */
+.kinoteka-film-card .kinoteka-poster-remove{
+  left:auto;
+  right:49px;
+  top:11px;
+  z-index:4;
+}
+.kinoteka-film-card .kinoteka-card-favorite:not(.is-on):not(:disabled){
+  color:#c4c1cb;
+  border-color:#55535d;
+  background:rgba(10,10,13,.90);
+}
+.kinoteka-film-card .kinoteka-card-favorite:not(.is-on):not(:disabled):hover,
+.kinoteka-film-card .kinoteka-card-favorite:not(.is-on):not(:disabled):focus-visible{
+  color:#f1e1ff;
+  border-color:#9781a3;
+}
+/* The disabled stars stay subdued, but visually remain discoverable. */
+.kinoteka-film-card .kinoteka-card-favorite:not(.is-on):disabled{
+  opacity:.70;
+  color:#b2afb9;
+  border-color:#48464f;
+}
+@media(max-width:690px){
+  .kinoteka-film-card .kinoteka-card-title{
+    font-size:12.5px;
+    line-height:1.38;
+    height:calc(2 * 1.38em);
+    min-height:calc(2 * 1.38em);
+  }
+  .kinoteka-film-card .kinoteka-card-meta{grid-template-rows:calc(2 * 1.38em) 23px 32px}
+  .kinoteka-film-card .kinoteka-card-poster .kinoteka-card-year{
+    top:7px;left:7px;min-width:38px;height:23px;font-size:10px;padding:0 4px;
+  }
+  .kinoteka-film-card .kinoteka-poster-remove{top:8px;right:45px}
+}
+
+/* Hotfix 24 — Calm typography/categories and place the view switch beside media filters.
+   One visible view switch for both modes; bottom row remains actions + pagination. */
+.kinoteka-viewbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:8px 20px;
+  margin:0 0 10px;
+  min-width:0;
+}
+.kinoteka-viewbar #mediaTabs{
+  display:flex;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:8px;
+  margin:0;
+  min-width:0;
+}
+.kinoteka-viewbar .kinoteka-view-toggle{
+  flex:0 0 auto;
+  margin-left:auto;
+  justify-self:auto;
+  min-height:32px;
+  box-sizing:border-box;
+  border-color:#35303d;
+  background:rgba(15,14,19,.88);
+}
+.kinoteka-viewbar .kinoteka-view-btn{
+  font-size:11px;
+  min-width:62px;
+  font-weight:650;
+}
+#listNav .nav-controls{gap:0!important;column-gap:0!important}
+/* Keep the verified two-line geometry while making the titles slightly more legible. */
+.kinoteka-film-card .kinoteka-card-title{
+  font-size:14.5px;
+  line-height:1.36;
+  height:calc(2 * 1.36em);
+  min-height:calc(2 * 1.36em);
+  font-weight:700;
+  letter-spacing:-.01em;
+  overflow-wrap:break-word;
+}
+.kinoteka-film-card .kinoteka-card-meta{
+  grid-template-rows:calc(2 * 1.36em) 23px 32px;
+}
+/* Category tells the media type; rating/status remains the primary color cue. */
+.kinoteka-film-card .kinoteka-card-kind{
+  color:#bcbec5;
+  background:rgba(170,174,190,.045);
+  border-color:#36383f;
+  font-weight:600;
+  box-shadow:none;
+}
+.kinoteka-film-card .kinoteka-card-kind.kind-series{
+  color:#b2c0cf;
+  border-color:#343e49;
+  background:rgba(104,130,160,.055);
+}
+.kinoteka-film-card .kinoteka-card-kind.kind-animation{
+  color:#c0b1cb;
+  border-color:#413947;
+  background:rgba(150,112,171,.055);
+}
+@media(max-width:690px){
+  .kinoteka-viewbar{gap:8px 10px}
+  .kinoteka-viewbar #mediaTabs{gap:5px}
+  .kinoteka-viewbar .kinoteka-view-toggle{margin-left:auto}
+  .kinoteka-viewbar .kinoteka-view-btn{min-width:55px;font-size:10px;padding:3px 7px}
+  .kinoteka-film-card .kinoteka-card-title{
+    font-size:12.8px;
+    line-height:1.38;
+    height:calc(2 * 1.38em);
+    min-height:calc(2 * 1.38em);
+  }
+  .kinoteka-film-card .kinoteka-card-meta{grid-template-rows:calc(2 * 1.38em) 23px 32px}
+}
+
+
+/* Hotfix 25 — Card View Visual Cleanup.
+   Keep the user-approved year position and upper view toggle; scope all polish to cards.
+   Visual hierarchy: art/placeholder -> title -> status, with quiet secondary actions. */
+.kinoteka-film-card .kinoteka-card-poster{
+  border-color:color-mix(in srgb,var(--card-accent) 9%,#303239);
+  background:linear-gradient(155deg,#101116 0%,#0b0c10 65%,#111017 100%);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.012),0 5px 16px rgba(0,0,0,.22);
+  transition:transform .17s ease,border-color .17s ease,box-shadow .17s ease;
+}
+.kinoteka-film-card:hover .kinoteka-card-poster,
+.kinoteka-film-card:focus-within .kinoteka-card-poster{
+  transform:translateY(-1px);
+  border-color:color-mix(in srgb,var(--card-accent) 32%,#404249);
+  box-shadow:0 9px 19px rgba(0,0,0,.29),0 0 0 1px color-mix(in srgb,var(--card-accent) 8%,transparent);
+}
+.kinoteka-film-card .kinoteka-card-poster::before{
+  border-color:rgba(220,217,225,.045);
+}
+.kinoteka-film-card .kinoteka-poster-caption{
+  color:#9997a2;
+  font-size:10px;
+  letter-spacing:.245em;
+  font-weight:650;
+}
+/* Readability without changing the approved two-row title geometry. */
+.kinoteka-film-card .kinoteka-card-meta{
+  padding:11px 3px 0;
+  grid-template-rows:calc(2 * 1.40em) 23px 32px;
+  row-gap:6px;
+}
+.kinoteka-film-card .kinoteka-card-title{
+  font-size:14.5px;
+  font-weight:690;
+  line-height:1.40;
+  height:calc(2 * 1.40em);
+  min-height:calc(2 * 1.40em);
+  letter-spacing:-.008em;
+  overflow-wrap:break-word;
+  word-break:normal;
+  -webkit-line-clamp:2;
+  color:#efedf2;
+}
+.kinoteka-film-card .kinoteka-card-kind,
+.kinoteka-film-card .kinoteka-card-kind.kind-series,
+.kinoteka-film-card .kinoteka-card-kind.kind-animation{
+  font-size:10px;
+  font-weight:550;
+  padding:2px 5px;
+  border-color:#33363d;
+  color:#b5b5bf;
+  background:rgba(155,159,175,.035);
+  box-shadow:none;
+}
+.kinoteka-film-card .kinoteka-card-kind.kind-series{color:#aebdcc;border-color:#343b44}
+.kinoteka-film-card .kinoteka-card-kind.kind-animation{color:#bbaec6;border-color:#3a3642}
+/* One coloured status outline remains the main semantic cue (no dot). */
+.kinoteka-film-card .kinoteka-card-status{
+  border-color:color-mix(in srgb,var(--card-accent) 34%,#34363c);
+  background:color-mix(in srgb,var(--card-accent) 6%,#101114);
+  box-shadow:none;
+}
+.kinoteka-film-card .kinoteka-card-status:hover,
+.kinoteka-film-card .kinoteka-card-status:focus-within{
+  border-color:color-mix(in srgb,var(--card-accent) 68%,#34363c);
+  background:color-mix(in srgb,var(--card-accent) 10%,#101114);
+  box-shadow:none;
+}
+/* Year remains top-left; smaller and lighter without losing semantic colour. */
+.kinoteka-film-card .kinoteka-card-poster .kinoteka-card-year{
+  top:9px;left:9px;
+  height:24px;min-width:41px;padding:0 6px;
+  border-radius:6px;
+  border-color:color-mix(in srgb,var(--card-accent) 27%,#42434a);
+  background:rgba(10,11,14,.79);
+  font-size:11px;font-weight:650;
+  box-shadow:0 1px 5px rgba(0,0,0,.19);
+}
+/* Right-side actions stay discoverable but never compete with the year. */
+.kinoteka-film-card .kinoteka-card-favorite{
+  top:8px;right:8px;
+  width:29px;height:29px;min-width:29px;
+  border-radius:8px;
+  background:rgba(10,11,14,.76);
+  border-color:#414149;
+  box-shadow:none;
+  font-size:19px;
+}
+.kinoteka-film-card .kinoteka-card-favorite:not(.is-on):not(:disabled){
+  background:rgba(10,11,14,.76);
+  border-color:#414149;
+  color:#b3b1bd;
+  box-shadow:none;
+}
+.kinoteka-film-card .kinoteka-card-favorite.is-on{
+  background:rgba(12,11,9,.85);
+  border-color:color-mix(in srgb,var(--favorite) 48%,#414149);
+  box-shadow:0 0 7px rgba(255,201,77,.10);
+}
+.kinoteka-film-card .kinoteka-poster-remove{
+  top:9px;right:44px;
+  width:27px;height:27px;
+  border-radius:7px;
+  border-color:#45434b;
+  background:rgba(10,11,14,.82);
+}
+/* Low-contrast overlay: desktop hover/focus reveal; touch remains accessible. */
+.kinoteka-film-card .kinoteka-poster-choose{
+  left:11px;right:11px;bottom:9px;
+  min-height:26px;padding:4px 7px;
+  border-radius:7px;
+  border-color:rgba(187,185,198,.25);
+  background:rgba(13,14,18,.78);
+  color:#d6d3de;
+  font-size:10.5px;
+  font-weight:600;
+  box-shadow:none;
+  backdrop-filter:none;
+}
+.kinoteka-film-card .kinoteka-poster-choose:hover,
+.kinoteka-film-card .kinoteka-poster-choose:focus-visible{
+  border-color:color-mix(in srgb,var(--card-accent) 39%,#77737b);
+  background:rgba(22,22,29,.91);
+  color:#f1edf5;
+}
+@media(max-width:690px){
+  .kinoteka-film-card .kinoteka-card-title{
+    font-size:12.8px;line-height:1.40;
+    height:calc(2 * 1.40em);min-height:calc(2 * 1.40em);
+  }
+  .kinoteka-film-card .kinoteka-card-meta{grid-template-rows:calc(2 * 1.40em) 23px 32px}
+  .kinoteka-film-card .kinoteka-card-poster .kinoteka-card-year{
+    top:7px;left:7px;min-width:37px;height:22px;padding:0 4px;font-size:10px;
+  }
+  .kinoteka-film-card .kinoteka-card-favorite{top:7px;right:7px;width:27px;height:27px;min-width:27px}
+  .kinoteka-film-card .kinoteka-poster-remove{top:7px;right:40px;width:25px;height:25px}
+  .kinoteka-film-card .kinoteka-card-kind{font-size:9px}
+}
+@media(prefers-reduced-motion:reduce){
+  .kinoteka-film-card .kinoteka-card-poster{transition:none!important}
+  .kinoteka-film-card:hover .kinoteka-card-poster,
+  .kinoteka-film-card:focus-within .kinoteka-card-poster{transform:none!important}
+}
+
+/* Hotfix 26 — Poster Surface & Hover Finish. Card-only; year, grid and table unchanged. */
+.kinoteka-film-card .kinoteka-card-poster:not(.has-poster){
+  background:
+    radial-gradient(ellipse 74% 36% at 50% 49%,rgba(153,139,180,.045),transparent 100%),
+    linear-gradient(165deg,#121217 0%,#0b0c11 57%,#101017 100%);
+  border-color:color-mix(in srgb,var(--card-accent) 7%,#34333b);
+}
+.kinoteka-film-card .kinoteka-card-poster:not(.has-poster)::before{
+  inset:11px;
+  border-color:rgba(210,202,226,.035);
+}
+.kinoteka-film-card .kinoteka-poster-caption{
+  font-size:9.5px;
+  font-weight:590;
+  letter-spacing:.25em;
+  color:#aaa5b1;
+  text-shadow:0 1px 6px rgba(0,0,0,.2);
+}
+.kinoteka-film-card:hover .kinoteka-card-poster,
+.kinoteka-film-card:focus-within .kinoteka-card-poster{
+  transform:none;
+  border-color:color-mix(in srgb,var(--card-accent) 26%,#3d3b45);
+  background-color:#111116;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.014),0 7px 20px rgba(0,0,0,.25),0 0 12px color-mix(in srgb,var(--card-accent) 5%,transparent);
+}
+.kinoteka-film-card .kinoteka-poster-choose{
+  left:12px;right:12px;bottom:11px;
+  min-height:25px;
+  padding:4px 9px;
+  border:1px solid rgba(191,183,201,.20);
+  border-radius:8px;
+  background:rgba(12,12,17,.58);
+  color:#d4ceda;
+  font-size:10px;
+  backdrop-filter:blur(6px);
+  box-shadow:0 1px 5px rgba(0,0,0,.10);
+}
+.kinoteka-film-card .kinoteka-poster-choose:hover,
+.kinoteka-film-card .kinoteka-poster-choose:focus-visible{
+  border-color:color-mix(in srgb,var(--card-accent) 37%,#716b7a);
+  background:rgba(21,19,27,.81);
+  color:#f2eef7;
+}
+.kinoteka-film-card .kinoteka-card-meta{
+  padding-top:10px;
+  row-gap:5px;
+}
+.kinoteka-film-card .kinoteka-card-title{
+  font-weight:670;
+  letter-spacing:-.006em;
+}
+.kinoteka-film-card .kinoteka-card-kind,
+.kinoteka-film-card .kinoteka-card-kind.kind-series,
+.kinoteka-film-card .kinoteka-card-kind.kind-animation{
+  border-color:#303138;
+  background:rgba(151,148,160,.027);
+}
+@media (hover:none){
+  .kinoteka-film-card .kinoteka-poster-choose{backdrop-filter:none;background:rgba(16,15,21,.82)}
+}
+@media (prefers-reduced-motion:reduce){
+  .kinoteka-film-card .kinoteka-card-poster{transition:none!important}
+}
+
+
+/* Hotfix 27 — numeric rating on poster: standalone single-digit 1–10.
+   Does not alter card dimensions, year, favorite or legacy status position. */
+.kinoteka-film-card .kinoteka-card-score{
+  position:absolute;right:9px;bottom:9px;z-index:6;
+  display:flex;align-items:center;justify-content:center;
+  min-width:31px;height:28px;padding:0 8px;
+  border-radius:7px;border:1px solid #66616b;
+  background:rgba(12,12,16,.87);color:#ede9f2;
+  box-shadow:0 2px 7px rgba(0,0,0,.24);
+  font:700 13px/1 'Inter',sans-serif;cursor:pointer;
+  transition:background-color .15s ease,border-color .15s ease,opacity .15s ease;
+}
+.kinoteka-film-card .kinoteka-card-score.score-liked{color:var(--like);border-color:color-mix(in srgb,var(--like) 58%,#49434b)}
+.kinoteka-film-card .kinoteka-card-score.score-normal{color:var(--normal);border-color:color-mix(in srgb,var(--normal) 52%,#49434b)}
+.kinoteka-film-card .kinoteka-card-score.score-disliked{color:var(--dislike);border-color:color-mix(in srgb,var(--dislike) 52%,#49434b)}
+.kinoteka-film-card .kinoteka-card-score.is-empty{opacity:0;pointer-events:none}
+.kinoteka-film-card:hover .kinoteka-card-score.is-empty,
+.kinoteka-film-card:focus-within .kinoteka-card-score.is-empty{opacity:1;pointer-events:auto}
+.kinoteka-film-card .kinoteka-card-score:hover{background:rgba(26,23,33,.97);border-color:#d5adf5}
+.kinoteka-film-card .kinoteka-card-score:focus-visible{opacity:1;pointer-events:auto;outline:2px solid #c5a0e1;outline-offset:2px}
+/* Place the broad poster button behind the score badge (no overlap). */
+.kinoteka-film-card .kinoteka-poster-choose{right:49px}
+@media(hover:none){.kinoteka-film-card .kinoteka-card-score.is-empty{opacity:1;pointer-events:auto}}
+@media(max-width:690px){.kinoteka-film-card .kinoteka-card-score{right:7px;bottom:7px;min-width:27px;height:25px;padding:0 5px;font-size:11px}.kinoteka-film-card .kinoteka-poster-choose{right:41px}}
+.kinoteka-score-modal-layer{position:fixed;inset:0;z-index:15000;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(2,2,5,.84);backdrop-filter:blur(7px)}
+.kinoteka-score-modal{width:min(370px,100%);padding:22px;background:#141118;border:1px solid #504052;border-radius:16px;color:#f1edf5;box-shadow:0 18px 48px rgba(0,0,0,.65);font-family:Inter,sans-serif}
+.kinoteka-score-modal h3{margin:0;font-size:17px}
+.kinoteka-score-modal p{margin:9px 0;font-size:12px;color:#c6bdc8;overflow-wrap:anywhere}
+.kinoteka-score-modal-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px;margin:17px 0}
+.kinoteka-score-option,.kinoteka-score-modal-actions button{cursor:pointer;background:#201b26;border:1px solid #45384f;color:#e9e1ec;border-radius:8px;min-height:39px;font:inherit}
+.kinoteka-score-option:hover,.kinoteka-score-option.current{border-color:#b58bd2;background:#382640}
+.kinoteka-score-modal-actions{display:flex;justify-content:flex-end;gap:8px}
+.kinoteka-score-modal-actions button{padding:0 12px;min-height:34px;font-size:12px}
+
+/* Hotfix 28 — unified card lift, selected highlight and poster action menu.
+   The WHOLE card moves, so title, year, favorite, score and actions remain aligned. */
+.kinoteka-film-card{
+  isolation:isolate;
+  transform:translateY(0);
+  transition:transform .19s cubic-bezier(.2,.65,.2,1);
+}
+.kinoteka-film-card:hover,
+.kinoteka-film-card:focus-within,
+.kinoteka-film-card.is-selected{
+  z-index:5;
+  transform:translateY(-4px);
+}
+/* Focused/selected card gets a subtle full-card outline without changing grid layout. */
+.kinoteka-film-card::after{
+  content:"";position:absolute;z-index:-1;inset:-5px -5px -5px;
+  pointer-events:none;border-radius:13px;border:1px solid transparent;
+  background:transparent;
+  transition:border-color .19s ease,background-color .19s ease;
+}
+.kinoteka-film-card:hover::after,
+.kinoteka-film-card:focus-within::after,
+.kinoteka-film-card.is-selected::after{
+  border-color:color-mix(in srgb,var(--card-accent) 28%,#3f3c49);
+  background:color-mix(in srgb,var(--card-accent) 3%,transparent);
+}
+.kinoteka-film-card .kinoteka-card-poster,
+.kinoteka-film-card:hover .kinoteka-card-poster,
+.kinoteka-film-card:focus-within .kinoteka-card-poster{
+  transform:none!important;
+}
+.kinoteka-film-card .kinoteka-poster-choose,
+.kinoteka-film-card:hover .kinoteka-poster-choose,
+.kinoteka-film-card:focus-within .kinoteka-poster-choose{
+  transform:none!important;
+}
+/* Reuse the familiar "Изменить" action. No separate delete cross on artwork. */
+.kinoteka-film-card .kinoteka-poster-menu{
+  position:absolute;z-index:9;bottom:45px;left:11px;right:11px;
+  display:flex;flex-direction:column;gap:4px;padding:6px;
+  border:1px solid #55485e;border-radius:10px;
+  background:rgba(17,15,23,.97);
+  box-shadow:0 14px 30px rgba(0,0,0,.55);
+  backdrop-filter:blur(9px);
+}
+.kinoteka-film-card .kinoteka-poster-menu[hidden]{display:none!important}
+.kinoteka-film-card .kinoteka-poster-menu button{
+  appearance:none;min-height:32px;padding:7px 9px;text-align:left;
+  border:1px solid transparent;border-radius:6px;
+  background:transparent;color:#e5dfed;cursor:pointer;
+  font:600 11px/1.3 Inter,system-ui,sans-serif;
+}
+.kinoteka-film-card .kinoteka-poster-menu button:hover,
+.kinoteka-film-card .kinoteka-poster-menu button:focus-visible{
+  background:#35283f;border-color:#60496d;outline:none;
+}
+.kinoteka-film-card .kinoteka-poster-menu button[data-poster-action="remove"]{color:#f3aab5}
+.kinoteka-film-card .kinoteka-poster-menu button[hidden]{display:none!important}
+.kinoteka-film-card .kinoteka-poster-choose[aria-expanded="true"]{
+  opacity:1!important;pointer-events:auto!important;
+  background:rgba(43,32,52,.97);border-color:#8b689d;
+}
+.kinoteka-paste-backdrop{
+  position:fixed;inset:0;z-index:16000;display:flex;
+  align-items:center;justify-content:center;padding:18px;
+  background:rgba(2,2,5,.84);backdrop-filter:blur(6px);
+}
+.kinoteka-paste-dialog{
+  width:min(420px,100%);padding:22px;border-radius:15px;
+  border:1px solid #574361;background:#151119;color:#eee8f5;
+  box-shadow:0 18px 48px rgba(0,0,0,.6);
+  font:13px/1.55 Inter,system-ui,sans-serif;
+}
+.kinoteka-paste-dialog h3{margin:0 0 8px;font-size:17px}
+.kinoteka-paste-dialog p{margin:8px 0;color:#c0b5c9}
+.kinoteka-paste-status{min-height:19px;color:#e6aab8!important}
+.kinoteka-paste-dialog button{
+  display:block;margin:16px 0 0 auto;padding:8px 16px;
+  background:#2b2035;color:#f3eaf7;border:1px solid #654e74;
+  border-radius:8px;cursor:pointer;
+}
+.kinoteka-paste-dialog button:focus-visible{outline:2px solid #c9a4e5;outline-offset:2px}
+@media(hover:none),(pointer:coarse){
+  .kinoteka-film-card .kinoteka-poster-menu{backdrop-filter:none}
+}
+@media(prefers-reduced-motion:reduce){
+  .kinoteka-film-card{transition:none!important;transform:none!important}
+  .kinoteka-film-card::after{transition:none!important}
+  .kinoteka-film-card .kinoteka-card-poster{transform:none!important}
+  .kinoteka-film-card .kinoteka-poster-choose{transform:none!important}
+}
+
+
+/* Hotfix 29 — aligned poster action and numeric score.
+   Match bottom offset and box height on desktop and compact card widths.
+   Other card controls, grid dimensions and motion remain unchanged. */
+.kinoteka-film-card .kinoteka-poster-choose,
+.kinoteka-film-card .kinoteka-card-score{
+  bottom:9px;
+  height:28px;
+  min-height:28px;
+  box-sizing:border-box;
+}
+.kinoteka-film-card .kinoteka-poster-choose{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:0 9px;
+}
+@media(max-width:690px){
+  .kinoteka-film-card .kinoteka-poster-choose,
+  .kinoteka-film-card .kinoteka-card-score{
+    bottom:7px;
+    height:25px;
+    min-height:25px;
+  }
+}
+
+/* Hotfix 30 — one poster status / score control, compact metadata and eligible favorites only. */
+.kinoteka-film-card .kinoteka-card-meta{
+  grid-template-rows:calc(2 * 1.40em) 23px!important;
+  row-gap:6px;
+}
+.kinoteka-film-card .kinoteka-card-score.status-watching{
+  color:var(--progress);border-color:color-mix(in srgb,var(--progress) 60%,#45434e);
+  min-width:63px;padding:0 6px;font-size:11px!important;
+}
+.kinoteka-film-card .kinoteka-card-score.status-planned{
+  color:var(--planned);border-color:color-mix(in srgb,var(--planned) 60%,#45434e);
+  min-width:53px;padding:0 7px;font-size:11px!important;
+}
+.kinoteka-film-card:has(.kinoteka-card-score.status-watching) .kinoteka-poster-choose{
+  right:96px;
+}
+.kinoteka-film-card:has(.kinoteka-card-score.status-planned) .kinoteka-poster-choose{
+  right:71px;
+}
+.kinoteka-score-modal-statuses{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:0 0 13px}
+.kinoteka-score-modal-statuses button{
+  cursor:pointer;background:#1b1824;border:1px solid #514460;border-radius:8px;
+  color:#eee8f6;min-height:40px;font:600 13px Inter,sans-serif;
+}
+.kinoteka-score-modal-statuses button[data-status="Смотрю"]{color:var(--progress)}
+.kinoteka-score-modal-statuses button[data-status="Запланировано"]{color:var(--planned)}
+.kinoteka-score-modal-statuses button:hover,.kinoteka-score-modal-statuses button.current{
+  background:#2a2034;border-color:#9775bf;
+}
+@media(max-width:690px){
+  .kinoteka-film-card:has(.kinoteka-card-score.status-watching) .kinoteka-poster-choose{right:77px;padding:0 3px;font-size:10px!important;white-space:nowrap}
+  .kinoteka-film-card:has(.kinoteka-card-score.status-planned) .kinoteka-poster-choose{right:67px}
+  .kinoteka-film-card .kinoteka-card-score.status-watching{min-width:62px;font-size:10px!important}
+  .kinoteka-film-card .kinoteka-card-score.status-planned{min-width:51px;font-size:10px!important}
+}
+
+
+/* Hotfix 31 — compact non-wrapping poster action beside the status badge. */
+.kinoteka-film-card .kinoteka-poster-choose{
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  min-width:0;
+  left:10px;
+  line-height:1;
+  padding-left:4px;
+  padding-right:4px;
+}
+.kinoteka-film-card:has(.kinoteka-card-score.status-watching) .kinoteka-poster-choose{
+  right:76px;
+  padding-left:2px;
+  padding-right:2px;
+  font-size:10px!important;
+  white-space:nowrap;
+}
+.kinoteka-film-card:has(.kinoteka-card-score.status-planned) .kinoteka-poster-choose{
+  right:65px;
+  white-space:nowrap;
+}
+@media(max-width:690px){
+  .kinoteka-film-card .kinoteka-poster-choose{left:9px}
+  .kinoteka-film-card:has(.kinoteka-card-score.status-watching) .kinoteka-poster-choose{right:72px}
+  .kinoteka-film-card:has(.kinoteka-card-score.status-planned) .kinoteka-poster-choose{right:61px}
+}
+
+
+/* Hotfix 32 — media type as a quiet icon beside the year (cards only).
+   Same poster geometry; no category chip beneath the title. */
+.kinoteka-film-card .kinoteka-card-poster .kinoteka-card-type{
+  position:absolute;top:9px;left:68px;z-index:2;
+  width:24px;height:24px;box-sizing:border-box;
+  display:inline-flex;align-items:center;justify-content:center;
+  border:1px solid #474149;border-radius:6px;
+  background:rgba(10,11,15,.83);color:#ccadb9;
+  box-shadow:0 1px 5px rgba(0,0,0,.19);
+  pointer-events:auto;
+}
+.kinoteka-film-card .kinoteka-card-type.kind-series{color:#9fb8db;border-color:#3c506a}
+.kinoteka-film-card .kinoteka-card-type.kind-animation{color:#c7a4e2;border-color:#5a416b}
+.kinoteka-film-card .kinoteka-card-type svg{display:block;flex:none}
+.kinoteka-film-card .kinoteka-card-poster:not(:has(.kinoteka-card-year)) .kinoteka-card-type{left:9px}
+.kinoteka-film-card .kinoteka-card-meta{
+  display:block;min-width:0;padding:10px 3px 0;
+}
+@media(max-width:690px){
+  .kinoteka-film-card .kinoteka-card-poster .kinoteka-card-type{top:7px;left:60px;width:23px;height:23px}
+  .kinoteka-film-card .kinoteka-card-poster:not(:has(.kinoteka-card-year)) .kinoteka-card-type{left:7px}
+  .kinoteka-film-card .kinoteka-card-meta{padding-top:10px}
+}
+
+/* Hotfix 33 — clearer 17px category glyphs within the existing 24px badges.
+   Context actions live outside the card to preserve the six-column layout. */
+.kinoteka-film-card .kinoteka-card-type svg{width:17px;height:17px}
+.kinoteka-film-card .kinoteka-card-type{transition:border-color .15s ease,background .15s ease}
+.kinoteka-film-card:hover .kinoteka-card-type{border-color:color-mix(in srgb,currentColor 46%,#41404a)}
+.kinoteka-card-context-menu{
+  position:fixed;z-index:17010;width:min(214px,calc(100vw - 16px));box-sizing:border-box;
+  padding:5px;display:flex;flex-direction:column;gap:3px;
+  background:rgba(19,16,25,.98);color:#ece6f0;
+  border:1px solid #56465f;border-radius:10px;
+  box-shadow:0 14px 38px rgba(0,0,0,.60);
+  font:600 11px/1.4 Inter,system-ui,sans-serif;
+}
+.kinoteka-card-context-menu button{
+  cursor:pointer;border:1px solid transparent;border-radius:6px;
+  text-align:left;min-height:34px;padding:8px 9px;
+  background:transparent;color:inherit;font:inherit;
+}
+.kinoteka-card-context-menu button:hover,
+.kinoteka-card-context-menu button:focus-visible{
+  outline:none;background:#33263c;border-color:#604d6c;
+}
+.kinoteka-card-context-menu button.danger{color:#f0a3b0}
+.kinoteka-card-context-separator{border-top:1px solid #38303e;margin:2px 4px}
+.kinoteka-film-card .kinoteka-card-title{cursor:copy}
+@media(prefers-reduced-motion:reduce){
+  .kinoteka-film-card .kinoteka-card-type{transition:none}
+}
+
+
+/* Hotfix 34 — one outline on hover/selection and readable long titles.
+   No change to poster aspect ratio, six columns, 24-per-page or actions. */
+.kinoteka-film-card:hover .kinoteka-card-poster,
+.kinoteka-film-card:focus-within .kinoteka-card-poster,
+.kinoteka-film-card.is-selected .kinoteka-card-poster{
+  /* The outer full-card ::after is the ONLY highlighted outline. */
+  border-color:transparent!important;
+  box-shadow:0 7px 18px rgba(0,0,0,.24)!important;
+}
+.kinoteka-film-card:hover .kinoteka-card-poster::before,
+.kinoteka-film-card:focus-within .kinoteka-card-poster::before,
+.kinoteka-film-card.is-selected .kinoteka-card-poster::before{
+  border-color:transparent!important;
+}
+.kinoteka-film-card:hover::after,
+.kinoteka-film-card:focus-within::after,
+.kinoteka-film-card.is-selected::after{
+  background:transparent;
+  border-color:color-mix(in srgb,var(--card-accent) 48%,#4a4554);
+  box-shadow:0 0 14px color-mix(in srgb,var(--card-accent) 9%,transparent);
+}
+/* Three fixed-height lines make substantially more titles readable at a glance.
+   Every card keeps the same title height to preserve strict row alignment. */
+.kinoteka-film-card .kinoteka-card-meta{
+  position:relative;
+  overflow:visible;
+  padding-top:9px;
+}
+.kinoteka-film-card .kinoteka-card-title{
+  font-size:13.4px;
+  font-weight:680;
+  line-height:1.36;
+  height:calc(3 * 1.36em);
+  min-height:calc(3 * 1.36em);
+  -webkit-line-clamp:3;
+  overflow:hidden;
+  overflow-wrap:anywhere;
+  cursor:copy;
+}
+/* For exceptionally long titles, expose the complete text without making
+   other cards taller or moving them. Keyboard focus on a card works too. */
+.kinoteka-film-card .kinoteka-card-title-full{
+  position:absolute;
+  z-index:20;
+  bottom:calc(100% + 7px);
+  left:0;right:0;
+  box-sizing:border-box;
+  padding:9px 10px;
+  border:1px solid #65566f;
+  border-radius:8px;
+  background:rgba(22,18,29,.97);
+  box-shadow:0 8px 28px rgba(0,0,0,.52);
+  font:650 12px/1.48 Inter,system-ui,sans-serif;
+  letter-spacing:0;
+  color:#f5f1f8;
+  overflow-wrap:anywhere;
+  white-space:normal;
+  pointer-events:none;
+  opacity:0;
+  visibility:hidden;
+  transform:translateY(4px);
+  transition:opacity .12s ease,transform .12s ease,visibility .12s ease;
+}
+.kinoteka-film-card .kinoteka-card-title.is-truncated:hover + .kinoteka-card-title-full,
+.kinoteka-film-card:focus-visible .kinoteka-card-title.is-truncated + .kinoteka-card-title-full{
+  opacity:1;
+  visibility:visible;
+  transform:none;
+}
+@media(max-width:690px){
+  .kinoteka-film-card .kinoteka-card-title{
+    font-size:12.4px;
+    line-height:1.38;
+    height:calc(3 * 1.38em);
+    min-height:calc(3 * 1.38em);
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  .kinoteka-film-card .kinoteka-card-title-full{transition:none!important;transform:none!important}
+}
+
+
+/* Hotfix 35 — one *neutral cyan* outline for the whole selected/hovered card.
+   Status hues belong to the year/score/favorite badges, never the selection.
+   Keep the approved 4px unified lift and the 3-line title geometry. */
+.kinoteka-film-card:hover::after,
+.kinoteka-film-card:focus-within::after{
+  border-color:rgba(103,232,249,.42);
+  background:rgba(103,232,249,.012);
+  box-shadow:0 0 14px rgba(103,232,249,.075);
+}
+.kinoteka-film-card.is-selected::after,
+.kinoteka-film-card.is-selected:hover::after,
+.kinoteka-film-card.is-selected:focus-within::after{
+  border-color:rgba(103,232,249,.74);
+  background:rgba(103,232,249,.016);
+  box-shadow:0 0 0 1px rgba(103,232,249,.085),0 0 17px rgba(103,232,249,.13);
+}
+/* The poster is a surface within the card, NOT another highlighted frame. */
+.kinoteka-film-card:hover .kinoteka-card-poster,
+.kinoteka-film-card:focus-within .kinoteka-card-poster,
+.kinoteka-film-card.is-selected .kinoteka-card-poster{
+  border-color:transparent!important;
+  box-shadow:0 7px 18px rgba(0,0,0,.24)!important;
+}
+.kinoteka-film-card:hover .kinoteka-card-poster::before,
+.kinoteka-film-card:focus-within .kinoteka-card-poster::before,
+.kinoteka-film-card.is-selected .kinoteka-card-poster::before{
+  opacity:0;
+}
+@media(prefers-reduced-motion:reduce){
+  .kinoteka-film-card{transition:none!important;transform:none!important}
+  .kinoteka-film-card:hover,
+  .kinoteka-film-card:focus-within,
+  .kinoteka-film-card.is-selected{transform:none!important}
+  .kinoteka-film-card::after{transition:none!important}
+}
+
+
+/* Hotfix 36 — consistent top rhythm and a true year+category badge group.
+   Only the card view changes: its first poster begins at the same vertical
+   coordinate as the table's top border after the shared action toolbar. */
+.kinoteka-card-grid{
+  padding-top:0;
+}
+/* Both badges follow actual content widths instead of brittle fixed left
+   offsets (68px desktop / 60px mobile). The year never changes its location. */
+.kinoteka-film-card .kinoteka-card-poster .kinoteka-card-topline{
+  position:absolute;
+  top:9px;
+  left:9px;
+  z-index:3;
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  max-width:calc(100% - 47px);
+  white-space:nowrap;
+  pointer-events:none;
+}
+.kinoteka-film-card .kinoteka-card-poster .kinoteka-card-topline .kinoteka-card-year{
+  position:static!important;
+  top:auto!important;
+  left:auto!important;
+  flex:0 0 auto;
+  margin:0;
+  height:24px;
+  align-self:center;
+}
+.kinoteka-film-card .kinoteka-card-poster .kinoteka-card-topline .kinoteka-card-type{
+  position:static!important;
+  top:auto!important;
+  left:auto!important;
+  flex:0 0 24px;
+  width:24px;
+  height:24px;
+  margin:0;
+  padding:0;
+  align-self:center;
+  border-radius:6px;
+  border-color:color-mix(in srgb,currentColor 27%,#404048);
+  background:rgba(10,11,15,.78);
+  box-shadow:0 1px 5px rgba(0,0,0,.16);
+  pointer-events:auto;
+}
+.kinoteka-film-card .kinoteka-card-poster .kinoteka-card-topline .kinoteka-card-type svg{
+  width:18px;
+  height:18px;
+}
+@media(max-width:690px){
+  .kinoteka-film-card .kinoteka-card-poster .kinoteka-card-topline{
+    top:7px;
+    left:7px;
+    gap:5px;
+  }
+  .kinoteka-film-card .kinoteka-card-poster .kinoteka-card-topline .kinoteka-card-type{
+    flex-basis:23px;
+    width:23px;
+    height:23px;
+  }
+  .kinoteka-film-card .kinoteka-card-poster .kinoteka-card-topline .kinoteka-card-year{
+    height:23px;
+  }
+}
+
+
+/* Hotfix 37 — stationary cards. No lift or positional animation on
+   hover, focus or selection. Cyan outline/glow from Hotfix 35 remains. */
+.kinoteka-film-card,
+.kinoteka-film-card:hover,
+.kinoteka-film-card:focus-within,
+.kinoteka-film-card.is-selected,
+.kinoteka-film-card.is-selected:hover,
+.kinoteka-film-card.is-selected:focus-within{
+  transform:none!important;
+  transition-property:none!important;
+}
+
+
+/* Hotfix 38 — translucent empty posters, soft focus isolation and matching
+   Table/Cards buttons. Preserve the approved stationary card geometry. */
+/* Alpha belongs to the empty poster surface, never to the full card: years,
+   category icons, scores, actions and text stay perfectly legible. */
+.kinoteka-film-card .kinoteka-card-poster:not(.has-poster){
+  background:
+    radial-gradient(ellipse 75% 42% at 50% 49%,rgba(153,139,180,.045),transparent 100%),
+    linear-gradient(155deg,rgba(18,19,25,.73) 0%,rgba(10,11,15,.61) 59%,rgba(17,17,23,.73) 100%);
+}
+/* Dimming follows the actual selected-card class. It restores automatically
+   on Esc, click outside, view switch or re-render without additional state. */
+#kinotekaCardGrid > .kinoteka-film-card{
+  transition:opacity .17s ease,filter .17s ease!important;
+}
+#kinotekaCardGrid:has(> .kinoteka-film-card.is-selected) > .kinoteka-film-card:not(.is-selected){
+  opacity:.74;
+  filter:brightness(.85) saturate(.84);
+}
+#kinotekaCardGrid:has(> .kinoteka-film-card.is-selected) > .kinoteka-film-card:not(.is-selected):hover,
+#kinotekaCardGrid:has(> .kinoteka-film-card.is-selected) > .kinoteka-film-card:not(.is-selected):focus-within{
+  opacity:.88;
+  filter:brightness(.94) saturate(.94);
+}
+/* Match the adjacent category filters instead of nesting two segments inside
+   a separate violet capsule. The active color tracks the same filter token. */
+.kinoteka-viewbar .kinoteka-view-toggle{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin-left:auto;
+  min-height:34px;
+  padding:0;
+  border:0;
+  border-radius:0;
+  background:transparent;
+  box-shadow:none;
+}
+.kinoteka-viewbar .kinoteka-view-btn{
+  box-sizing:border-box;
+  height:34px;
+  min-height:34px;
+  min-width:0;
+  padding:0 12px;
+  border:1px solid #2a2c2f;
+  border-radius:8px;
+  background:rgba(10,11,13,.65);
+  color:#c5c7ca;
+  box-shadow:none;
+  font:600 12px/1 Inter,system-ui,sans-serif;
+  white-space:nowrap;
+  text-shadow:none;
+  transition:background .16s ease,border-color .16s ease,color .16s ease,box-shadow .16s ease;
+}
+.kinoteka-viewbar .kinoteka-view-btn:hover:not(.active){
+  border-color:#43474c;
+  background:rgba(20,21,24,.72);
+  color:#fff;
+}
+.kinoteka-viewbar .kinoteka-view-btn.active{
+  border-color:var(--active-filter-color,var(--total));
+  background:linear-gradient(180deg,
+    color-mix(in srgb,var(--active-filter-color,var(--total)) 18%,transparent),
+    color-mix(in srgb,var(--active-filter-color,var(--total)) 6%,transparent));
+  color:color-mix(in srgb,var(--active-filter-color,var(--total)) 72%,white 28%);
+  box-shadow:0 0 0 1px color-mix(in srgb,var(--active-filter-color,var(--total)) 20%,transparent),
+    0 0 18px color-mix(in srgb,var(--active-filter-color,var(--total)) 18%,transparent),
+    0 8px 22px color-mix(in srgb,var(--active-filter-color,var(--total)) 10%,transparent),
+    inset 0 0 14px color-mix(in srgb,var(--active-filter-color,var(--total)) 5.5%,transparent);
+  text-shadow:0 0 8px color-mix(in srgb,var(--active-filter-color,var(--total)) 34%,transparent);
+}
+.kinoteka-viewbar .kinoteka-view-btn.active:hover{
+  border-color:color-mix(in srgb,var(--active-filter-color,var(--total)) 82%,white 18%);
+}
+.kinoteka-viewbar .kinoteka-view-btn:focus-visible{
+  outline:2px solid var(--active-filter-color,var(--total));
+  outline-offset:2px;
+}
+@media(max-width:690px){
+  .kinoteka-viewbar .kinoteka-view-toggle{gap:5px}
+  .kinoteka-viewbar .kinoteka-view-btn{min-width:0;font-size:10px;padding:0 8px;height:34px;min-height:34px}
+}
+@media(prefers-reduced-motion:reduce){
+  #kinotekaCardGrid > .kinoteka-film-card,
+  .kinoteka-viewbar .kinoteka-view-btn{transition:none!important}
+}

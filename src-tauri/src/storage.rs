@@ -71,6 +71,8 @@ fn seed_database_path() -> Option<PathBuf> {
     seed.is_file().then_some(seed)
 }
 
+pub fn poster_directory() -> PathBuf { root_for_data().join("posters") }
+
 fn backup_root() -> Result<PathBuf, String> {
     let root = root_for_data().join("data").join("backups");
     fs::create_dir_all(&root).map_err(|e| e.to_string())?;
@@ -102,6 +104,14 @@ fn valid_item_rating(value: Option<&Value>) -> bool {
     matches!(value.and_then(Value::as_str), Some("Понравилось") | Some("Нормально") | Some("Не понравилось") | Some("Смотрю") | Some("Запланировано"))
 }
 
+// Optional, independent user rating. The legacy `rating` string remains the status.
+fn valid_score10(value: Option<&Value>) -> bool {
+    match value {
+        None | Some(Value::Null) => true,
+        Some(v) => v.as_i64().is_some_and(|score| (1..=10).contains(&score)),
+    }
+}
+
 fn valid_trash_rating(value: Option<&Value>) -> bool {
     valid_item_rating(value) || value.and_then(Value::as_str) == Some("Избранное")
 }
@@ -115,7 +125,7 @@ fn state_semantics_valid(state: &Value) -> bool {
     for item in items {
         let Some(object) = item.as_object() else { return false; };
         let Some(name) = object.get("name").and_then(Value::as_str) else { return false; };
-        if name.trim().is_empty() || !valid_category(object.get("category")) || !valid_year(object.get("year")) || !valid_item_rating(object.get("rating")) {
+        if name.trim().is_empty() || !valid_category(object.get("category")) || !valid_year(object.get("year")) || !valid_item_rating(object.get("rating")) || !valid_score10(object.get("score10")) {
             return false;
         }
         let category = object.get("category").and_then(Value::as_str).unwrap_or_default();
@@ -138,7 +148,7 @@ fn state_semantics_valid(state: &Value) -> bool {
             || object.get("id").and_then(Value::as_i64).map(|id| id > 0) != Some(true)
             || !valid_category(object.get("category"))
             || !valid_year(object.get("year"))
-            || !valid_trash_rating(object.get("rating"))
+            || !valid_trash_rating(object.get("rating")) || !valid_score10(object.get("score10"))
             || !matches!(object.get("favorite"), Some(Value::Bool(_))) {
             return false;
         }

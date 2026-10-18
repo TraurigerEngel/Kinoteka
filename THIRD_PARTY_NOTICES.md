@@ -49,3 +49,7 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+## Inter typeface
+
+The bundled Inter font family (Regular, Medium, SemiBold, Bold) is separately licensed under the SIL Open Font License 1.1; reserved font name Inter belongs to the font author. See the authoritative license and copyright at https://github.com/rsms/inter/blob/master/LICENSE.txt . The application's MIT license does not relicense Inter.

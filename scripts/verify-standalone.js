@@ -1,6 +1,4 @@
 'use strict';
-// Privacy gate executes in direct verification and Windows release-source staging.
-require('./verify-clean-demo.js');
 const fs = require('fs');
 const path = require('path');
 const vm = require('vm');
@@ -50,8 +48,8 @@ function assertUiSemantics(ui,label) {
 
 
 const root = path.resolve(__dirname, '..');
-const EXPECTED_VERSION = '1.1.0';
-const EXPECTED_RELEASE_NAME = 'Kinoteka_Standalone_v1.1_Stable';
+const EXPECTED_VERSION = '1.2.0-preview.1';
+const EXPECTED_RELEASE_NAME = 'Kinoteka_Standalone_v1.2_Preview_1';
 
 const mustExist = [
   'package.json','package-lock.json','README.md','CHANGELOG.md','START-HERE.txt','RELEASE_NOTES_v1.0_STABLE.md','RELEASE_NOTES_v1.1_STABLE.md','RELEASE-CHECKLIST.md',
@@ -107,23 +105,35 @@ const canonicalSummaryHelper = fs.readFileSync(path.join(root,'scripts/kinoteka-
 
 // Identity/version consistency.
 if (pkg.name !== 'kinoteka-standalone' || pkg.version !== EXPECTED_VERSION) throw new Error('package.json identity/version mismatch.');
-if (pkg.description !== 'Kinoteka Standalone v1.1 Stable') throw new Error('package.json description mismatch.');
+if (pkg.description !== 'Kinoteka Standalone v1.2 Preview 1 — Library Integration') throw new Error('package.json description mismatch.');
 if (lock.name !== pkg.name || lock.version !== EXPECTED_VERSION) throw new Error('package-lock root identity/version mismatch.');
 if (lock.packages?.['']?.name !== pkg.name || lock.packages?.['']?.version !== EXPECTED_VERSION) throw new Error('package-lock package identity/version mismatch.');
 if (lock.packages?.['']?.description !== pkg.description) throw new Error('package-lock description mismatch.');
-if (!/name\s*=\s*"kinoteka-standalone"/.test(cargo) || !/version\s*=\s*"1\.1\.0"/.test(cargo)) throw new Error('Cargo package identity/version mismatch.');
+if (!/name\s*=\s*"kinoteka-standalone"/.test(cargo) || !/version\s*=\s*"1\.2\.0-preview\.1"/.test(cargo)) throw new Error('Cargo package identity/version mismatch.');
 if (!/name\s*=\s*"kinoteka"/.test(cargo) || !/name\s*=\s*"kinoteka_standalone_lib"/.test(cargo)) throw new Error('Cargo binary/library identity mismatch.');
-if (!/name = "kinoteka-standalone"\nversion = "1\.1\.0"/.test(cargoLock)) throw new Error('Cargo.lock root package identity/version mismatch.');
+if (!/name = "kinoteka-standalone"\nversion = "1\.2\.0-preview\.1"/.test(cargoLock)) throw new Error('Cargo.lock root package identity/version mismatch.');
+
+// Guard against accidental release-version replacement in third-party Cargo.lock entries.
+// The project version belongs only to the local kinoteka-standalone package, never to crates.io packages.
+const cargoLockPackages = [...cargoLock.matchAll(/\[\[package\]\]\r?\nname = "([^"]+)"\r?\nversion = "([^"]+)"/g)];
+if (cargoLockPackages.length < 200) throw new Error('Cargo.lock package inventory is unexpectedly short.');
+for (const [, name, version] of cargoLockPackages) {
+  if (name !== 'kinoteka-standalone' && (version === EXPECTED_VERSION || version.includes(`+spec-${EXPECTED_VERSION}`))) {
+    throw new Error(`Cargo.lock corrupt third-party package version: ${name} ${version}`);
+  }
+}
+if (cargoLock.includes(`+spec-${EXPECTED_VERSION}`)) throw new Error('Cargo.lock includes a corrupted third-party TOML spec version.');
+
 if (tauri.productName !== 'Кинотека' || tauri.identifier !== 'com.lostheaven.kinoteka' || tauri.version !== EXPECTED_VERSION) throw new Error('Tauri standalone identity mismatch.');
 if (tauri?.app?.windows?.[0]?.title !== 'Кинотека' || tauri?.app?.windows?.[0]?.url !== 'index.html') throw new Error('Tauri standalone window mismatch.');
 if (tauriRelease.version !== EXPECTED_VERSION || tauriRelease?.app?.windows?.[0]?.devtools !== false) throw new Error('Release Tauri configuration mismatch.');
 
-// v1.1 Stable preserves native-visible first paint from the accepted Hotfix 6,
+// v1.2 Preview 1 preserves native-visible first paint from the accepted Hotfix 6,
 // and release-only WebView hardening. Never promote the rejected Hotfix 7 reveal.
 for (const [label, config] of [['DEV', tauri], ['Release', tauriRelease]]) {
   const win = config?.app?.windows?.[0];
   if (!win || win.visible !== true || win.maximized !== true || win.center !== true || win.resizable !== false || win.backgroundColor !== '#020203') {
-    throw new Error(`v1.1 Stable ${label} window parity mismatch.`);
+    throw new Error(`v1.2 Preview 1 ${label} window parity mismatch.`);
   }
 }
 if (tauriRelease.app.windows[0].devtools !== false) throw new Error('Release devtools must be disabled.');
@@ -271,10 +281,44 @@ for (const m of html.matchAll(/<script([^>]*)>([\s\S]*?)<\/script>/gi)) {
   new vm.Script(m[2], {filename:`app/index.html:inline-${++inlineScripts}`});
 }
 
-// Offline-by-default: no remote runtime resources.
+// Offline-by-default: the main runtime must not fetch from third-party APIs.
+// Path normalization is necessary because Windows uses backslashes in relative paths.
+const portableRuntimePath = rel => rel.replaceAll('\\','/');
+function removeApprovedRuntimeUrls(rel, source) {
+  // IMDb is mentioned solely as a human-readable attribution/link, not as a runtime API.
+  if (portableRuntimePath(rel) === 'app/index.html') return source.replaceAll('https://www.imdb.com','');
+  if (portableRuntimePath(rel) === 'app/games.js') return source.replaceAll('https://commons.wikimedia.org/wiki/File:','');
+  if (portableRuntimePath(rel) === 'app/shared/commons-posters.js') {
+    return source.replaceAll('https://query.wikidata.org/sparql','')
+      .replaceAll('https://commons.wikimedia.org/w/api.php','')
+      .replaceAll('https://commons.wikimedia.org/wiki/File:','')
+      .replaceAll('https://upload.wikimedia.org/','')
+      .replaceAll('https://creativecommons.org/licenses/','')
+      .replaceAll('https://creativecommons.org/publicdomain/','');
+  }
+  return source;
+}
+const integrationUi = fs.readFileSync(path.join(root,'app/shared/library-integration-ui.js'),'utf8');
+const integrationCss = fs.readFileSync(path.join(root,'app/shared/library-integration.css'),'utf8');
+const integrationTabs = [...html.matchAll(/data-integration-tab="([^"]+)"/g)].map(m=>m[1]);
+const integrationPages = [...html.matchAll(/data-integration-page="([^"]+)"/g)].map(m=>m[1]);
+if (integrationTabs.length !== 0 || integrationPages.length !== 0 || !html.includes('id="letterboxdFile"')) {
+  throw new Error('Hotfix 41: Letterboxd importer must not expose extra tabs or pages.');
+}
+if (/tmdb|themoviedb/i.test(html) || /tmdb|themoviedb|\bfetch\s*\(/i.test(integrationUi) ||
+    /#tmdbResults/.test(integrationCss) ||
+    /tmdb|themoviedb/i.test(JSON.stringify(tauriRelease.app.security.csp))) {
+  throw new Error('Legacy online TMDB UI or network permissions were not fully removed.');
+}
+if (tauriRelease.app.security.csp['connect-src'] !== 'ipc: http://ipc.localhost https://query.wikidata.org https://commons.wikimedia.org https://upload.wikimedia.org') {
+  throw new Error('Release CSP network restriction mismatch.');
+}
 for (const rel of ['app/index.html',...jsFiles.map(x=>path.relative(root,x)),'app/styles.css']) {
   const s = fs.readFileSync(path.join(root,rel),'utf8');
-  if (/https?:\/\//i.test(s) && rel !== 'app/shared/lucide-icons.js') throw new Error(`Remote URL remains in runtime asset: ${rel}`);
+  const allowed = removeApprovedRuntimeUrls(rel,s);
+  if (/https?:\/\//i.test(allowed) && portableRuntimePath(rel) !== 'app/shared/lucide-icons.js') {
+    throw new Error(`Unexpected remote URL in runtime asset: ${rel}`);
+  }
 }
 
 // Cleanup Pass 5: confirmed-write persistence and obsolete compatibility API cleanup.
@@ -327,8 +371,8 @@ for (const token of ['oldStatus','saveStatus','updateSaveStatus','let pageSize='
   if (pass8Core.includes(token) || pass8Games.includes(token)) throw new Error(`Cleanup Pass 8 retired runtime token returned: ${token}`);
 }
 if (!pass8Core.includes('const PAGE_SIZE=25;')) throw new Error('Cleanup Pass 8 canonical PAGE_SIZE constant is missing.');
-if (!pass8Games.includes('Math.ceil(filteredTotal/PAGE_SIZE)') || !pass8Games.includes('allRows.slice((currentPage-1)*PAGE_SIZE,currentPage*PAGE_SIZE)')) {
-  throw new Error('Cleanup Pass 8 pagination must use canonical PAGE_SIZE directly.');
+if (!pass8Core.includes('const CARD_PAGE_SIZE=24;') || !pass8Games.includes("kinotekaViewMode==='cards'?CARD_PAGE_SIZE:PAGE_SIZE") || !pass8Games.includes('Math.ceil(filteredTotal/pageSize)') || !pass8Games.includes('allRows.slice((currentPage-1)*pageSize,currentPage*pageSize)')) {
+  throw new Error('Cleanup Pass 8 pagination must use canonical table/card page-size constants directly.');
 }
 
 // Cleanup Pass 9: canonical trash modal semantics; retire historical history-* aliases.
@@ -833,7 +877,8 @@ function verifyDb(rel) {
     if (!row) throw new Error(`Canonical state row missing: ${rel}`);
     const state = JSON.parse(row.payload);
     if (state.app !== 'Кинотека' || Number(state.formatVersion) !== 1) throw new Error(`Kinoteka state identity mismatch: ${rel}`);
-    if (!Array.isArray(state.items)) throw new Error(`Kinoteka items array is missing: ${rel}`);
+    if (!Array.isArray(state.items) || state.items.length !== 0) throw new Error(`Distributed Kinoteka must contain zero items: ${rel}`);
+    if(state.favorites?.length || state.trash?.length || state.letterboxd) throw new Error(`Personal data in shipped SQLite: ${rel}`);
     for (const key of ['favorites','trash']) if (!Array.isArray(state[key])) throw new Error(`Canonical state array is invalid (${key}): ${rel}`);
     assertStateSemantics(state, rel);
     const uiRow = db.prepare('SELECT payload FROM ui_state WHERE id=1').get();
@@ -998,7 +1043,7 @@ for (const token of [
 // Release/migration contracts.
 const releaseText = `${buildDev}\n${buildRelease}\n${makeRelease}`;
 for (const token of [EXPECTED_RELEASE_NAME,'kinoteka.exe','Kinoteka.exe','kinoteka.sqlite3']) if (!releaseText.includes(token)) throw new Error(`Release identity/path missing: ${token}`);
-for (const token of ["version = '1.1.0'","channel = 'Stable'","release = 'v1.1 Stable'",'System.IO.Compression.ZipFile','SHA256']) if (!makeRelease.includes(token)) throw new Error(`Final release contract missing: ${token}`);
+for (const token of ["version = '1.2.0-preview.1'","channel = 'Preview'","release = 'v1.2 Preview 1'",'System.IO.Compression.ZipFile','SHA256']) if (!makeRelease.includes(token)) throw new Error(`Final release contract missing: ${token}`);
 if (!makeRelease.includes('.release-verify-stage') || !makeRelease.includes('.release-source-verify-stage')) throw new Error('ZIP re-extract verification pipeline is missing.');
 if (!migrate.includes('data\\movies\\kinoteka.sqlite3') || migrate.includes('data\\games\\kinoteka.sqlite3')) throw new Error('Lost Heaven Kinoteka migration path is wrong.');
 if (!migrate.includes('verify-sqlite-db.js')) throw new Error('Migration SQLite verifier is missing.');
@@ -1007,7 +1052,7 @@ new vm.Script(canonicalSummaryHelper, {filename:'scripts/kinoteka-db-summary.js'
 
 // RC prep: explicit DEV -> canonical live/seed freeze with rollback and byte-identity checks.
 for (const token of [
-  'Portable\\Kinoteka_Standalone_v1.1_Stable_DEV\\data\\kinoteka.sqlite3',
+  'Portable\\Kinoteka_Standalone_v1.2_Preview_1_DEV\\data\\kinoteka.sqlite3',
   'CanonicalDataBackups\\before-freeze-',
   'scripts\\verify-sqlite-db.js',
   'scripts\\kinoteka-db-summary.js',
@@ -1021,14 +1066,15 @@ for (const token of [
 if (/Get-FileHash/i.test(freezeCanonical)) throw new Error('Canonical data freeze must stay PowerShell 5.1-safe and use .NET SHA-256, not Get-FileHash.');
 if (!makeRelease.includes("'FREEZE-CANONICAL-DATA.cmd','FREEZE-CANONICAL-DATA.ps1'")) throw new Error('Final Source ZIP must include canonical data freeze tooling.');
 
+require('./verify-empty-db.js').verify();
 const sha = crypto.createHash('sha256').update(liveDb).digest('hex');
 // Startup & Titlebar Preview 1: preserve the verified 1.0 Stable data/backend,
 // and additionally require both full-width vector controls and a guarded handoff.
 require('./verify-startup-titlebar-preview.js');
-console.log('Kinoteka Standalone v1.1 Stable verification OK');
+console.log('Kinoteka Standalone v1.2 Preview 1 — Library Integration verification OK');
 console.log('- Dedicated Tauri identity and single-instance guard');
 console.log('- Kinoteka-only frontend/backend command surface');
-console.log(`- Canonical portable SQLite OK (${liveInfo.items} items, revision ${liveInfo.revision})`);
+console.log(`- Empty canonical SQLite OK (${liveInfo.items} items, revision ${liveInfo.revision})`);
 console.log('- Seed recovery + bounded automatic backups + DB integrity checks');
 console.log(`- JavaScript syntax OK (${jsFiles.length} files + ${inlineScripts} inline scripts)`);
 console.log('- No active Igroteka/Budget/shell navigation or runtime wiring');
@@ -1060,7 +1106,7 @@ console.log('- Cleanup Pass 21 superseded-override CSS consolidation guards OK')
 console.log('- Cleanup Pass 22 retired Trash-animation CSS guards OK');
 console.log('- Cleanup Pass 23 runtime-performance/semantic-DB guards OK');
 console.log('- RC-prep canonical DEV-to-live/seed freeze tooling guards OK');
-console.log('- v1.1 Stable promotion metadata/artifact naming guards OK');
+console.log('- v1.2 Preview 1 promotion metadata/artifact naming guards OK');
 console.log('- RC1 canonical Kinoteka icon/favicons guard OK');
 console.log('- RC1 Theme Preview 1 Cinema Mono + Living Particles guards OK');
 console.log('- RC1 Theme Preview 2 True Mono Base + Active Filter Glow guards OK');
@@ -1082,6 +1128,6 @@ console.log('- RC1 Theme Preview 15 Hotfix 2 Wider Rating Menu guards OK');
 console.log('- RC1 Theme Preview 15 Hotfix 3 Restored Local Glints + More Transparency guards OK');
 console.log('- Latest Kinoteka PATCH 028 year/star polish present');
 console.log('- Windows migration points to Lost Heaven data\\movies\\kinoteka.sqlite3');
-console.log('- v1.1 Stable version/release metadata consistency OK');
+console.log('- v1.2 Preview 1 version/release metadata consistency OK');
 console.log('- Strict 3-file Portable allowlist + ZIP/SHA-256 re-extract pipeline');
 console.log(`- Canonical live/seed byte identity OK (${sha.slice(0,12)}...)`);

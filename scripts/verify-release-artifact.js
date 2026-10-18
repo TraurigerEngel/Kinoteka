@@ -94,15 +94,19 @@ function verifyDb(rel) {
   } finally { db.close(); }
 }
 
+const emptyVerifier = require('./verify-empty-db.js');
+emptyVerifier.verify(); // Project source must remain empty, too.
 verifyDb('data/kinoteka.sqlite3');
 verifyDb('seed-data/kinoteka.sqlite3');
+emptyVerifier.verify(['data/kinoteka.sqlite3','seed-data/kinoteka.sqlite3'].map(rel => path.join(target, rel)));
+
 const live = fs.readFileSync(path.join(target,'data','kinoteka.sqlite3'));
 const seed = fs.readFileSync(path.join(target,'seed-data','kinoteka.sqlite3'));
 if (!live.equals(seed)) throw new Error('Release live and seed SQLite must be byte-identical canonical copies.');
 const exeSize = fs.statSync(path.join(target,'Kinoteka.exe')).size;
 if (exeSize < 1024 * 1024) throw new Error('Kinoteka.exe is unexpectedly small.');
 const dbSha = crypto.createHash('sha256').update(live).digest('hex');
-console.log('Kinoteka v1.1 Stable release artifact verification OK');
+console.log('Kinoteka v1.2 Preview 1 release artifact verification OK');
 console.log(`- EXE: ${(exeSize/1024/1024).toFixed(2)} MB`);
 console.log('- Exact portable allowlist OK (3 runtime files)');
 console.log('- SQLite integrity/schema/state/journal_mode OK');

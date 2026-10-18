@@ -1,0 +1,26 @@
+// Hotfix 42 — source-level regressions for review UI, no user data.
+'use strict';
+const assert=require('node:assert/strict');
+const fs=require('node:fs'); const path=require('node:path');
+const root=path.resolve(__dirname,'..');
+const read=p=>fs.readFileSync(path.join(root,p),'utf8');
+const html=read('app/index.html'),css=read('app/shared/library-integration.css');
+const ui=read('app/shared/library-integration-ui.js'),core=read('app/shared/library-integration-core.js');
+assert.match(html,/class="kino-import-lists-stat" hidden/);
+assert.match(html,/id="previewLists"/);
+assert.match(css,/grid-template-columns:repeat\(4,minmax\(0,1fr\)\)/);
+assert.match(css,/\.kino-review-type\.is-mismatch/);
+assert.match(css,/\.kino-integrate-footer\{\s*position:sticky/);
+assert.match(ui,/const incompatibleTypes=/);
+assert.match(ui,/sourceType==='movie'&&local==='Сериал'/);
+assert.match(ui,/const card=make\('details','kino-review-item'\)/);
+assert.match(ui,/const title=make\('summary','kino-review-title'\)/);
+assert.match(ui,/const more=make\('details','kino-review-more'\)/);
+assert.match(ui,/more.append\(lookup,results\)/);
+assert.match(ui,/card.append\(actions,more\)/);
+assert.match(ui,/decide\(row.sourceKey,\{action:'match',targetIdentity:local.identity\}\)/);
+assert.match(ui,/decide\(row.sourceKey,\{action:'add'\}\)/);
+assert.match(ui,/decide\(row.sourceKey,\{action:'skip'\}\)/);
+assert.match(ui,/apply.disabled=importBusy\|\|plan.reviewRequired>0/);
+assert.match(ui,/plan.reviewRequired/);
+console.log('HOTFIX 42: PASS (compact review, type mismatch warning, sticky footer, unchanged commit gating)');

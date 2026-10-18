@@ -12,12 +12,17 @@ function migrateEntryStatuses(arr){
     return copy;
   });
 }
+// Numerical rating is independent of the legacy categorical status.
+function validScore10(value){return Number.isInteger(value) && value >= 1 && value <= 10;}
+function score10Status(value){return value >= 7 ? 'Понравилось' : value >= 5 ? 'Нормально' : 'Не понравилось';}
 const ratingOrder={"Понравилось":1,"Нормально":2,"Не понравилось":3,"Смотрю":4,"Запланировано":5,"Избранное":6,"":99};
 let games=[];
 let statActiveCache=null;
 let currentPage=1;
+let kinotekaViewMode="table";
 let quickFilter="";
 const PAGE_SIZE=25;
+const CARD_PAGE_SIZE=24; // Hotfix 22: four complete rows of six on desktop; table remains 25.
 let mediaCategory="Все";
 let mediaYear="";
 
@@ -29,6 +34,7 @@ const search=$("search");
 const sort=$("sort"),tbody=$("tbody"),toast=$("toast");
 const mediaCategoryFilter=$("mediaCategoryFilter"),mediaYearFilter=$("mediaYearFilter");
 const pagination=$("pagination"),tableWrap=$("tableWrap"),emptyResults=$("emptyResults");
+const kinotekaCardGrid=$("kinotekaCardGrid");
 const statValues={
   total:$("totalCount"),
   liked:$("liked"),
@@ -104,6 +110,7 @@ async function save(){
       category:String(item?.category??"Фильмы"),
       year:item?.year==null||item.year===""?null:Number(item.year),
       rating:item?.rating||"Запланировано",
+      score10:validScore10(item?.score10)?item.score10:null,
       favorite:Boolean(item?.favorite)
     }));
     const raw=JSON.stringify(rowsForDb);
@@ -129,7 +136,7 @@ async function save(){
     return false;
   }
 }
-function uiState(){return {search:search.value,sort:sort.value,quickFilter,mediaCategory,mediaYear}}
+function uiState(){return {search:search.value,sort:sort.value,quickFilter,mediaCategory,mediaYear,viewMode:kinotekaViewMode}}
 
 let saveUITimer=null;
 function saveUI(){
@@ -149,7 +156,7 @@ function scheduleSaveUI(){
   clearTimeout(saveUITimer);
   saveUITimer=setTimeout(()=>{saveUI();saveUITimer=null},250);
 }
-function loadUI(){try{const raw=db.getUISync();if(!raw){quickFilter="";return}const u=JSON.parse(raw)||{};search.value=u.search||"";sort.value=u.sort||"game-asc";quickFilter="";mediaCategory=u.mediaCategory||"Все";mediaYear=u.mediaYear||"";if(mediaCategoryFilter)mediaCategoryFilter.value=mediaCategory;if(mediaYearFilter)mediaYearFilter.value=mediaYear}catch(e){quickFilter="";console.warn("Не удалось восстановить настройки интерфейса:",e)}}
+function loadUI(){try{const raw=db.getUISync();if(!raw){quickFilter="";return}const u=JSON.parse(raw)||{};search.value=u.search||"";sort.value=u.sort||"game-asc";quickFilter="";mediaCategory=u.mediaCategory||"Все";mediaYear=u.mediaYear||"";kinotekaViewMode=u.viewMode==="cards"?"cards":"table";if(mediaCategoryFilter)mediaCategoryFilter.value=mediaCategory;if(mediaYearFilter)mediaYearFilter.value=mediaYear}catch(e){quickFilter="";console.warn("Не удалось восстановить настройки интерфейса:",e)}}
 
 function positionToastStack(stack){
   if(!stack) return;

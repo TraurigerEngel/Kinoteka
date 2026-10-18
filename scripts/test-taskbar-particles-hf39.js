@@ -1,0 +1,41 @@
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
+const vm = require('node:vm');
+const root = path.resolve(__dirname, '..');
+const html = fs.readFileSync(path.join(root,'app/index.html'),'utf8');
+const rust = fs.readFileSync(path.join(root,'src-tauri/src/lib.rs'),'utf8');
+const start = html.indexOf('/* RC1 Theme Preview 15 Hotfix 3');
+const end = html.indexOf('</script>', start);
+assert(start > 0 && end > start, 'locate canonical inline particle renderer');
+const particleJs = html.slice(start,end).replace("resize();rebuild();", "resize();rebuild();globalThis.__kinoteka_particles=particles;");
+assert.match(particleJs,/const crossedEdge=\(p\.x<-/);
+assert.match(particleJs,/!crossedEdge&&Math\.hypot\(x-oldX,y-oldY\)<=8/);
+assert.match(particleJs,/const HUE_CYCLE_SECONDS=72/);
+assert.match(particleJs,/const MAX_FPS=90/);
+assert.match(particleJs,/const clusters=\[/);
+// Execute the REAL renderer with fake canvas and a deterministic nearly-
+// boundary particle to reproduce the former huge wraparound line.
+const strokes=[];let lastPoint=null;let pending=null;
+const ctx = new Proxy({setTransform(){},clearRect(){},beginPath(){lastPoint=null;},moveTo(x,y){lastPoint=[x,y]},lineTo(x,y){if(lastPoint)strokes.push(Math.hypot(x-lastPoint[0],y-lastPoint[1]));lastPoint=[x,y]},arc(){},ellipse(){},fill(){},stroke(){},closePath(){}},{set(o,k,v){o[k]=v;return true}});
+const canvas={width:1000,height:700,getBoundingClientRect(){return {width:1000,height:700}},getContext(){return ctx}};
+let id=0;const callbacks=[];
+const doc={hidden:false,documentElement:{clientWidth:1000,clientHeight:700,dataset:{kinotekaStartup:'ready'}},getElementById(){return canvas},addEventListener(){}};
+const math=Object.create(Math);math.random=()=>0.997;
+const context={document:doc,window:{devicePixelRatio:1,addEventListener(){},visualViewport:{addEventListener(){}}},innerWidth:1000,innerHeight:700,performance:{now:()=>1000},Math:math,requestAnimationFrame(callback){callbacks.push(callback);return ++id;},cancelAnimationFrame(){},MutationObserver:class {}};
+vm.runInNewContext(particleJs,context,{timeout:4000});
+const edgeParticle=context.__kinoteka_particles[0];
+Object.assign(edgeParticle,{x:1.049999,y:.5,vx:.000012,vy:0,drift:.000023,wobble:0,fast:true,shape:'round',size:2});
+for(let i=0;i<8;i++){const callback=callbacks.shift();assert(callback);callback(1040+i*50);}
+assert(strokes.length>0, 'normal particle trails should still render');
+assert(strokes.every(length=>length<=14),`long particle streak (${Math.max(0,...strokes)}px) at viewport boundary`);
+console.log('PASS Hotfix 39: animated particle streak bounded at wrap, original density/colors retained');
+assert.match(rust,/mod taskbar_autohide/);
+assert.match(rust,/ABM_GETAUTOHIDEBAREX/);
+assert.match(rust,/ABM_GETSTATE/);
+assert.match(rust,/fn SHAppBarMessage/);
+assert.match(rust,/const GAP_PX: i32 = 2/);
+assert.match(rust,/window\.on_window_event/);
+assert.match(rust,/taskbar_autohide::apply\(&window\)/);
+assert.doesNotMatch(rust,/powershell.*taskbar|taskbar.*powershell/i);
+console.log('PASS Hotfix 39: Win32 taskbar condition checks, 2px physical inset and restore events wired');

@@ -1,0 +1,24 @@
+// Hotfix 41: modal appearance and temporary UI retirement of imported lists.
+'use strict';
+const assert=require('node:assert/strict');
+const fs=require('node:fs');const path=require('node:path');
+const root=path.resolve(__dirname,'..');const read=p=>fs.readFileSync(path.join(root,p),'utf8');
+const html=read('app/index.html'),ui=read('app/shared/library-integration-ui.js'),css=read('app/shared/library-integration.css');
+const core=read('app/shared/library-integration-core.js');
+assert.match(html,/id="integrationOpen"[^>]*aria-label="Импорт Letterboxd"/);
+assert.match(html,/id="integrationTitle">Импорт Letterboxd/);
+assert.match(html,/id="integrationClose"[^>]*class="icon-close"/);
+assert.match(html,/id="chooseLetterboxd"/);
+assert.match(html,/id="letterboxdFile"/);
+assert.match(html,/id="importPreview"/);
+assert.match(html,/id="commitImport"/);
+assert.match(html,/class="kino-import-notes"/);
+assert.doesNotMatch(html,/Мои списки|data-integration-tab|data-integration-page|integrationLists/);
+assert.doesNotMatch(ui,/showLists|setTab|data-integration-tab/);
+assert.match(ui,/db\.importLetterboxdConfirmed/);
+assert.match(core,/lists/);
+assert.match(css,/#integrationModal \.kinoteka-integration-modal/);
+assert.match(css,/#integrationModal \.kino-import-choose/);
+assert.match(css,/#integrationModal #commitImport/);
+assert.match(read('app/shared/kinoteka-bridge.js'),/getImportedListsSync/);
+console.log('HOTFIX 41: PASS (import modal consistent; lists UI hidden, lists metadata preserved)');

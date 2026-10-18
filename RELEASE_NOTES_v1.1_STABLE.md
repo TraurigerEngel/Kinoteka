@@ -1,29 +1,26 @@
-# Kinoteka v1.1.0 Stable — Clean Data Edition 🎬
+# Kinoteka Standalone v1.1 Stable
 
-Портативная библиотека фильмов, сериалов и анимации для Windows 11 x64.
+**Release source prepared: 2026-10-09.** Promote **Startup & Titlebar Preview 1 Hotfix 6 — Early Centered Titlebar**, restored after user rejection of experimental Hotfix 7. This release contains **no Hotfix 7 hidden-window / delayed native reveal**.
 
-## Основные возможности
+## Changes since v1.0 Stable
+- New 42px frameless top bar with an early centered `Кинотека` caption and custom 46x42px SVG minimize/close buttons.
+- First-paint splash and two-stage, approximately 1.73-second startup handoff inspired by Software Hub.
+- Visible + maximized + centered Tauri window without later native show/maximize; non-resizable border to suppress misleading resize cursor.
+- Early titlebar styling to reduce button flicker, preserving Chromium hover behavior and original UI theme.
 
-- Каталог с поиском, категориями и пользовательскими оценками.
-- Избранное, корзина и восстановление записей.
-- Локальная SQLite и резервное копирование.
-- Тёмный интерфейс Cinema Mono, 42px собственная строка заголовка.
-- Раннее появление заголовка и плавный запуск (на основе принятого Hotfix 6).
+## Limits of the accepted Hotfix 6
+- A short Windows/WebView2 native black frame may still precede the first HTML paint. **This is accepted from Hotfix 6; no claim of fixing it.**
+- Hotfix 7 was rejected and was rolled back. Its first-frame synchronization and `window_ready` IPC are absent.
 
-## Конфиденциальность
+## Canonical data (unchanged)
+- [количество удалено] items; [скрыто] favorites; 0 trash; revision [скрыта].
+- Identical live/seed `kinoteka.sqlite3` SHA-256:
+  `(redacted — historical user DB)`
+- SQLite schema, persistence, recovery, backups, and single-instance identity preserved.
 
-**Clean Data Edition:** в двух базах SQLite нет записей, избранного или корзины. Оригинальная личная библиотека не включена. `Kinoteka.exe` совпадает с исходным Stable-бинарником по SHA-256.
-
-## Установка
-
-1. Скачайте `Kinoteka_v1.1.0_Clean_Portable.zip` из Assets опубликованного релиза.
-2. Распакуйте архив и запустите `Kinoteka.exe`.
-3. Не удаляйте каталог `data`, содержащий вашу будущую библиотеку.
-
-## Особенности принятой версии
-
-Hotfix 7 с экспериментальным скрытием окна **не включён**. Короткий чёрный кадр Windows/WebView2 при запуске может оставаться — это известное ограничение принятой версии.
-
-**Статус проверки:** пользователь подтвердил успешную работу Clean Portable на Windows 11. Архив проверен на целостность; обе SQLite-базы обезличены и проходят `PRAGMA integrity_check`. Сборка исходников с Rust/MSVC отдельно не подтверждена.
-
-**SHA-256 Clean Portable ZIP:** `1713b9742499448de755f6fefbac33bf0c102e6543e7760823364026ef5f1337`.
+## Metadata and distribution
+- Package / Cargo / Tauri version: `1.1.0`.
+- Stable identifier: `com.lostheaven.kinoteka`.
+- Output: `Kinoteka_Standalone_v1.1_Stable_Portable.zip` and `_Source.zip`.
+- The clean runtime allowlist remains exactly 3 files.
+- Windows Release build and runtime smoke test **must be performed on Windows before declaring an official final release**.

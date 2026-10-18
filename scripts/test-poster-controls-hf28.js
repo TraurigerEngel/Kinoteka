@@ -1,0 +1,54 @@
+'use strict';
+const assert=require('node:assert/strict');
+const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
+const root=path.resolve(__dirname,'..');
+const js=fs.readFileSync(path.join(root,'app/games.js'),'utf8');
+const css=fs.readFileSync(path.join(root,'app/styles.css'),'utf8');
+// Buttons stay inside the same transform container: no separate cross, all move together.
+const render=js.slice(js.indexOf('function renderCardView('),js.indexOf('if(kinotekaCardGrid){'));
+assert.match(render,/card\.className=`kinoteka-film-card/);
+assert.match(render,/kinoteka-poster-menu[^`]*data-poster-action="file"/);
+assert.match(render,/data-poster-action="paste"/);
+assert.match(render,/data-poster-action="remove" data-poster-remove hidden/);
+assert.doesNotMatch(render,/class="kinoteka-poster-remove"/);
+assert.match(render,/data-card-score="\$\{i\}"/);
+const fin=css.slice(css.indexOf('/* Hotfix 28 — unified card lift'));
+assert.match(fin,/\.kinoteka-film-card:hover,[\s\S]*?transform:translateY\(-4px\)/);
+assert.match(fin,/\.kinoteka-film-card:hover \.kinoteka-card-poster,[\s\S]*?transform:none!important/);
+assert.match(fin,/\.kinoteka-film-card:hover \.kinoteka-poster-choose,[\s\S]*?transform:none!important/);
+assert.match(fin,/kinoteka-poster-menu\[hidden\]/);
+assert.match(fin,/@media\(prefers-reduced-motion:reduce\)/);
+// Real poster pipeline: local-only, MIME validation, and no remote URL fetching.
+const code=js.slice(js.indexOf('const posterAllowedTypes='),js.indexOf('function closePosterPasteDialog('));
+const tests={calls:[],toasts:[]};
+const ctx={Set,Error,console,posterInvoke:async(n,arg)=>{tests.calls.push({n,arg});return{ok:true,dataUrl:arg.dataUrl}},posterBlobToUrl:async()=> 'data:image/png;base64,VALID',posterRefreshKey:(key,url)=>tests.calls.push({refresh:key,url}),toastMsg:(a,b)=>tests.toasts.push([a,b])};
+vm.runInNewContext(code+';this.checkPosterBlob=checkPosterBlob;this.saveUserPoster=saveUserPoster;',ctx);
+(async()=>{
+  const blob={type:'image/png',size:550};
+  await ctx.saveUserPoster('local:demo',blob);
+  assert.equal(tests.calls[0].n,'poster_set');
+  assert.equal(tests.calls[0].arg.key,'local:demo');
+  assert.equal(tests.calls[1].refresh,'local:demo');
+  assert.equal(tests.toasts[0][1],'success');
+  for(const bad of [{type:'image/svg+xml',size:500},{type:'image/png',size:5*1024*1024+1},{type:'image/jpeg',size:1},{type:'text/plain',size:1000}])await assert.rejects(()=>ctx.saveUserPoster('local:demo',bad));
+  assert.equal(tests.calls.filter(x=>x.n==='poster_set').length,1);
+  assert.doesNotMatch(js,/navigator\?\.clipboard\?\.read/);
+  assert.match(js,/document\.addEventListener\('paste',onPaste,true\)/);
+  assert.match(js,/document\.removeEventListener\('paste',state.onPaste,true\)/);
+  assert.match(js,/if\(event\.key==='Escape'\)/);
+  // The native Tauri command never makes a browser clipboard.read() request.
+  const pasteSource=js.slice(js.indexOf('async function pasteUserPoster('),js.indexOf('\nfunction applyPosterToCard(',js.indexOf('async function pasteUserPoster(')));
+  const calls=[];
+  const nativeCtx={posterInvoke:async(name,params)=>{calls.push({name,params});return {ok:true,dataUrl:'data:image/png;base64,VALID'};},posterRefreshKey:(key,url)=>calls.push({refresh:key,url}),openPosterPasteDialog:(key,msg)=>calls.push({fallback:key,msg}),toastMsg:(msg)=>calls.push({toast:msg}),console,Error,String};
+  vm.runInNewContext(pasteSource+';this.pasteUserPoster=pasteUserPoster;',nativeCtx);
+  await nativeCtx.pasteUserPoster('local:synthetic');
+  assert.equal(calls[0].name,'poster_clipboard_set');
+  assert.equal(calls[0].params.key,'local:synthetic');
+  assert.equal(calls[1].refresh,'local:synthetic');
+  nativeCtx.posterInvoke=async()=>{throw new Error('Native unavailable')};
+  await nativeCtx.pasteUserPoster('local:synthetic');
+  assert.equal(calls[3].fallback,'local:synthetic');
+  assert.match(calls[3].msg,/Ctrl\+V/);
+  assert.match(js,/posterChooser\.addEventListener\('change'/);
+  console.log('POSTER CONTROLS HOTFIX 28 QA: PASS (unified hover, menu, clipboard fallback, image validation, local-only, motion accessibility)');
+})().catch(e=>{console.error(e);process.exitCode=1});

@@ -42,7 +42,7 @@ function Read-DbSummary {
   return ($json | Out-String | ConvertFrom-Json)
 }
 
-$portableDb = Join-Path $PSScriptRoot 'Portable\Kinoteka_Standalone_v1.1_Stable_DEV\data\kinoteka.sqlite3'
+$portableDb = Join-Path $PSScriptRoot 'Portable\Kinoteka_Standalone_v1.2_Preview_1_DEV\data\kinoteka.sqlite3'
 $liveDb = Join-Path $PSScriptRoot 'data\kinoteka.sqlite3'
 $seedDb = Join-Path $PSScriptRoot 'seed-data\kinoteka.sqlite3'
 $stageRoot = Join-Path $PSScriptRoot '.canonical-freeze-stage'
@@ -69,6 +69,11 @@ foreach ($path in @($portableDb,$liveDb,$seedDb)) {
 Write-Host '[1/6] Verifying Portable DEV source...' -ForegroundColor Cyan
 Invoke-SqliteVerify -DbPath $portableDb
 $summary = Read-DbSummary -DbPath $portableDb
+if ([int]$summary.items -ne 0 -or [int]$summary.favorites -ne 0 -or [int]$summary.trash -ne 0 -or [int]$summary.revision -ne 0) {
+  throw 'Privacy guard: a populated Portable DEV database must never be promoted to project data/seed-data. Only empty database templates are allowed.'
+}
+& node --no-warnings (Join-Path $PSScriptRoot 'scripts\verify-empty-db.js') $portableDb
+if ($LASTEXITCODE -ne 0) { throw 'Privacy guard rejected freeze source.' }
 Write-Host ('Portable DEV: {0} items, {1} favorites, {2} trash, revision {3}' -f $summary.items,$summary.favorites,$summary.trash,$summary.revision)
 if ([int]$summary.trash -gt 0 -and -not $AllowTrash) {
   throw ('Portable DEV Trash is not empty ({0} item(s)). Clean/restore Trash first, or intentionally rerun FREEZE-CANONICAL-DATA.ps1 -AllowTrash.' -f $summary.trash)

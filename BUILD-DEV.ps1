@@ -2,7 +2,7 @@ param([switch]$SkipNpmCi)
 $ErrorActionPreference = 'Stop'
 Set-Location $PSScriptRoot
 
-Write-Host '=== KINOTEKA STANDALONE v1.1 STABLE / DEV BUILD ===' -ForegroundColor Magenta
+Write-Host '=== KINOTEKA STANDALONE v1.2 PREVIEW 1 / DEV BUILD ===' -ForegroundColor Magenta
 if (-not (Get-Command rustc -ErrorAction SilentlyContinue)) { throw 'Rust/rustc was not found.' }
 if (-not (Get-Command cargo -ErrorAction SilentlyContinue)) { throw 'Cargo was not found.' }
 if (-not (Get-Command npm -ErrorAction SilentlyContinue)) { throw 'npm was not found.' }
@@ -22,7 +22,16 @@ npm run build:dev
 if ($LASTEXITCODE -ne 0) { throw "build failed: $LASTEXITCODE" }
 
 Write-Host "`n[4/4] Refreshing portable DEV copy..." -ForegroundColor Cyan
-$portable = Join-Path $PSScriptRoot 'Portable\Kinoteka_Standalone_v1.1_Stable_DEV'
+# Separate clean profile: do not overwrite the existing personal DEV collection.
+$portable = Join-Path $PSScriptRoot 'Portable\Kinoteka_Standalone_v1.2_Preview_1_CLEAN_DEV'
+$previousClean = $null
+if (Test-Path -LiteralPath $portable) {
+  $stamp = Get-Date -Format 'yyyyMMdd-HHmmss-fff'
+  $previous = $portable + '_previous_' + $stamp
+  Move-Item -LiteralPath $portable -Destination $previous
+  $previousClean = $previous
+  Write-Host ('Previous CLEAN_DEV preserved at: ' + $previous)
+}
 New-Item -ItemType Directory -Force -Path $portable | Out-Null
 $exe = Join-Path $PSScriptRoot 'src-tauri\target\release\kinoteka.exe'
 if (-not (Test-Path $exe)) { throw "EXE not found: $exe" }
@@ -32,9 +41,11 @@ Copy-Item 'seed-data\kinoteka.sqlite3' (Join-Path $portable 'seed-data\kinoteka.
 $dataDir = Join-Path $portable 'data'
 New-Item -ItemType Directory -Force -Path $dataDir | Out-Null
 $portableDb = Join-Path $dataDir 'kinoteka.sqlite3'
-if (-not (Test-Path $portableDb)) { Copy-Item 'data\kinoteka.sqlite3' $portableDb -Force }
+Copy-Item 'data\kinoteka.sqlite3' $portableDb -Force
+# An old public IMDb catalog is deliberately not carried into a new build.
+# Personal kinoteka.sqlite3 remains isolated in DEV/REAL_PREVIEW.
 $size = [math]::Round((Get-Item (Join-Path $portable 'Kinoteka.exe')).Length / 1MB, 2)
 Write-Host "Portable: $portable"
 Write-Host "EXE:      $size MB"
 Write-Host "`n=== DEV BUILD READY ===" -ForegroundColor Green
-Write-Host 'Existing portable data/backups were preserved.'
+Write-Host 'New isolated empty CLEAN_DEV created. Existing DEV data/backups were not changed.'

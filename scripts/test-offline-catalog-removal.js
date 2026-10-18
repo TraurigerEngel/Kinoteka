@@ -1,0 +1,46 @@
+'use strict';
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const path=require('node:path');
+const root=path.resolve(__dirname,'..');
+const read=p=>fs.readFileSync(path.join(root,p),'utf8');
+const html=read('app/index.html');
+const ui=read('app/shared/library-integration-ui.js');
+const rust=read('src-tauri/src/lib.rs');
+const storage=read('src-tauri/src/storage.rs');
+const build=read('BUILD-DEV.ps1');
+const prepare=read('PREPARE-REAL-PREVIEW.ps1');
+const css=read('app/styles.css');
+const pkg=require('../package.json');
+const expected=[];
+assert.deepEqual([...html.matchAll(/data-integration-tab="([^"]+)"/g)].map(x=>x[1]),expected);
+assert.deepEqual([...html.matchAll(/data-integration-page="([^"]+)"/g)].map(x=>x[1]),expected);
+for (const s of [html,ui,rust,storage,build,prepare])
+  assert.doesNotMatch(s,/offline_catalog|offlineCatalog|offlineQuery|offlineResults|offlineSearch|catalog[\\/]catalog\.sqlite3|Офлайн-каталог/i);
+assert.doesNotMatch(html,/data-integration-tab|data-integration-page|Мои списки/);
+assert.match(html,/id="letterboxdFile"/);
+assert.doesNotMatch(html,/id="integrationLists"/);
+assert.match(ui,/db\.importLetterboxdConfirmed/);
+assert.doesNotMatch(read('app/shared/kinoteka-bridge.js'),/addCatalogConfirmed|const addCatalog =/);
+assert.doesNotMatch(ui,/function showLists\(\)/);
+assert.match(rust,/poster_get, poster_set, poster_remove/);
+assert.doesNotMatch(rust,/mod catalog;/);
+assert.match(storage,/pub fn poster_directory/);
+assert.match(build,/Copy-Item 'data\\kinoteka\.sqlite3'/);
+assert.doesNotMatch(build,/oldCatalog|catalogDir/);
+assert.doesNotMatch(prepare,/oldCatalog|catalogDir/);
+for(const p of ['src-tauri/src/catalog.rs','scripts/import-imdb-catalog.js','scripts/update-imdb-catalog.js','scripts/create-offline-catalog-demo.js','scripts/test-offline-catalog.js','scripts/test-catalog-update.js']){
+ assert.ok(!fs.existsSync(path.join(root,p)),'retired offline source must not exist: '+p);
+}
+assert(!Object.keys(pkg.scripts).some(k=>k.startsWith('catalog:')||k==='test:catalog'));
+assert.doesNotMatch(pkg.scripts.verify,/test-offline-catalog\.js|test-catalog-update\.js/);
+assert.match(read('APPLY-HOTFIX26.ps1'),/RemoveInstalledCatalogs/);
+assert.match(read('APPLY-HOTFIX26.ps1'),/Get-Process -Name 'Kinoteka'/);
+assert.match(css,/Hotfix 26 — Poster Surface & Hover Finish/);
+assert.match(css,/\.kinoteka-film-card \.kinoteka-poster-choose/);
+assert.match(read('app/games.js'),/data-poster-choose/);
+assert.match(read('app/games.js'),/CARD_PAGE_SIZE/);
+const db=path.join(root,'data','kinoteka.sqlite3');
+const seed=path.join(root,'seed-data','kinoteka.sqlite3');
+assert.ok(fs.existsSync(db)&&fs.existsSync(seed),'canonical personal DB schema kept');
+console.log('HOTFIX 26+41: PASS (IMDb catalogue removed, Letterboxd import works, lists data retained, lists UI hidden)');

@@ -1,0 +1,24 @@
+// Hotfix 43 regression tests: synthetic only, never read the user's SQLite or ZIP.
+'use strict';
+const assert=require('node:assert/strict');
+const fs=require('node:fs');const path=require('node:path');
+const root=path.resolve(__dirname,'..');
+const ui=fs.readFileSync(path.join(root,'app/shared/library-integration-ui.js'),'utf8');
+const css=fs.readFileSync(path.join(root,'app/shared/library-integration.css'),'utf8');
+assert.match(ui,/const rowMeta=!initial\?/);
+assert.match(ui,/row.sourceMediaType==='tv'\|\|row.sourceMediaType==='movie'/);
+assert.match(ui,/sourceMeta\.append\(make\('span','kino-review-year'/);
+assert.match(ui,/const previousScroll=reviewBox\.scrollTop/);
+assert.match(ui,/updatePlan\(previousScroll\)/);
+assert.match(ui,/renderReview\(restoreReviewScroll\)/);
+assert.match(ui,/Math\.min\(Math\.max\(0,restoreReviewScroll\)/);
+assert.match(ui,/card\.append\(actions,more\)/);
+assert.match(ui,/card\.addEventListener\('toggle'/);
+assert.match(ui,/if\(other!==card\)other\.open=false/);
+assert.match(ui,/decide\(row.sourceKey,\{action:'match',targetIdentity:local.identity\}\)/);
+assert.match(ui,/decide\(row.sourceKey,\{action:'add'\}\)/);
+assert.match(ui,/decide\(row.sourceKey,\{action:'skip'\}\)/);
+assert.match(ui,/apply.disabled=importBusy\|\|plan.reviewRequired>0/);
+assert.match(css,/Hotfix 43 — remove redundant metadata/);
+assert.match(css,/kino-review-item>\.kino-review-actions/);
+console.log('HOTFIX 43: PASS (source-type unknown handling, action visibility, preserved review scroll, safeguards)');

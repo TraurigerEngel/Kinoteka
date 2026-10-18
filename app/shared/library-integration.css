@@ -1,0 +1,603 @@
+/* v1.2 Preview: additional tools retain the existing Cinema Mono visual language. */
+/* Hotfix 4 — the main list uses 32px icon buttons with !important rules.
+   The labeled integration action needs its own intrinsic width: without this,
+   the 32px box lets the text spill over the Add and Trash controls. */
+.list-nav .list-actions #integrationOpen.kinoteka-integration-action{
+  flex:0 0 auto!important;
+  width:max-content!important;
+  min-width:0!important;
+  max-width:none!important;
+  height:32px!important;
+  min-height:32px!important;
+  padding:0 12px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  box-sizing:border-box!important;
+  border:1px solid rgba(255,255,255,.27)!important;
+  border-radius:9px!important;
+  background:rgba(12,13,15,.70)!important;
+  color:#e5dbea!important;
+  box-shadow:none!important;
+  font:600 12px/1 Inter,system-ui,sans-serif!important;
+  letter-spacing:0!important;
+}
+.list-nav .list-actions #integrationOpen.kinoteka-integration-action:hover{
+  border-color:rgba(204,165,232,.65)!important;
+  background:rgba(32,26,37,.82)!important;
+  color:#f3e7fc!important;
+}
+.list-nav .list-actions #integrationOpen.kinoteka-integration-action:focus-visible{
+  outline:2px solid rgba(204,165,232,.65)!important;
+  outline-offset:2px!important;
+}
+.list-nav .list-actions #integrationOpen.kinoteka-integration-action::before,
+.list-nav .list-actions #integrationOpen.kinoteka-integration-action::after{
+  content:none!important;
+  display:none!important;
+}
+@media(max-width:700px){
+  .list-nav .list-actions #integrationOpen.kinoteka-integration-action{
+    width:32px!important;
+    min-width:32px!important;
+    padding:0!important;
+    font-size:0!important;
+  }
+  .list-nav .list-actions #integrationOpen.kinoteka-integration-action::before{
+    content:"✦"!important;
+    display:block!important;
+    font-size:16px!important;
+    line-height:1!important;
+  }
+}
+
+.kinoteka-integration-action{height:38px;display:inline-flex;align-items:center;gap:8px;border:1px solid #604079;border-radius:10px;background:#211628;color:#ecd9fa;font:inherit;font-size:12px;font-weight:650;padding:0 14px;cursor:pointer;transition:border-color .16s ease,background .16s ease,transform .12s ease}
+.kinoteka-integration-action:hover{border-color:#9b6ec0;background:#291b38}.kinoteka-integration-action:active{transform:scale(.97)}
+#integrationModal{z-index:1005}.kinoteka-integration-modal{width:min(880px,calc(100vw - 28px))!important;max-height:min(88vh,820px)!important;padding:22px!important;box-sizing:border-box;display:flex;flex-direction:column;gap:15px;overflow:hidden!important}
+.kinoteka-integration-modal .modal-head{margin:0!important;flex:0 0 auto}
+.kino-integrate-tabs{display:flex;gap:7px;flex-wrap:wrap}.kino-integrate-tabs button{border:1px solid #332a3e;background:#17131e;color:#bdb3c8;min-height:36px;border-radius:9px;padding:0 12px;font:inherit;font-size:12px;cursor:pointer}
+.kino-integrate-tabs button.active{background:#2b1b3b;color:#f3e7ff;border-color:#7e55a4}
+.kino-integrate-page{min-height:0;overflow-y:auto;padding:2px 3px 12px;scrollbar-width:none;color:#d1c7d9}
+.kino-integrate-page[hidden]{display:none!important}.kino-integrate-help{font-size:13px;line-height:1.65;color:#b9adbf;margin:0 0 13px}
+.kino-integrate-primary{height:38px;border-radius:10px;background:#271633;border:1px solid #8150a4;color:#e9d9f9;padding:0 14px;cursor:pointer;font:inherit;font-size:12px;font-weight:650;white-space:nowrap}
+.kino-integrate-primary:hover:not(:disabled){background:#36204a;border-color:#b277db}.kino-integrate-primary:disabled{opacity:.48;cursor:default}
+.kino-integrate-input{min-height:40px;width:100%;border-radius:9px;background:#100d15;border:1px solid #403348;color:#e9dfef;padding:0 12px;box-sizing:border-box;font:inherit;font-size:13px;outline:none}
+.kino-integrate-input:focus{border-color:#8856ac;box-shadow:0 0 0 2px #8051a322}.kino-integrate-label{display:block;font-size:12px;margin:0 0 7px;color:#cfc3db}
+.kino-integrate-hint{font-size:11px;color:#9e92aa;line-height:1.6;margin:8px 0}.kino-integrate-info{font-size:12px;margin:12px 0;padding:10px 12px;border:1px solid #403248;border-radius:9px;background:#15111b;min-height:19px;color:#c3b8cb}
+.kino-integrate-info.error{color:#f0a5b1;border-color:#7f4b54}
+.kino-import-preview{padding:14px;border:1px solid #493452;background:#15111b;border-radius:12px;margin-bottom:13px}
+.kino-import-preview[hidden]{display:none!important}.kino-import-stats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px}
+.kino-import-stats div{padding:10px 5px;border:1px solid #332638;border-radius:9px;background:#0f0d14;text-align:center}.kino-import-stats strong{display:block;color:#ead7f3;font-size:20px;font-weight:700}.kino-import-stats span{font-size:11px;color:#a79aa8}
+#integrationLists{display:grid;gap:7px}.kino-integration-list{border:1px solid #3b3044;border-radius:10px;background:#17131d}.kino-integration-list summary{padding:12px;cursor:pointer;font-weight:550}.kino-integration-films{padding:0 14px 12px;display:grid;gap:8px;font-size:12px;color:#b9adbf;max-height:260px;overflow:auto}
+
+/* Hotfix 5 — explicit duplicate review, no auto merge on fuzzy results. */
+.kino-review-summary{margin:10px 0;padding:11px 12px;border-radius:9px;border:1px solid #305044;background:#101c19;color:#b6dccb;font-size:12px;line-height:1.6}
+.kino-review-summary.pending{border-color:#78553e;background:#251a15;color:#f0cca7}
+.kino-review-area{display:grid;gap:9px;margin:10px 0 14px}
+.kino-review-filters{display:flex;gap:8px;flex-wrap:wrap}
+.kino-review-filters button,.kino-review-pagination button,.kino-review-actions button{font:inherit;font-size:11px;border:1px solid #45374f;border-radius:8px;background:#1c1623;color:#d5c7e0;min-height:30px;padding:4px 10px;cursor:pointer}
+.kino-review-filters button.active{background:#30213d;border-color:#845daa;color:#f4e2ff}
+.kino-review-pagination{display:flex;justify-content:center;align-items:center;gap:15px;color:#b6a7c3;font-size:11px}
+.kino-review-items{display:grid;gap:8px;max-height:340px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:#4a3655 transparent;padding-right:4px}
+.kino-review-item{background:#100d15;border:1px solid #362a40;border-radius:10px;padding:11px;display:grid;gap:8px;min-width:0}
+.kino-review-title{display:flex;justify-content:space-between;gap:8px;align-items:center;font-size:12px;color:#ecdeef}
+.kino-review-title strong{overflow-wrap:anywhere}.kino-review-state{font-size:10px;white-space:nowrap;color:#bd91d5}
+.kino-review-candidates,.kino-review-lookup-results{display:flex;flex-wrap:wrap;gap:6px}
+.kino-review-candidates small,.kino-review-lookup-results small{width:100%;font-size:11px;color:#afa1b4}
+.kino-review-choice{max-width:100%;white-space:normal;text-align:left;font:inherit;font-size:11px;color:#e4d8ed;border:1px solid #4e3d5b;background:#21192a;border-radius:7px;padding:6px 9px;cursor:pointer;overflow-wrap:anywhere}
+.kino-review-choice:hover,.kino-review-actions button:hover:not(:disabled){background:#342541;border-color:#956cb2}
+.kino-review-lookup{min-height:34px;font-size:11px}
+.kino-review-actions{display:flex;flex-wrap:wrap;gap:6px}
+.kino-review-pagination button:disabled,.kino-review-actions button:disabled{opacity:.38;cursor:default}
+.kino-review-empty{font-size:12px;color:#bdb0c8;line-height:1.5;margin:10px 0}
+
+/* Hotfix 6 — legible side-by-side review and explicitly selected group actions. */
+.kino-review-compare{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;min-width:0}
+.kino-review-side{border:1px solid #46334d;border-radius:9px;padding:10px;min-width:0;background:#16111c;display:grid;align-content:start;gap:5px}
+.kino-review-side.local{border-color:#4e435d;background:#191522}
+.kino-review-side label{font-size:10px;color:#b4a0c1;font-weight:600;letter-spacing:.02em}
+.kino-review-side strong{font-size:12px;color:#efe3f7;overflow-wrap:anywhere}
+.kino-review-side span{font-size:11px;color:#c3b4c9;overflow-wrap:anywhere}
+.kino-review-side .kino-review-choice{margin-top:5px;width:100%;text-align:center}
+.kino-review-batch{display:flex;align-items:center;flex-wrap:wrap;gap:8px;padding:8px 10px;background:#18141d;border:1px solid #403047;border-radius:9px;color:#c6b5d2;font-size:11px}
+.kino-review-batch[hidden]{display:none!important}
+.kino-review-batch button{font:inherit;font-size:11px;border:1px solid #574064;border-radius:7px;background:#2a1e34;color:#ead9f3;padding:6px 10px;cursor:pointer}
+.kino-review-batch button:disabled{opacity:.4;cursor:default}
+.kino-review-select{display:flex;gap:7px;align-items:center;font-size:11px;color:#d0bcd8}
+.kino-review-select input{accent-color:#a878c4;width:15px;height:15px}
+.kino-review-candidates{align-items:center}
+@media(max-width:620px){.kino-review-compare{grid-template-columns:minmax(0,1fr)}}
+
+/* Hotfix 8 — single scrolling review region, fixed tab/search/action areas.
+   The import page does not scroll: only its film-card list does. */
+.kinoteka-integration-modal:has(.kino-integrate-import:not([hidden]) #importPreview:not([hidden])){
+  height:min(88dvh,820px)!important;
+}
+.kinoteka-integration-modal .kino-integrate-import:not([hidden]){
+  display:flex!important;
+  flex:1 1 auto;
+  flex-direction:column;
+  overflow:hidden!important;
+  gap:9px;
+  padding:0 2px 2px;
+  scrollbar-width:auto;
+}
+.kino-integrate-import .kino-import-controls,
+.kino-integrate-import .kino-integrate-footer,
+.kino-import-preview .kino-import-overview{
+  flex:0 0 auto; min-width:0;
+}
+.kino-import-choose{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.kino-integrate-intro{font-size:11px;color:#a99bae;line-height:1.4}
+.kino-integrate-import .kino-integrate-info{margin:7px 0 0;padding:7px 10px;min-height:unset;font-size:11px;overflow-wrap:anywhere}
+.kino-integrate-import .kino-import-preview{
+  display:flex;flex:1 1 auto;flex-direction:column;gap:7px;
+  min-height:0;overflow:hidden;margin:0;padding:10px;
+}
+.kino-import-preview .kino-import-stats div{padding:6px 4px}
+.kino-import-preview .kino-import-stats strong{font-size:17px}
+.kino-import-preview .kino-import-stats span{font-size:10px}
+.kino-import-preview #previewMeta{margin:5px 0 0;line-height:1.4}
+.kino-import-preview .kino-review-summary{margin:6px 0 0;padding:7px 10px;font-size:11px;line-height:1.45}
+.kino-import-preview .kino-review-area{display:flex;flex:1 1 auto;flex-direction:column;gap:7px;min-height:0;margin:0;overflow:hidden}
+.kino-integrate-import .kino-review-filters,.kino-integrate-import .kino-review-batch,
+.kino-integrate-import #reviewSearch,.kino-integrate-import .kino-review-pagination{flex:0 0 auto}
+.kino-integrate-import #reviewSearch{min-height:34px}
+.kino-integrate-import .kino-review-items{
+  display:grid;align-content:start;flex:1 1 auto;min-height:0;
+  max-height:none;overflow-x:hidden;overflow-y:auto;
+  overscroll-behavior:contain;scrollbar-width:thin;
+}
+.kino-integrate-import .kino-review-items:focus-visible{outline:2px solid #996ab4;outline-offset:-2px}
+.kino-integrate-import .kino-review-pagination{padding:3px 0 1px}
+.kino-integrate-footer{
+  display:flex;justify-content:space-between;align-items:center;gap:10px;
+  padding-top:9px;border-top:1px solid #382d40;
+}
+.kino-integrate-footer #commitImport{max-width:100%;flex:0 0 auto}
+.kino-import-notes{min-width:0;position:relative;font-size:11px;color:#ac9eb7}
+.kino-import-notes>summary{cursor:pointer;list-style:revert;line-height:1.45}
+.kino-import-notes>summary:hover{color:#e5d3f0}
+.kino-import-notes-content{
+  position:absolute;z-index:2;left:0;bottom:calc(100% + 8px);
+  width:min(465px,calc(100vw - 80px));max-height:min(45vh,300px);overflow-y:auto;
+  padding:10px 13px;background:#1b1422;border:1px solid #654875;
+  border-radius:10px;box-shadow:0 12px 35px #000c;color:#cbbdd4;line-height:1.6;
+}
+.kino-import-notes-content p{margin:4px 0 9px}
+.kino-import-notes-content p:last-child{margin-bottom:0}
+@media(max-width:650px){
+ .kinoteka-integration-modal{gap:10px!important}
+ .kino-import-choose{gap:6px}
+ .kino-integrate-footer{align-items:stretch;flex-direction:column}
+ .kino-integrate-footer #commitImport{width:100%}
+ .kino-integrate-import .kino-import-preview{padding:7px}
+ .kino-review-filters{gap:4px}
+ .kino-review-filters button{padding:4px 7px;font-size:10px}
+}
+/* Keep the review list usable even in a short or narrow Tauri window. */
+@media(max-height:760px){
+ .kinoteka-integration-modal:has(.kino-integrate-import:not([hidden]) #importPreview:not([hidden])){
+  height:min(96dvh,820px)!important;
+ }
+ .kinoteka-integration-modal{padding:11px 14px!important;gap:7px!important}
+ .kinoteka-integration-modal .modal-head h2{font-size:17px!important}
+ .kinoteka-integration-modal .modal-head .trash-subtitle{display:none}
+ .kinoteka-integration-modal .kino-integrate-tabs button{min-height:30px;padding:0 9px}
+ .kinoteka-integration-modal .kino-import-choose .kino-integrate-primary{height:32px}
+ .kinoteka-integration-modal .kino-integrate-import:not([hidden]){gap:6px}
+ .kinoteka-integration-modal .kino-integrate-info{margin-top:4px;padding:5px 8px}
+ .kinoteka-integration-modal .kino-import-preview{padding:6px;gap:4px}
+ .kinoteka-integration-modal .kino-import-stats div{padding:2px 3px}
+ .kinoteka-integration-modal .kino-import-stats strong{font-size:14px}
+ .kinoteka-integration-modal #previewMeta{margin:3px 0 0;font-size:10px}
+ .kinoteka-integration-modal .kino-review-summary{margin:4px 0 0;padding:5px 8px;font-size:10px}
+ .kinoteka-integration-modal .kino-review-area{gap:4px}
+ .kinoteka-integration-modal #reviewSearch{min-height:30px}
+ .kinoteka-integration-modal .kino-review-filters button{min-height:28px}
+ .kinoteka-integration-modal .kino-integrate-footer{padding-top:5px}
+ .kinoteka-integration-modal .kino-integrate-footer #commitImport{height:32px}
+}
+
+/* Hotfix 10 — natural full-width disclosure: no tiny left-side scroll panel.
+   Keep the commit action on its own bottom row instead of splitting the footer. */
+.kinoteka-integration-modal .kino-integrate-footer {
+  display:grid;
+  grid-template-columns:minmax(0,1fr);
+  grid-template-rows:auto auto;
+  align-items:stretch;
+  gap:9px;
+}
+.kinoteka-integration-modal .kino-integrate-footer .kino-import-notes {
+  grid-column:1;
+  grid-row:1;
+  min-width:0;
+  width:100%;
+  position:static;
+}
+.kinoteka-integration-modal .kino-import-notes>summary {
+  width:fit-content;
+  max-width:100%;
+}
+.kinoteka-integration-modal .kino-integrate-footer .kino-import-notes-content {
+  position:static;
+  box-sizing:border-box;
+  width:100%;
+  max-width:none;
+  max-height:none;
+  margin:8px 0 0;
+  padding:10px 12px;
+  display:grid;
+  gap:6px;
+  overflow:visible;
+  box-shadow:none;
+  font-size:11px;
+  line-height:1.45;
+}
+.kinoteka-integration-modal .kino-import-notes-content p {margin:0}
+.kinoteka-integration-modal .kino-import-notes-content strong {color:#e9d9f1}
+.kinoteka-integration-modal .kino-integrate-footer #commitImport {
+  grid-column:1;
+  grid-row:2;
+  justify-self:end;
+  align-self:end;
+}
+@media(max-width:650px) {
+  .kinoteka-integration-modal .kino-integrate-footer #commitImport {
+    width:100%;
+    justify-self:stretch;
+  }
+}
+@media(max-height:760px) {
+  .kinoteka-integration-modal .kino-integrate-footer {gap:5px}
+  .kinoteka-integration-modal .kino-import-notes-content {padding:6px 9px;gap:3px;font-size:10px}
+}
+/* If the help is opened during a filled preview, temporarily replace the film
+   list with the help panel rather than collapsing the film list to 0px. The
+   selection/decisions stay in memory; closing help restores the list. */
+.kinoteka-integration-modal:has(.kino-import-notes[open]):has(#importPreview:not([hidden])) {
+  height:auto!important;
+}
+.kinoteka-integration-modal:has(.kino-import-notes[open]):has(#importPreview:not([hidden])) .kino-integrate-import,
+.kinoteka-integration-modal:has(.kino-import-notes[open]):has(#importPreview:not([hidden])) .kino-import-preview {
+  flex:0 0 auto;
+}
+.kinoteka-integration-modal:has(.kino-import-notes[open]):has(#importPreview:not([hidden])) .kino-review-area {
+  display:none!important;
+}
+
+.kino-import-help-return {display:none}
+.kinoteka-integration-modal:has(.kino-import-notes[open]):has(#importPreview:not([hidden])) .kino-import-help-return {
+  display:block;
+  color:#c8a6dc;
+  font-weight:600;
+}
+
+
+
+/* Hotfix 41 — bring the Letterboxd importer in line with current Kinoteka modals.
+   Presentation only: the SQLite-backed lists and import matching stay untouched. */
+#integrationModal .kinoteka-integration-modal{
+  width:min(760px,calc(100vw - 32px))!important;
+  max-height:min(88dvh,820px)!important;
+  padding:20px!important;
+  border:1px solid #303236!important;
+  border-radius:15px!important;
+  background:#0b0c0e!important;
+  box-shadow:0 28px 85px rgba(0,0,0,.72)!important;
+  color:#e8e9ec!important;
+  gap:0!important;
+}
+#integrationModal .modal-head{
+  display:flex!important;
+  gap:16px!important;
+  align-items:flex-start!important;
+  justify-content:space-between!important;
+  margin:0 0 18px!important;
+  flex:0 0 auto!important;
+}
+#integrationModal .modal-head h2{color:#f4f4f5!important;font-weight:650!important;letter-spacing:-.02em!important}
+#integrationModal .modal-head .trash-subtitle{
+  margin-top:6px!important;
+  color:#979ba2!important;
+  font-size:12px!important;
+  line-height:1.45!important;
+  display:block!important;
+}
+#integrationModal #integrationClose{
+  width:31px!important;height:31px!important;flex:none!important;
+  display:inline-flex!important;align-items:center!important;justify-content:center!important;
+  background:#111214!important;border:1px solid #303236!important;
+  color:#c7c9cc!important;border-radius:9px!important;box-shadow:none!important;
+}
+#integrationModal #integrationClose:hover{border-color:#4b4e53!important;background:#191a1d!important;color:#fff!important}
+#integrationModal .kino-integrate-import{
+  padding:0!important;
+  overflow-x:hidden!important;
+  overflow-y:auto!important;
+  min-height:0!important;
+  display:flex!important;
+  flex-direction:column!important;
+  gap:0!important;
+  color:#c9ccd1!important;
+}
+#integrationModal .kino-import-controls{flex:0 0 auto!important}
+#integrationModal .kino-import-choose{
+  display:flex!important;
+  align-items:center!important;
+  flex-wrap:wrap!important;
+  gap:12px!important;
+  padding:14px!important;
+  border:1px solid #292b2f!important;
+  border-radius:11px!important;
+  background:linear-gradient(180deg,#111214,#0d0e10)!important;
+}
+#integrationModal .kino-import-choose .kino-integrate-primary{
+  height:38px!important;
+  min-height:38px!important;
+  padding:0 14px!important;
+  flex:0 0 auto!important;
+  border:1px solid #655077!important;
+  border-radius:9px!important;
+  background:#211927!important;
+  color:#eddcf8!important;
+  font:600 12px/1.25 Inter,system-ui,sans-serif!important;
+  box-shadow:none!important;
+}
+#integrationModal .kino-import-choose .kino-integrate-primary:hover{
+  background:#302239!important;border-color:#9270a8!important;color:white!important;
+}
+#integrationModal .kino-integrate-intro{
+  color:#96999f!important;
+  font-size:12px!important;
+  line-height:1.45!important;
+}
+#integrationModal .kino-integrate-info{
+  margin:10px 0 0!important;
+  padding:10px 12px!important;
+  min-height:0!important;
+  border:1px solid #2b2d31!important;
+  border-radius:9px!important;
+  background:#101113!important;
+  color:#bfc2c7!important;
+  font-size:12px!important;
+  line-height:1.5!important;
+}
+#integrationModal .kino-integrate-info.error{border-color:#805059!important;color:#ffb9c4!important;background:#1a1115!important}
+#integrationModal .kino-import-preview{
+  min-height:0!important;
+  margin:13px 0 0!important;
+  border:1px solid #2c2e31!important;
+  background:#101113!important;
+  border-radius:11px!important;
+}
+#integrationModal .kino-import-stats div,
+#integrationModal .kino-review-item{
+  background:#0d0e10!important;border-color:#303236!important;
+}
+#integrationModal .kino-review-side{background:#111214!important;border-color:#33353a!important}
+#integrationModal .kino-review-side.local{background:#121315!important;border-color:#3a3a42!important}
+#integrationModal .kino-review-summary{background:#0d1512!important}
+#integrationModal .kino-integrate-input{
+  background:#0d0e10!important;border-color:#303236!important;
+  color:#eceef0!important;
+}
+#integrationModal .kino-review-filters button,
+#integrationModal .kino-review-pagination button,
+#integrationModal .kino-review-actions button,
+#integrationModal .kino-review-batch button{
+  background:#111214!important;border-color:#303236!important;color:#c8cbd0!important;
+}
+#integrationModal .kino-review-filters button.active{
+  background:#1c1822!important;border-color:#79608c!important;color:#eadcf4!important;
+}
+#integrationModal .kino-integrate-footer{
+  margin-top:15px!important;
+  padding:13px 0 0!important;
+  border-top:1px solid #2a2c30!important;
+  gap:12px!important;
+}
+#integrationModal .kino-import-notes>summary{color:#aaaeb5!important;font-size:12px!important}
+#integrationModal .kino-import-notes>summary:hover{color:#f0e7f7!important}
+#integrationModal .kino-import-notes-content{
+  border:1px solid #303236!important;
+  background:#101113!important;
+  color:#bdc0c5!important;
+  border-radius:10px!important;
+}
+#integrationModal .kino-import-notes-content strong{color:#f1e6f7!important}
+#integrationModal #commitImport{
+  justify-self:end!important;
+  min-height:38px!important;
+  height:38px!important;
+  padding:0 16px!important;
+  border-radius:9px!important;
+  background:#201728!important;
+  border:1px solid #78528f!important;
+  color:#f0dff9!important;
+  box-shadow:none!important;
+  font:600 12px/1.25 Inter,system-ui,sans-serif!important;
+}
+#integrationModal #commitImport:hover:not(:disabled){border-color:#ad7bc8!important;background:#32213d!important;color:white!important}
+#integrationModal #commitImport:disabled{opacity:.42!important;filter:none!important;box-shadow:none!important}
+@media(max-width:650px){
+  #integrationModal .kinoteka-integration-modal{width:calc(100vw - 20px)!important;padding:15px!important}
+  #integrationModal .kino-import-choose{padding:10px!important}
+  #integrationModal .kino-integrate-footer #commitImport{justify-self:stretch!important;width:100%!important}
+}
+/* On short/narrow screens, scroll the import content as a unit. Without this,
+   the historic fixed review layout can collapse the match list to 0px. */
+@media(max-width:650px){
+  #integrationModal .kinoteka-integration-modal:has(#importPreview:not([hidden])){
+    height:min(94dvh,820px)!important;
+  }
+  #integrationModal .kinoteka-integration-modal:has(#importPreview:not([hidden])) .kino-integrate-import{
+    display:block!important;
+    overflow-y:auto!important;
+    overscroll-behavior:contain!important;
+  }
+  #integrationModal .kinoteka-integration-modal:has(#importPreview:not([hidden])) .kino-import-preview{
+    display:block!important;
+    overflow:visible!important;
+  }
+  #integrationModal .kinoteka-integration-modal:has(#importPreview:not([hidden])) .kino-review-area{
+    display:flex!important;
+    overflow:visible!important;
+  }
+  #integrationModal .kinoteka-integration-modal:has(#importPreview:not([hidden])) .kino-review-items{
+    min-height:130px!important;
+    height:210px!important;
+    flex:none!important;
+    overflow-y:auto!important;
+  }
+}
+@media(max-height:760px){
+  #integrationModal .kinoteka-integration-modal{padding:14px 17px!important}
+  #integrationModal .modal-head{margin-bottom:12px!important}
+  #integrationModal .modal-head .trash-subtitle{display:block!important}
+  #integrationModal .kino-import-choose .kino-integrate-primary{min-height:36px!important;height:36px!important}
+  #integrationModal .kino-integrate-footer #commitImport{height:36px!important}
+}
+
+
+/* Hotfix 42 — review-first layout. No change to matching decisions or SQLite. */
+#integrationModal .kinoteka-integration-modal{
+  width:min(960px,calc(100vw - 32px))!important;
+  max-height:min(94dvh,900px)!important;
+}
+#integrationModal .kinoteka-integration-modal:has(#importPreview:not([hidden])){
+  height:min(94dvh,900px)!important;
+}
+#integrationModal .modal-head{margin-bottom:12px!important}
+#integrationModal .kino-import-choose{padding:10px 12px!important;gap:10px!important}
+#integrationModal .kino-import-choose .kino-integrate-primary{height:35px!important;min-height:35px!important}
+#integrationModal .kino-integrate-info{margin-top:7px!important;padding:7px 10px!important}
+#integrationModal .kino-import-preview{margin-top:9px!important;padding:9px!important;gap:7px!important}
+#integrationModal .kino-import-stats{grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}
+#integrationModal .kino-import-lists-stat[hidden]{display:none!important}
+#integrationModal .kino-import-stats div{padding:6px 5px!important;border-color:#26282c!important}
+#integrationModal .kino-import-stats strong{font-size:16px!important}
+#integrationModal .kino-import-preview #previewMeta{margin:5px 0 0!important}
+#integrationModal .kino-review-summary{padding:7px 9px!important;margin:6px 0 0!important;font-size:11px!important}
+#integrationModal .kino-review-area{gap:6px!important}
+#integrationModal .kino-review-items{min-height:145px!important;scrollbar-color:#494b52 transparent}
+#integrationModal .kino-review-item{
+  padding:9px!important;gap:6px!important;
+  border-color:#272a2e!important;background:#0f1012!important;
+}
+#integrationModal .kino-review-title{font-size:12px;min-height:19px}
+#integrationModal .kino-review-state{color:#b99ac5;font-weight:600}
+#integrationModal .kino-review-side{
+  padding:8px!important;gap:4px!important;
+  border:1px solid #282b30!important;background:#121315!important;
+}
+#integrationModal .kino-review-side.local{border-color:#2e333b!important;background:#121519!important}
+#integrationModal .kino-review-side label{color:#aeb2bc;font-size:10px;letter-spacing:.05em}
+#integrationModal .kino-review-side strong{font-size:12px;line-height:1.3}
+#integrationModal .kino-review-side-meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+#integrationModal .kino-review-side-meta .kino-review-year{color:#aeb2bb;font-size:11px}
+#integrationModal .kino-review-type{
+  display:inline-flex;align-items:center;min-height:19px;
+  padding:1px 6px;border:1px solid #3a4657;border-radius:6px;
+  background:#151a22;color:#b8cfea;font-weight:650;font-size:10px;
+}
+#integrationModal .kino-review-type.is-mismatch{
+  color:#f7c6a2;border-color:#99633b;background:#2a1d13;
+}
+#integrationModal .kino-review-type-warning{color:#f3b88f;font-size:10px;line-height:1.35}
+#integrationModal .kino-review-side-extra{color:#979da7;font-size:10px}
+#integrationModal .kino-review-side .kino-review-choice{margin-top:3px;padding:5px 7px}
+#integrationModal .kino-review-more{
+  border-top:1px solid #24262a;padding-top:6px;
+  color:#b9bec9;font-size:11px;
+}
+#integrationModal .kino-review-more>summary{
+  width:max-content;max-width:100%;cursor:pointer;color:#aeb5c4;
+  list-style:disclosure-closed;line-height:1.5;
+}
+#integrationModal .kino-review-more[open]>summary{margin-bottom:8px;color:#e5d7ef;list-style:disclosure-open}
+#integrationModal .kino-review-more .kino-review-candidates{margin-bottom:8px}
+#integrationModal .kino-review-more .kino-review-lookup{margin:2px 0 6px}
+#integrationModal .kino-review-actions{gap:5px}
+#integrationModal .kino-review-actions button{min-height:28px;padding:4px 9px}
+#integrationModal .kino-review-pagination{padding:5px 0 2px!important}
+#integrationModal .kino-integrate-footer{
+  position:sticky;bottom:0;z-index:4;flex:0 0 auto;
+  margin-top:8px!important;padding:9px 0 0!important;
+  gap:8px!important;background:#0b0c0e!important;
+  border-top:1px solid #2a2d32!important;
+}
+#integrationModal #commitImport{min-height:36px!important;height:36px!important}
+@media(max-width:650px){
+  #integrationModal .kinoteka-integration-modal{width:calc(100vw - 20px)!important;padding:14px!important}
+  #integrationModal .kino-review-items{min-height:165px!important}
+  #integrationModal .kino-import-preview{padding:7px!important}
+  #integrationModal .kino-review-compare{gap:6px}
+  #integrationModal .kino-review-side{padding:7px!important}
+  #integrationModal .kino-review-item{padding:8px!important}
+  #integrationModal .kino-integrate-footer{padding-bottom:2px!important}
+}
+@media(max-height:760px){
+  #integrationModal .kinoteka-integration-modal:has(#importPreview:not([hidden])){height:min(95dvh,900px)!important}
+  #integrationModal .modal-head{margin-bottom:8px!important}
+  #integrationModal .kino-import-preview{margin-top:6px!important}
+}
+
+/* Hotfix 42 follow-up: scan many unresolved items, expand only the one being reviewed. */
+#integrationModal .kino-review-item{
+  display:block!important;padding:7px 9px!important;
+}
+#integrationModal .kino-review-item>.kino-review-title{
+  display:grid!important;grid-template-columns:minmax(0,1fr) max-content;
+  align-items:center;gap:3px 9px;cursor:pointer;
+  padding:3px 2px;list-style:none;min-height:38px;
+}
+#integrationModal .kino-review-item>.kino-review-title::-webkit-details-marker{display:none}
+#integrationModal .kino-review-item-name:before{content:'▸';color:#8a9cb3;margin-right:7px}
+#integrationModal .kino-review-item[open] .kino-review-item-name:before{content:'▾'}
+#integrationModal .kino-review-compact-meta{
+  grid-column:1/-1;color:#a0a6af;font-size:10px;
+  line-height:1.35;overflow-wrap:anywhere;
+}
+#integrationModal .kino-review-compact-meta.is-mismatch{color:#e4b38d}
+#integrationModal .kino-review-item[open]>.kino-review-title{
+  padding-bottom:8px;border-bottom:1px solid #282b30;margin-bottom:7px;
+}
+#integrationModal .kino-review-item>:not(summary){margin-top:7px}
+#integrationModal .kino-review-item>.kino-review-actions{margin-top:8px}
+#integrationModal .kino-review-item:not([open]):hover{
+  border-color:#475363!important;background:#14171b!important;
+}
+
+
+/* Hotfix 43 — remove redundant metadata; keep decisions in view during review. */
+#integrationModal .kino-review-item[open]>.kino-review-title{
+  padding-bottom:6px!important;margin-bottom:5px!important;
+}
+#integrationModal .kino-review-item[open]>.kino-review-title+.kino-review-compare{
+  margin-top:5px!important;
+}
+#integrationModal .kino-review-compare{gap:6px!important}
+#integrationModal .kino-review-side{padding:7px 8px!important;gap:3px!important}
+#integrationModal .kino-review-side-meta{gap:5px!important}
+#integrationModal .kino-review-side-extra{font-size:10px!important;line-height:1.4!important}
+#integrationModal .kino-review-item>.kino-review-actions{
+  margin-top:6px!important;display:flex;flex-wrap:wrap;gap:6px!important;
+}
+#integrationModal .kino-review-item>.kino-review-actions button{
+  padding:4px 9px!important;min-height:28px!important;
+}
+#integrationModal .kino-review-item>.kino-review-more{
+  margin-top:6px!important;padding-top:5px!important;
+  border-top:1px solid #24272c!important;
+}
+#integrationModal .kino-review-more>summary{font-size:11px!important}
+#integrationModal .kino-review-item[open]{border-color:#39434c!important}
+@media(max-width:650px){
+  #integrationModal .kino-review-side{padding:7px!important}
+  #integrationModal .kino-review-item>.kino-review-actions button{
+    flex:1 1 auto;min-width:108px;
+  }
+}

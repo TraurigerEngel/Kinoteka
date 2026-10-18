@@ -19,13 +19,13 @@ function Get-Sha256Hex {
   return ([System.BitConverter]::ToString($hash) -replace '-', '').ToLowerInvariant()
 }
 
-$releaseName = 'Kinoteka_Standalone_v1.1_Stable'
+$releaseName = 'Kinoteka_Standalone_v1.2_Preview_1'
 $out = Join-Path $PSScriptRoot ('Release\' + $releaseName)
 $manifestPath = Join-Path $PSScriptRoot 'src-tauri\Cargo.toml'
 $lockPath = Join-Path $PSScriptRoot 'src-tauri\Cargo.lock'
-if (Test-Path -LiteralPath $out) { throw 'Release v1.1 already exists. Refusing to overwrite a possibly used SQLite database. Use a fresh source folder.' }
+if (Test-Path -LiteralPath $out) { throw 'Release v1.2 Preview 1 output already exists. Refusing to overwrite a possibly used SQLite database. Use a fresh source folder.' }
 
-Write-Host '=== KINOTEKA STANDALONE v1.1 STABLE / RELEASE BUILD ===' -ForegroundColor Magenta
+Write-Host '=== KINOTEKA STANDALONE v1.2 PREVIEW 1 / RELEASE BUILD ===' -ForegroundColor Magenta
 
 foreach ($tool in @('rustc','cargo','npm','node')) {
   if (-not (Get-Command $tool -ErrorAction SilentlyContinue)) { throw "$tool was not found." }

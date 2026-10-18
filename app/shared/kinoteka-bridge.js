@@ -186,6 +186,14 @@
     })();
     let uiRaw = seed.ui == null ? null : String(seed.ui);
 
+    const validScore10 = n => Number.isInteger(n) && n >= 1 && n <= 10;
+    const letterboxdScore10 = stars => {
+      if (stars == null || stars === '') return null;
+      const value = Number(stars);
+      return Number.isFinite(value) && value >= 0.5 && value <= 5 &&
+        Number.isInteger(value * 2) ? value * 2 : null;
+    };
+    const scoreStatus = n => n >= 7 ? 'Понравилось' : n >= 5 ? 'Нормально' : 'Не понравилось';
     const normalizeGamesFrom = source => {
       const favorites = new Set(Array.isArray(source?.favorites) ? source.favorites : []);
       return (Array.isArray(source?.items) ? source.items : []).map((x, index) => {
@@ -197,6 +205,7 @@
           category,
           year,
           rating:x?.rating || 'Запланировано',
+          score10:validScore10(x?.score10) ? x.score10 : null,
           favorite:favorites.has(movieKey({category, name:x?.name, year}))
         };
         if (item.favorite) item.rating = 'Избранное';
@@ -210,6 +219,7 @@
       category:x?.category === 'Аниме и Анимация' ? 'Анимация' : String(x?.category || 'Фильмы'),
       year:(x?.year == null || x.year === '') ? null : Number(x.year),
       rating:x?.rating || 'Запланировано',
+      score10:validScore10(x?.score10) ? x.score10 : null,
       favorite:Boolean(x?.favorite)
     })).filter(x => x.game);
 
@@ -221,7 +231,8 @@
         name:String(x.game).trim(),
         category:x.category || 'Фильмы',
         year:(x.year == null || x.year === '') ? null : Number(x.year),
-        rating:x.rating === 'Избранное' ? 'Понравилось' : (x.rating || 'Запланировано')
+        rating:x.rating === 'Избранное' ? 'Понравилось' : (x.rating || 'Запланировано'),
+        ...(validScore10(x.score10) ? {score10:x.score10} : {})
       }));
       const favorites = games
         .filter(x => Boolean(x?.favorite) || x.rating === 'Избранное')
@@ -244,8 +255,200 @@
       return out();
     };
 
+    // Import metadata is stored alongside the existing v1 state payload. Existing
+    // favorites, statuses, trash and uiState remain untouched. One SQLite commit
+    // creates the normal pre-change backup before updating the collection.
+    const importKey = x => entryIdentityKey({category:'Фильмы',name:x.name,year:x.year});
+    const simpleTitle = s => String(s||'').toLocaleLowerCase('ru').normalize('NFKC')
+      .replace(/ё/g,'е').replace(/&/g,' and ').replace(/[^\p{L}\p{N}]+/gu,' ').replace(/\s+/g,' ').trim();
+    // Similarity is only a prompt to review, NEVER permission to merge.
+    const titleScoreNormalized = (x,y) => {
+      if(!x||!y)return 0;
+      if(x===y)return 1;
+      if(x.length<5||y.length<5)return 0;
+      const count=s=>{const o=new Map();for(let i=0;i<s.length-1;i++){const v=s.slice(i,i+2);o.set(v,(o.get(v)||0)+1);}return o;};
+      const a2=count(x),b2=count(y);let shared=0;
+      for(const [v,n] of a2)shared+=Math.min(n,b2.get(v)||0);
+      return 2*shared/(x.length+y.length-2);
+    };
+    const getLocalIndex = () => {
+      const existing=normalizeGames().map(x=>({identity:entryIdentityKey(x),name:x.game,year:x.year,category:x.category,rating:x.rating,favorite:Boolean(x.favorite)}));
+      const trash=normalizeTrash().map(x=>({identity:entryIdentityKey(x),name:x.game,year:x.year,category:x.category}));
+      return {existing,trash};
+    };
+    const reviewPlan = (data, decisions={}) => {
+      if(!Array.isArray(data?.entries)||!data.entries.length||data.entries.length>50000)throw new Error('Некорректное количество фильмов.');
+      if(decisions===null||typeof decisions!=='object'||Array.isArray(decisions))throw new Error('Некорректные решения сверки.');
+      const {existing,trash}=getLocalIndex();
+      const byIdentity=new Map(existing.map(x=>[x.identity,x]));
+      const byTrash=new Map(trash.map(x=>[x.identity,x]));
+      const prior=state.letterboxd?.records||{};
+      const priorSkipped=state.letterboxd?.skipped||{};
+      const cards=state.catalog?.cards||{};
+      const byYear=new Map(),byAlias=new Map(),byTmdb=new Map(),byNormalized=new Map();
+      for(const local of existing){
+        const card=cards[local.identity];if(!card)continue;
+        const id=Number(card.tmdbId);
+        if(Number.isSafeInteger(id)&&id>0&&['movie','tv'].includes(card.mediaType)){
+          const key=`${card.mediaType}\u0000${id}`;
+          if(!byTmdb.has(key))byTmdb.set(key,[]);byTmdb.get(key).push(local);
+        }
+        for(const alias of Array.isArray(card.aliases)?card.aliases:[]){
+          const key=`${local.year??''}\u0000${simpleTitle(alias)}`;
+          if(!byAlias.has(key))byAlias.set(key,[]);byAlias.get(key).push(local);
+        }
+      }
+      for(const local of [...existing,...trash.map(x=>({...x,trash:true}))]){
+        const k=String(local.year??'');
+        if(!byYear.has(k))byYear.set(k,[]);
+        const normalizedTitle=simpleTitle(local.name);
+        byYear.get(k).push({...local,normalizedTitle});
+        if(local.year!=null&&normalizedTitle){
+          const exactKey=`${local.year}\u0000${normalizedTitle}`;
+          if(!byNormalized.has(exactKey))byNormalized.set(exactKey,[]);
+          byNormalized.get(exactKey).push(local);
+        }
+      }
+      const used=new Set(), rows=[];
+      let added=0,matched=0,trashed=0,skipped=0,reviewRequired=0,manualMatched=0;
+      for(const item of data.entries){
+        const name=String(item?.name||'').trim(),year=item?.year==null?null:Number(item.year);
+        if(!name||name.length>400||year!==null&&(!Number.isInteger(year)||year<1870||year>2100))throw new Error('Некорректные данные фильма.');
+        const sourceKey=importKey(item),identity=importKey(item),normalizedTitle=simpleTitle(name);
+        if(used.has(sourceKey))throw new Error('В импорте обнаружен повтор идентификатора фильма.');
+        used.add(sourceKey);
+        const candidates=[];
+        for(const local of byYear.get(String(year??''))||[]){
+          const score=titleScoreNormalized(normalizedTitle,local.normalizedTitle);
+          if(score>=0.73)candidates.push({identity:local.identity,name:local.name,year:local.year,category:local.category,rating:local.rating,favorite:local.favorite,trash:Boolean(local.trash),score:Math.round(score*100)});
+        }
+        candidates.sort((x,y)=>y.score-x.score||x.name.localeCompare(y.name,'ru'));
+        const normalizedCandidates=year==null?[]:(byNormalized.get(`${year}\u0000${normalizedTitle}`)||[]);
+        const onlyNormalized=normalizedCandidates.length===1?normalizedCandidates[0]:null;
+        // Letterboxd exports do not normally declare movie vs TV. Never silently
+        // bridge a category mismatch (e.g. movie and series with the same name).
+        const expectedCategory=item.mediaType==='tv'?'Сериалы':item.mediaType==='movie'?'Фильмы':null;
+        const categoryCompatible=local=>expectedCategory?local.category===expectedCategory:local.category==='Фильмы';
+        const safeNormalized=onlyNormalized&&!onlyNormalized.trash&&categoryCompatible(onlyNormalized);
+        const bulkEligible=Boolean(onlyNormalized&&!onlyNormalized.trash&&!categoryCompatible(onlyNormalized)&&
+          normalizedTitle.length>=5&&year!=null);
+        const row={sourceKey,name,year,action:'add',targetIdentity:identity,candidates:candidates.slice(0,5),
+          reason:'new',bulkEligible,bulkTargetIdentity:bulkEligible?onlyNormalized.identity:null,
+          sourceRating:item.rating??null,sourceWatched:Boolean(item.watched),
+          sourceMediaType:item.mediaType||null};
+        const manual=Object.hasOwn(decisions,sourceKey)?decisions[sourceKey]:null;
+        if(manual!=null){
+          if(!manual||!['match','add','skip'].includes(manual.action))throw new Error('Некорректное решение о совпадении.');
+          if(manual.action==='match'){
+            if(byTrash.has(identity))throw new Error('Запись уже находится в Корзине. Ручное сопоставление заблокировано.');
+            if(typeof manual.targetIdentity!=='string'||!byIdentity.has(manual.targetIdentity))throw new Error('Выбранная запись Кинотеки больше не существует. Повтори сверку.');
+            row.action='matched';row.targetIdentity=manual.targetIdentity;row.reason='manual';manualMatched++;
+          } else if(manual.action==='skip'){row.action='skip';row.targetIdentity=null;row.reason='manual';}
+          else {
+            if(byIdentity.has(identity)||byTrash.has(identity))throw new Error('Запись уже присутствует в Кинотеке или Корзине.');
+            row.action='add';row.reason='manual';
+          }
+        } else if(byIdentity.has(identity)&&categoryCompatible(byIdentity.get(identity))){row.action='matched';row.reason='exact';}
+        else if(byTrash.has(identity)){row.action='trash';row.reason='trash';}
+        else if(priorSkipped[sourceKey]===true){row.action='skip';row.targetIdentity=null;row.reason='previous';}
+        else if(typeof prior[sourceKey]?.targetIdentity==='string'&&byIdentity.has(prior[sourceKey].targetIdentity)){
+          row.action='matched';row.targetIdentity=prior[sourceKey].targetIdentity;row.reason='previous';
+        } else if(typeof prior[sourceKey]?.targetIdentity==='string'&&byTrash.has(prior[sourceKey].targetIdentity)){
+          row.action='trash';row.targetIdentity=prior[sourceKey].targetIdentity;row.reason='trash';
+        } else if(safeNormalized){
+          row.action='matched';row.targetIdentity=onlyNormalized.identity;row.reason='normalized-exact';
+        } else {
+          const linkedMap=new Map();
+          const linkedId=Number(item.tmdbId);
+          if(Number.isSafeInteger(linkedId)&&linkedId>0&&['movie','tv'].includes(item.mediaType))
+            for(const local of byTmdb.get(`${item.mediaType}\u0000${linkedId}`)||[])
+              if(categoryCompatible(local))linkedMap.set(local.identity,local);
+          if(year!=null)
+            for(const local of byAlias.get(`${year}\u0000${simpleTitle(name)}`)||[]){
+              const card=cards[local.identity];
+              if(categoryCompatible(local)&&(!expectedCategory||!card?.mediaType||card.mediaType===item.mediaType))
+                linkedMap.set(local.identity,local);
+            }
+          const linked=[...linkedMap.values()];
+          // Exact external ID or an unambiguous catalogue alias may link; a
+          // conflicting local title/year or trash entry demands review instead.
+          if(linked.length===1&&normalizedCandidates.every(x=>x.identity===linked[0].identity)){
+            row.action='matched';row.targetIdentity=linked[0].identity;row.reason='tmdb';
+          }
+          else if(linked.length>1||candidates.length||normalizedCandidates.length){row.action='review';row.targetIdentity=null;row.reason='similar';}
+        }
+        if(row.action==='add')added++;
+        else if(row.action==='matched')matched++;
+        else if(row.action==='trash')trashed++;
+        else if(row.action==='skip')skipped++;
+        else reviewRequired++;
+        rows.push(row);
+      }
+      // The same new identity must never be inserted twice through a crafted plan.
+      return {total:rows.length,added,matched,trashed,skipped,reviewRequired,manualMatched,
+        lists:data.lists?.length||0,rows,local:existing};
+    };
+    const importPreview = (data,decisions={}) => reviewPlan(data,decisions);
+    const applyImport = async (data,decisions={}) => {
+      try {
+        const preview=reviewPlan(data,decisions);
+        if(preview.reviewRequired)throw new Error(`Осталось ${preview.reviewRequired} неоднозначных совпадений. Сначала заверши сверку.`);
+        const copy=structuredClone(state);
+        const records={...(copy.letterboxd?.records||{})};
+        const skipped={...(copy.letterboxd?.skipped||{})};
+        const mapKeys=new Map(),existing=new Set(copy.items.map(entryIdentityKey));
+        for(let i=0;i<preview.rows.length;i++){
+          const row=preview.rows[i],item=data.entries[i];
+          if(row.action==='skip'){skipped[row.sourceKey]=true;delete records[row.sourceKey];continue;}
+          delete skipped[row.sourceKey];
+          mapKeys.set(row.sourceKey,row.targetIdentity);
+          records[row.sourceKey]={...item,category:'Фильмы',targetIdentity:row.targetIdentity,matchMethod:row.reason};
+          const score10=letterboxdScore10(item.rating);
+          if(row.action!=='add'){
+            // Reimport/backfill: preserve the user's original status, favorites and
+            // any manually edited numerical rating. Never silently reclassify.
+            if(row.action==='matched' && score10!=null){
+              const local=copy.items.find(x=>entryIdentityKey(x)===row.targetIdentity);
+              if(local && !validScore10(local.score10))local.score10=score10;
+            }
+            continue;
+          }
+          if(existing.has(row.targetIdentity))continue;
+          const rating=score10!=null ? scoreStatus(score10) :
+            item.watchlist&&!item.watched ? 'Запланировано' :
+            item.watched?'Нормально':'Запланировано';
+          copy.items.push({name:row.name,category:'Фильмы',year:row.year,rating,
+            ...(score10!=null?{score10}: {})});
+          existing.add(row.targetIdentity);
+        }
+        const oldMeta=copy.letterboxd&&typeof copy.letterboxd==='object'?copy.letterboxd:{};
+        const listBySlug=new Map((Array.isArray(oldMeta.lists)?oldMeta.lists:[]).map(x=>[x.slug,x]));
+        for(const list of data.lists||[]){
+          const slug=String(list.slug||'');
+          if(!slug)continue;
+          listBySlug.set(slug,{name:String(list.name||slug),slug,
+            films:(list.films||[]).map(x=>mapKeys.get(`фильмы\u0000${x}`)).filter(Boolean)});
+        }
+        copy.letterboxd={schema:2,importedAt:new Date().toISOString(),records,skipped,lists:[...listBySlug.values()]};
+        await commitDestructive(copy,'Импорт Letterboxd — резервная копия перед изменениями');
+        return {ok:true,...preview,rows:undefined,local:undefined};
+      } catch(error){return {ok:false,error:String(error?.message||error)};}
+    };
     return {
+      // Poster associations prefer stable IMDb IDs. Private/manual entries use a
+      // canonical identity; no poster bytes or paths enter kinoteka.sqlite3.
+      getPosterKeyFor: entry => {
+        const identity=entryIdentityKey(entry);
+        if(!identity)return '';
+        const metadata=state.catalog?.cards?.[identity];
+        const imdb=String(metadata?.imdbId||'');
+        return /^tt\d{4,15}$/.test(imdb) ? `imdb:${imdb}` : `local:${encodeURIComponent(identity)}`;
+      },
       getGamesSync: () => JSON.stringify(normalizeGames()),
+      getImportedListsSync: () => JSON.stringify(state.letterboxd?.lists||[]),
+      getImportMetadataSync: () => JSON.stringify(state.letterboxd||{}),
+      previewLetterboxd: importPreview,
+      importLetterboxdConfirmed: applyImport,
       replaceGamesConfirmed: async raw => {
         try {
           const games = validArray(raw);
@@ -308,7 +511,7 @@
   async function boot() {
     const seed = await invoke('library_state');
     window.kinotekaDatabase = makeDatabase(seed);
-    for (const file of ['core.js','games.js','trash.js','runtime.js']) await loadScript(file);
+    for (const file of ['core.js','games.js','trash.js','runtime.js','shared/library-integration-ui.js']) await loadScript(file);
   }
 
   // Tauri's initial visible+maximized window already displays the static splash.

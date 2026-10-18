@@ -48,7 +48,7 @@ function Expand-ZipToDirectory {
   [System.IO.Compression.ZipFile]::ExtractToDirectory($ZipPath, $DestinationDir)
 }
 
-$releaseName = 'Kinoteka_Standalone_v1.1_Stable'
+$releaseName = 'Kinoteka_Standalone_v1.2_Preview_1'
 $portable = Join-Path $PSScriptRoot ('Release\' + $releaseName)
 $artifacts = Join-Path $PSScriptRoot 'Artifacts'
 $portableZip = Join-Path $artifacts ($releaseName + '_Portable.zip')
@@ -59,7 +59,7 @@ $sourceVerifyStage = Join-Path $PSScriptRoot '.release-source-verify-stage'
 
 if (Test-Path -LiteralPath $artifacts) { throw 'Artifacts directory already exists. Refusing to overwrite archives. Use a fresh source folder.' }
 if (Test-Path -LiteralPath $portable) { throw 'Release directory already exists. Refusing to overwrite SQLite. Use a fresh source folder.' }
-Write-Host '=== KINOTEKA STANDALONE v1.1 STABLE / FINAL RELEASE ===' -ForegroundColor Magenta
+Write-Host '=== KINOTEKA STANDALONE v1.2 PREVIEW 1 / FINAL RELEASE ===' -ForegroundColor Magenta
 
 & (Join-Path $PSScriptRoot 'BUILD-RELEASE.ps1')
 if ($LASTEXITCODE -ne 0) { throw "BUILD-RELEASE failed: $LASTEXITCODE" }
@@ -74,8 +74,13 @@ New-ZipFromDirectory -SourceDir $portable -DestinationZip $portableZip
 
 Write-Host "`n[2/4] Packing clean source ZIP..." -ForegroundColor Cyan
 New-Item -ItemType Directory -Force -Path $sourceStage | Out-Null
-foreach ($dir in @('app','scripts','data','seed-data')) {
+foreach ($dir in @('app','scripts')) {
   Copy-Item -LiteralPath (Join-Path $PSScriptRoot $dir) -Destination (Join-Path $sourceStage $dir) -Recurse -Force
+}
+foreach ($dbdir in @('data','seed-data')) {
+  $d = Join-Path $sourceStage $dbdir
+  New-Item -ItemType Directory -Force -Path $d | Out-Null
+  Copy-Item -LiteralPath (Join-Path $PSScriptRoot ($dbdir + '\kinoteka.sqlite3')) -Destination (Join-Path $d 'kinoteka.sqlite3') -Force
 }
 $srcTauriStage = Join-Path $sourceStage 'src-tauri'
 New-Item -ItemType Directory -Force -Path $srcTauriStage | Out-Null
@@ -93,7 +98,7 @@ $rootFiles = @(
   'MAKE-FINAL-RELEASE.cmd','MAKE-FINAL-RELEASE.ps1',
   'FREEZE-CANONICAL-DATA.cmd','FREEZE-CANONICAL-DATA.ps1',
   'MIGRATE-FROM-LOST-HEAVEN.cmd','MIGRATE-FROM-LOST-HEAVEN.ps1',
-  'START-HERE.txt','README.md','CHANGELOG.md','RELEASE_NOTES_v1.0_STABLE.md','RELEASE_NOTES_v1.1_STABLE.md','RELEASE-CHECKLIST.md'
+  'START-HERE.txt','README.md','CHANGELOG.md','RELEASE_NOTES_v1.0_STABLE.md','RELEASE_NOTES_v1.1_STABLE.md','RELEASE_NOTES_v1.2_PREVIEW_1.md','RELEASE-CHECKLIST.md'
 )
 foreach ($file in $rootFiles) {
   $src = Join-Path $PSScriptRoot $file
@@ -125,9 +130,9 @@ if ($exeHash -ne $reextractedExeHash) { throw 'EXE hash mismatch after ZIP re-ex
 
 $meta = [ordered]@{
   product = 'Kinoteka Standalone'
-  version = '1.1.0'
-  channel = 'Stable'
-  release = 'v1.1 Stable'
+  version = '1.2.0-preview.1'
+  channel = 'Preview'
+  release = 'v1.2 Preview 1'
   generated_at = (Get-Date).ToString('o')
   portable_sha256 = $portableHash
   source_sha256 = $sourceHash

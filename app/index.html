@@ -5,10 +5,15 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Кинотека</title>
 <link rel="icon" type="image/x-icon" href="favicon.ico">
-<!-- Clean Data Edition: local installed Inter or system fallback; no bundled fonts. -->
+<!-- v1.8.70 typography: local Inter webfont; no external font dependency. -->
+<link rel="preload" href="shared/fonts/Inter-Regular.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="shared/fonts/Inter-Medium.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="shared/fonts/Inter-SemiBold.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="shared/fonts/Inter-Bold.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="styles.css">
 <link rel="stylesheet" href="shared/modal-system.css">
 <link rel="stylesheet" href="shared/themed-select.css">
+<link rel="stylesheet" href="shared/library-integration.css">
 
 
 
@@ -405,7 +410,7 @@ main.wrap{position:relative;z-index:2;}
       <div class="bar">
         <div class="leftpad" data-tauri-drag-region aria-hidden="true"></div>
         <div class="brand" data-tauri-drag-region><span class="name">Кинотека</span></div>
-        <div class="actions"><button type="button" class="min" title="Свернуть" aria-label="Свернуть"><svg class="window-control-icon" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M3 8h10"/></svg></button><button type="button" class="close" title="Закрыть" aria-label="Закрыть"><svg class="window-control-icon" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4 4l8 8M12 4l-8 8"/></svg></button></div>
+        <div class="actions"><button type="button" class="min" aria-label="Свернуть"><svg class="window-control-icon" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M3 8h10"/></svg></button><button type="button" class="close" aria-label="Закрыть"><svg class="window-control-icon" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4 4l8 8M12 4l-8 8"/></svg></button></div>
       </div>`;
   document.body.prepend(host);
 })();
@@ -422,17 +427,23 @@ main.wrap{position:relative;z-index:2;}
 <main class="wrap">
   <section class="stats-panel">
     <div class="quick-stats stat-init" id="quickStats">
-    <button class="stat-card total-card" type="button" data-filter-all="1"><b id="totalCount">0</b><span>Всего</span></button>
-    <button class="stat-card" type="button" data-filter-rating="Смотрю"><b id="inProgress">0</b><span class="stat-label"><svg class="lucide lucide-gamepad-2 lucide-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><line x1="6" x2="10" y1="11" y2="11"></line><line x1="8" x2="8" y1="9" y2="13"></line><line x1="15" x2="15.01" y1="12" y2="12"></line><line x1="18" x2="18.01" y1="10" y2="10"></line><path d="M17.5 6.5 16 4H8L6.5 6.5A7.5 7.5 0 0 0 3 13v1.5a3 3 0 0 0 5.2 2.1L10 15h4l1.8 1.6a3 3 0 0 0 5.2-2.1V13a7.5 7.5 0 0 0-3.5-6.5Z"></path></svg>Смотрю</span></button>
-    <button class="stat-card" type="button" data-filter-rating="Понравилось"><b id="liked">0</b><span class="stat-label"><svg class="lucide lucide-heart lucide-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20.8 4.6c-2.2-2.4-6-2.2-8.3.3L12 5.5l-.5-.6C9.2 2.4 5.4 2.2 3.2 4.6.9 7.1 1.1 11 3.4 13.4L12 22l8.6-8.6c2.3-2.4 2.5-6.3.2-8.8Z"></path></svg>Понравилось</span></button>
-    <button class="stat-card" type="button" data-filter-rating="Нормально"><b id="normalCount">0</b><span class="stat-label"><svg class="lucide lucide-circle-minus lucide-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="10"></circle><path d="M8 12h8"></path></svg>Нормально</span></button>
-    <button class="stat-card" type="button" data-filter-rating="Не понравилось"><b id="disliked">0</b><span class="stat-label"><svg class="lucide lucide-heart-crack lucide-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M18.5 4.5C16.8 2.8 14 2.4 12 4.1 10 2.4 7.2 2.8 5.5 4.5 2.2 7.8 4.7 12.7 6 14l6 7 6-7c1.3-1.3 3.8-6.2.5-9.5Z"></path><path d="m12 8-1.5 3h3L12 14"></path></svg>Не понравилось</span></button>
-    <button class="stat-card" type="button" data-filter-rating="Запланировано"><b id="planned">0</b><span class="stat-label"><svg class="lucide lucide-calendar-plus lucide-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M8 2v4"></path><path d="M16 2v4"></path><rect width="18" height="18" x="3" y="4" rx="2"></rect><path d="M3 10h18"></path><path d="M12 14v4"></path><path d="M10 16h4"></path></svg>Запланировано</span></button>
-    <button class="stat-card" type="button" data-filter-favorite="1"><b id="favoriteCount">0</b><span class="stat-label"><svg class="lucide lucide-star lucide-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.1 2.1 0 0 0 1.58 1.148l5.166.752a.53.53 0 0 1 .294.904l-3.738 3.644a2.1 2.1 0 0 0-.605 1.86l.882 5.143a.53.53 0 0 1-.769.56l-4.618-2.428a2.1 2.1 0 0 0-1.956 0l-4.618 2.428a.53.53 0 0 1-.769-.56l.882-5.143a2.1 2.1 0 0 0-.605-1.86L2.2 9.778a.53.53 0 0 1 .294-.904l5.166-.752a2.1 2.1 0 0 0 1.58-1.148z"></path></svg>Избранное</span></button>
+    <button class="stat-card total-card" type="button" data-filter-all="1" title="Всего"><b id="totalCount">0</b><span>Всего</span></button>
+    <button class="stat-card" type="button" data-filter-rating="Смотрю" title="Смотрю"><b id="inProgress">0</b><span class="stat-label"><svg class="lucide lucide-gamepad-2 lucide-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><line x1="6" x2="10" y1="11" y2="11"></line><line x1="8" x2="8" y1="9" y2="13"></line><line x1="15" x2="15.01" y1="12" y2="12"></line><line x1="18" x2="18.01" y1="10" y2="10"></line><path d="M17.5 6.5 16 4H8L6.5 6.5A7.5 7.5 0 0 0 3 13v1.5a3 3 0 0 0 5.2 2.1L10 15h4l1.8 1.6a3 3 0 0 0 5.2-2.1V13a7.5 7.5 0 0 0-3.5-6.5Z"></path></svg>Смотрю</span></button>
+    <button class="stat-card" type="button" data-filter-rating="Понравилось" title="Понравилось"><b id="liked">0</b><span class="stat-label"><svg class="lucide lucide-heart lucide-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20.8 4.6c-2.2-2.4-6-2.2-8.3.3L12 5.5l-.5-.6C9.2 2.4 5.4 2.2 3.2 4.6.9 7.1 1.1 11 3.4 13.4L12 22l8.6-8.6c2.3-2.4 2.5-6.3.2-8.8Z"></path></svg>Понравилось</span></button>
+    <button class="stat-card" type="button" data-filter-rating="Нормально" title="Нормально"><b id="normalCount">0</b><span class="stat-label"><svg class="lucide lucide-circle-minus lucide-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="10"></circle><path d="M8 12h8"></path></svg>Нормально</span></button>
+    <button class="stat-card" type="button" data-filter-rating="Не понравилось" title="Не понравилось"><b id="disliked">0</b><span class="stat-label"><svg class="lucide lucide-heart-crack lucide-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M18.5 4.5C16.8 2.8 14 2.4 12 4.1 10 2.4 7.2 2.8 5.5 4.5 2.2 7.8 4.7 12.7 6 14l6 7 6-7c1.3-1.3 3.8-6.2.5-9.5Z"></path><path d="m12 8-1.5 3h3L12 14"></path></svg>Не понравилось</span></button>
+    <button class="stat-card" type="button" data-filter-rating="Запланировано" title="Запланировано"><b id="planned">0</b><span class="stat-label"><svg class="lucide lucide-calendar-plus lucide-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M8 2v4"></path><path d="M16 2v4"></path><rect width="18" height="18" x="3" y="4" rx="2"></rect><path d="M3 10h18"></path><path d="M12 14v4"></path><path d="M10 16h4"></path></svg>Запланировано</span></button>
+    <button class="stat-card" type="button" data-filter-favorite="1" title="Избранное"><b id="favoriteCount">0</b><span class="stat-label"><svg class="lucide lucide-star lucide-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.1 2.1 0 0 0 1.58 1.148l5.166.752a.53.53 0 0 1 .294.904l-3.738 3.644a2.1 2.1 0 0 0-.605 1.86l.882 5.143a.53.53 0 0 1-.769.56l-4.618-2.428a2.1 2.1 0 0 0-1.956 0l-4.618 2.428a.53.53 0 0 1-.769-.56l.882-5.143a2.1 2.1 0 0 0-.605-1.86L2.2 9.778a.53.53 0 0 1 .294-.904l5.166-.752a2.1 2.1 0 0 0 1.58-1.148z"></path></svg>Избранное</span></button>
     </div>
   </section>
 
-  <div class="media-filter-row" id="mediaTabs"><button class="media-filter tab active" data-media-category="Все" type="button">Все</button><button class="media-filter tab" data-media-category="Фильмы" type="button">Фильмы</button><button class="media-filter tab" data-media-category="Сериалы" type="button">Сериалы</button><button class="media-filter tab" data-media-category="Анимация" type="button">Анимация</button></div>
+  <div class="kinoteka-viewbar">
+    <div class="media-filter-row" id="mediaTabs"><button class="media-filter tab active" data-media-category="Все" type="button">Все</button><button class="media-filter tab" data-media-category="Фильмы" type="button">Фильмы</button><button class="media-filter tab" data-media-category="Сериалы" type="button">Сериалы</button><button class="media-filter tab" data-media-category="Анимация" type="button">Анимация</button></div>
+    <div class="kinoteka-view-toggle" role="group" aria-label="Режим отображения коллекции">
+        <button type="button" class="kinoteka-view-btn active" data-kinoteka-view="table" aria-pressed="true">Таблица</button>
+        <button type="button" class="kinoteka-view-btn" data-kinoteka-view="cards" aria-pressed="false">Карточки</button>
+      </div>
+  </div>
 
   <div class="toolbar">
     <div class="search-wrap"><input id="search" type="search" aria-label="Поиск по названию" placeholder="Поиск по названию…" autocomplete="off"></div><select id="mediaCategoryFilter" class="media-filter-select" aria-label="Тип" hidden><option value="Все">Все</option><option value="Фильмы">Фильмы</option><option value="Сериалы">Сериалы</option><option value="Анимация">Анимация</option></select><button id="mediaYearPicker" class="media-year-trigger" type="button" aria-haspopup="dialog" aria-controls="yearPickerModal" aria-expanded="false"><span id="mediaYearLabel">Все годы</span></button><select id="mediaYearFilter" aria-hidden="true" tabindex="-1" hidden><option value="">Все годы</option></select>
@@ -446,6 +457,7 @@ main.wrap{position:relative;z-index:2;}
   <div class="list-nav" id="listNav">
     <div class="list-actions">
       <button class="add-entry-action" id="add" aria-label="Добавить запись" type="button"><span class="action-icon" aria-hidden="true"><svg class="lucide lucide-plus lucide-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg></span><span class="action-label">Добавить запись</span></button>
+      <button id="integrationOpen" class="kinoteka-integration-action" type="button" aria-label="Импорт Letterboxd">✦ Импорт Letterboxd</button>
       <button id="trashData" aria-label="Корзина" type="button"><span class="trash-button-icon" aria-hidden="true"></span><span class="action-label">Корзина</span></button>
     </div>
     <div class="nav-controls">
@@ -460,6 +472,7 @@ main.wrap{position:relative;z-index:2;}
       <tbody id="tbody"></tbody>
     </table>
   </div>
+  <section id="kinotekaCardGrid" class="kinoteka-card-grid" aria-label="Карточки фильмов, сериалов и анимации" hidden></section>
 </main>
 
 <div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
@@ -474,6 +487,65 @@ main.wrap{position:relative;z-index:2;}
       <button id="cancelAdd" type="button">Отмена</button>
       <button class="primary" id="saveAdd" type="button">Добавить записи</button>
     </div>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="integrationModal" aria-hidden="true">
+  <div class="modal kinoteka-integration-modal" role="dialog" aria-modal="true" aria-labelledby="integrationTitle">
+    <div class="modal-head"><div><h2 id="integrationTitle">Импорт Letterboxd</h2><div class="trash-subtitle">Загрузить ZIP или CSV · проверить изменения перед сохранением</div></div><button type="button" id="integrationClose" class="icon-close" aria-label="Закрыть импорт Letterboxd"><svg class="lucide lucide-x lucide-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button></div>
+    <section class="kino-integrate-page kino-integrate-import">
+      <div class="kino-import-controls">
+        <div class="kino-import-choose">
+          <input id="letterboxdFile" type="file" accept=".zip,.csv,application/zip,text/csv" hidden>
+          <button type="button" class="kino-integrate-primary" id="chooseLetterboxd">Выбрать ZIP или CSV</button>
+          <span class="kino-integrate-intro">Экспорт Letterboxd · просмотр до сохранения</span>
+        </div>
+        <div class="kino-integrate-info" id="integrationInfo" role="status" aria-live="polite">Ничего ещё не загружено. База не изменялась.</div>
+      </div>
+      <div class="kino-import-preview" id="importPreview" hidden>
+        <div class="kino-import-overview">
+          <div class="kino-import-stats">
+            <div><strong id="previewTotal">0</strong><span>Найдено</span></div>
+            <div><strong id="previewAdded">0</strong><span>Новых</span></div>
+            <div><strong id="previewMatched">0</strong><span>Совпадений</span></div>
+            <div><strong id="previewTrash">0</strong><span>В корзине</span></div>
+            <div class="kino-import-lists-stat" hidden><strong id="previewLists">0</strong><span>Списков</span></div>
+          </div>
+          <div class="kino-integrate-hint" id="previewMeta"></div>
+          <div class="kino-review-summary" id="reviewSummary" role="status" aria-live="polite"></div>
+        </div>
+        <div class="kino-review-area" id="reviewArea">
+          <div class="kino-review-filters">
+            <button type="button" id="reviewOnly" class="active">Требуют решения</button>
+            <button type="button" id="reviewAll">Все новые / ручная сверка</button>
+            <button type="button" id="reviewAuto">Автосовпадения</button>
+          </div>
+          <div class="kino-review-batch" id="reviewBatch" hidden>
+            <span id="reviewBatchLabel">0 выбрано</span>
+            <button type="button" id="reviewBatchApply" disabled>Связать выбранные</button>
+            <button type="button" id="reviewBatchClear">Снять отметки</button>
+          </div>
+          <input class="kino-integrate-input" id="reviewSearch" type="search" autocomplete="off" placeholder="Найти запись Letterboxd по названию…">
+          <div id="reviewItems" class="kino-review-items" tabindex="0" role="region" aria-label="Список записей для сверки"></div>
+          <div class="kino-review-pagination" aria-label="Страницы сверки">
+            <button type="button" id="reviewPrev" aria-label="Предыдущие записи">←</button>
+            <span id="reviewPaging"></span>
+            <button type="button" id="reviewNext" aria-label="Следующие записи">→</button>
+          </div>
+        </div>
+      </div>
+      <div class="kino-integrate-footer">
+        <details class="kino-import-notes"><summary>Как работает импорт и защита данных</summary>
+          <div class="kino-import-notes-content">
+            <p><strong>Экспорт:</strong> Letterboxd → Настройки → Экспорт данных. Поддерживаются watched, ratings, diary, reviews, watchlist и lists.</p>
+            <p><strong>Сверка:</strong> автоматически связываются только однозначные совпадения года, названия и совместимого типа. Спорные записи требуют ручного решения. Проверяй совпадения с существующими записями вручную.</p>
+            <p><strong>Безопасность:</strong> статусы, избранное и Корзина сохраняются, перед записью создаётся резервная копия. Удалённые записи, комментарии, чужие лайки и профиль не импортируются. ZIP обрабатывается локально.</p>
+            <p class="kino-import-help-return">Сверни справку, чтобы вернуться к сверке фильмов.</p>
+          </div>
+        </details>
+        <button type="button" class="kino-integrate-primary" id="commitImport" disabled>Подтвердить импорт в SQLite</button>
+      </div>
+    </section>
   </div>
 </div>
 
@@ -583,7 +655,7 @@ main.wrap{position:relative;z-index:2;}
     const dt=Math.min(40,now-last);last=now;const t=now*.001;ctx.clearRect(0,0,w,h);
     for(const s of stars){s.x+=Math.sin(t*.05+s.phase)*s.drift;if(s.x<-.03)s.x=1.03;if(s.x>1.03)s.x=-.03;const x=s.x*w,y=s.y*h,tw=.80+.20*Math.sin(t*(.10+s.depth*.18)+s.phase),a=s.alpha*tw,r=s.size,starCol=colorAt(s.hue,t);const sx=r,sy=r;ctx.beginPath();ctx.fillStyle=`rgba(${starCol},${a})`;ctx.ellipse(x,y,sx,sy,0,0,TAU);ctx.fill();}
     for(const g of glints){const x=g.x*w,y=g.y*h,pulse=Math.max(0,Math.sin(t*(TAU/g.period)+g.phase));if(pulse<.78)continue;const a=g.alpha*((pulse-.78)/.22),r=g.size*(.72+.28*pulse),col=colorAt(g.hue,t);ctx.beginPath();ctx.strokeStyle=`rgba(${col},${a*.28})`;ctx.lineWidth=.55;ctx.lineCap='round';ctx.moveTo(x-r*3.5,y);ctx.lineTo(x+r*3.5,y);ctx.moveTo(x,y-r*3.5);ctx.lineTo(x,y+r*3.5);ctx.stroke();ctx.beginPath();ctx.fillStyle=`rgba(${col},${a})`;ctx.arc(x,y,r,0,TAU);ctx.fill();}
-    for(const p of particles){const oldX=p.x*w,oldY=p.y*h,n1=Math.sin(t*.31+p.phase+p.y*9.1),n2=Math.cos(t*.23+p.phase2+p.x*7.3),n3=Math.sin(t*.11+p.seed+p.x*4.0-p.y*6.0),turbulence=(n1*.55+n2*.30+n3*.15)*p.wobble,curl=Math.cos(t*.19+p.phase2+p.y*5.5)*p.wobble*.68,speed=p.fast?1.78:.94;p.x+=(p.vx+(p.x<.5?p.drift:-p.drift)*.18+turbulence)*dt*speed;p.y+=(p.vy+curl+Math.sin(t*.17+p.phase)*.0000035)*dt*speed;p.x+=Math.sin(t*.13+p.phase2+p.y*8.0)*.0000032*dt*speed;p.y+=Math.cos(t*.16+p.phase+p.x*6.0)*.0000030*dt*speed;if(p.x<-.05)p.x=1.05;if(p.x>1.05)p.x=-.05;if(p.y<-.05)p.y=1.05;if(p.y>1.05)p.y=-.05;const x=p.x*w,y=p.y*h,pulse=.72+.28*Math.sin(t*p.twinkle+p.phase),grain=.86+.14*Math.sin(t*.21+p.phase2*1.7+p.x*12-p.y*8),a=clamp(p.alpha*pulse*grain,.055,.98),r=p.size*(.82+.18*Math.sin(t*.9+p.phase2)),rgb=colorAt(p.hue,t);if(p.fast&&r>1.05){ctx.beginPath();ctx.moveTo(oldX,oldY);ctx.lineTo(x,y);ctx.lineWidth=Math.max(.35,r*.38);ctx.lineCap='round';ctx.strokeStyle=`rgba(${rgb},${a*.23})`;ctx.stroke();}ctx.beginPath();ctx.fillStyle=`rgba(${rgb},${a})`;if(p.shape==='diamond'){ctx.moveTo(x,y-r*1.25);ctx.lineTo(x+r*1.05,y);ctx.lineTo(x,y+r*1.25);ctx.lineTo(x-r*1.05,y);ctx.closePath();ctx.fill();}else if(p.shape==='stretched'){ctx.ellipse(x,y,r*1.45,r*.72,Math.atan2(p.vy,p.vx),0,TAU);ctx.fill();}else{ctx.arc(x,y,r,0,TAU);ctx.fill();}}
+    for(const p of particles){const oldX=p.x*w,oldY=p.y*h,n1=Math.sin(t*.31+p.phase+p.y*9.1),n2=Math.cos(t*.23+p.phase2+p.x*7.3),n3=Math.sin(t*.11+p.seed+p.x*4.0-p.y*6.0),turbulence=(n1*.55+n2*.30+n3*.15)*p.wobble,curl=Math.cos(t*.19+p.phase2+p.y*5.5)*p.wobble*.68,speed=p.fast?1.78:.94;p.x+=(p.vx+(p.x<.5?p.drift:-p.drift)*.18+turbulence)*dt*speed;p.y+=(p.vy+curl+Math.sin(t*.17+p.phase)*.0000035)*dt*speed;p.x+=Math.sin(t*.13+p.phase2+p.y*8.0)*.0000032*dt*speed;p.y+=Math.cos(t*.16+p.phase+p.x*6.0)*.0000030*dt*speed;const crossedEdge=(p.x<-.05||p.x>1.05||p.y<-.05||p.y>1.05);if(p.x<-.05)p.x=1.05;if(p.x>1.05)p.x=-.05;if(p.y<-.05)p.y=1.05;if(p.y>1.05)p.y=-.05;const x=p.x*w,y=p.y*h,pulse=.72+.28*Math.sin(t*p.twinkle+p.phase),grain=.86+.14*Math.sin(t*.21+p.phase2*1.7+p.x*12-p.y*8),a=clamp(p.alpha*pulse*grain,.055,.98),r=p.size*(.82+.18*Math.sin(t*.9+p.phase2)),rgb=colorAt(p.hue,t);if(p.fast&&r>1.05&&!crossedEdge&&Math.hypot(x-oldX,y-oldY)<=8){ctx.beginPath();ctx.moveTo(oldX,oldY);ctx.lineTo(x,y);ctx.lineWidth=Math.max(.35,r*.38);ctx.lineCap='round';ctx.strokeStyle=`rgba(${rgb},${a*.23})`;ctx.stroke();}ctx.beginPath();ctx.fillStyle=`rgba(${rgb},${a})`;if(p.shape==='diamond'){ctx.moveTo(x,y-r*1.25);ctx.lineTo(x+r*1.05,y);ctx.lineTo(x,y+r*1.25);ctx.lineTo(x-r*1.05,y);ctx.closePath();ctx.fill();}else if(p.shape==='stretched'){ctx.ellipse(x,y,r*1.45,r*.72,Math.atan2(p.vy,p.vx),0,TAU);ctx.fill();}else{ctx.arc(x,y,r,0,TAU);ctx.fill();}}
     rafId=requestAnimationFrame(draw);
   }
   // Match Software Hub: defer expensive particle painting until the library is
@@ -620,7 +692,9 @@ main.wrap{position:relative;z-index:2;}
 <script src="shared/browser-guard.js"></script>
 <script src="shared/themed-select.js"></script>
 <script src="shared/startup-transition.js"></script>
+<script src="shared/library-integration-core.js"></script>
 <script src="shared/kinoteka-bridge.js"></script>
+<script src="shared/commons-posters.js"></script>
 <script>
 (()=>{
   const routeHandoff=()=>new Promise(resolve=>{

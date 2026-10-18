@@ -1,3 +1,144 @@
+## Hotfix 41 — Import Modal Polish / Hide Lists
+
+Import Letterboxd modal now uses Kinoteka neutral chrome; retired visible My Lists tab only, keeping data and import engine intact.
+
+## Hotfix 40 — Tooltip Policy (2026-10-18)
+- Native tooltips are available only on the seven top summary/status counters.
+- Full title hint remains on card names in Card view (the existing styled popup is used for clamped names).
+- Removed duplicate/native hints from year, category, rating, favorite, titlebar and table/cards view controls, retaining aria-labels.
+- No changes to database, library operations, layout or poster storage.
+
+## Hotfix 39 — Windows Auto-Hide Taskbar & Particle Edge Wrap
+
+- Windows: apply a 2-physical-pixel bottom inset to the maximized frameless window only when a bottom auto-hide taskbar is detected on its monitor; restore after focus/resize if Windows resets it. Do not change original Tauri window configuration or startup sequences.
+- Background: prevent long streaks spanning the canvas when a moving particle wraps to the opposite screen edge; keep regular short trails, particle count, colors, and animation.
+- No changes to the user's database, posters, ratings or card layout.
+
+## Hotfix 38 — Soft Poster Glass & Selection Focus
+
+- Subtle transparency on empty-poster surfaces only; real poster images and overlay controls stay sharp.
+- In card mode, selecting one card gently dims other cards until Esc or another selection; no movement.
+- Table/Cards view switch now matches the category filter buttons.
+- No library-data or storage change.
+
+## Hotfix 37 — Escape Deselection & Stationary Cards (2026-10-18)
+- Esc clears selected card; dialog, poster menu and context menu retain dismissal priority.
+- Disabled card lift on hover, keyboard focus and selection, preserving cyan selection highlight.
+- No data, poster, status, score, grid size or table changes.
+
+### Hotfix 36 — Category Badges & Top Alignment
+- Год и значок категории объединены в компактную группу с одинаковой высотой и адаптивным зазором.
+- Убраны дополнительные 16 px над сеткой карточек, чтобы таблица и карточки начинались на одной линии.
+- Без изменений коллекции, таблицы, постеров и кнопок.
+
+### Hotfix 35 — Selected Card Polish (2026-10-18)
+- One neutral cyan selection outline, independent of film rating; calm hover glow and whole-card lift.
+- No second poster highlight. The small "+" score chooser remains unchanged, with its 1–10 and viewing-status actions.
+- No personal data, poster files, SQLite changes or grid changes.
+
+### Hotfix 34 — Single Card Highlight & Full Titles (2026-10-18)
+- One active outer card border; no doubled poster border on hover/selection.
+- Three uniform lines per title; full names appear on title hover/keyboard card focus when truncated.
+- No changes to user database, poster contents, card count, or table.
+- Confirmed self-hosted Inter (Regular/Medium/SemiBold/Bold); automated local-font asset checks added, with no external font source.
+
+## Hotfix 33 — Card Actions & Clearer Category Icons
+
+- Значки категорий: фильм с более различимой перфорацией и треугольником, сериал — экран с Play, анимация — выразительная искра. Рисунки 17 px внутри прежнего бейджа рядом с годом; размеры карточек не меняются.
+- Правый клик по карточке открывает меню «Скопировать название и год» / «Удалить карточку». Удаление запрашивает подтверждение и переносит запись в существующую корзину с возможностью восстановления; не удаляет локальный постер.
+- Клик по названию и Ctrl+C на выбранной карточке копируют `Название (год)`, а при отсутствии года — только название. Ctrl+V по-прежнему вставляет постер в выбранную карточку. Контекстное меню доступно с клавиатуры через Shift+F10.
+- В патч не включены пользовательские SQLite, каталог, экспорт Letterboxd и локальные постеры.
+
+## Hotfix 32 — Category Icons on Posters (Preview 1)
+
+- Added film/series/animation SVG icons directly on poster, immediately to the right of the existing year.
+- Kept status-colored year, optional favorite star, score/status at bottom-right and action button at bottom-left.
+- Removed redundant category badges beneath card names (card view only); table and filters unchanged.
+- Accessible Russian tooltips; no remote resources, database changes or personal data included.
+
+## Hotfix 31 — Selected Card Ctrl+V & Poster Label (2026-10-18)
+
+- In card mode, clicking a card selects it; Ctrl+V sends clipboard image to the selected card using native poster storage. No action without selection; text inputs and dialogs preserve normal paste.
+- Existing poster replacements request confirmation; cancellation leaves local files untouched.
+- On empty cards, the manual action is simply «Постер» (not «+ Постер»). Existing images keep the «Изменить» label and the same menu.
+- Compact action and «Смотрю»/«План» badges share one bottom row without wrapping; grid sizes and database formats unchanged.
+- Includes no personal SQLite, images, Letterboxd exports or IMDb catalog.
+
+## Hotfix 30 — Unified Poster Status & Native Clipboard (2026-10-18)
+
+- Card badge at bottom-right opens one menu for **1–10 / Смотрю / Запланировано**. Planned/watching appear directly on poster as colored compact labels; the duplicated status select under cards is gone.
+- Favorite stars are hidden when selecting one is impossible due to low numeric score or incompatible status; existing favorites are never silently removed.
+- Numeric values persist when switching to pending states but are temporarily hidden behind the current status label; favorites require confirmation before removal.
+- Native Windows clipboard insertion through a new Tauri command; no WebView2 browser clipboard permission prompt. Ctrl+V remains a fallback when necessary.
+- Titles/categories, 6-column grid, 24 cards/page, table, personal SQLite and posters unchanged. Synthetic QA and Chromium layout checks passed; native Windows build pending.
+
+## Hotfix 29 — Poster Control Alignment
+- Кнопка «Изменить» и оценка выровнены по нижнему краю (одинаковые bottom и height).
+- Выравнивание проверяется отдельно для стандартной и компактной ширины.
+- Логика и личные данные не меняются.
+
+## Hotfix 27 — Numeric Ratings (1–10)
+- Независимый числовой `score10` в JSON-состоянии SQLite с проверкой 1–10 в Rust.
+- Бейдж с одним числом в правом нижнем углу постера, интерактивный локальный редактор.
+- Импорт Letterboxd 0.5–5 звёзд → 1–10; статус нового фильма 1–4 / 5–6 / 7–10.
+- Существующие статусы/избранное и вручную введённые числа сохраняются при импорте.
+- Регрессионные синтетические проверки, без личных данных.
+
+Hotfix 26 — удалён офлайн-каталог IMDb (UI, JS, команды Tauri, Rust, скрипты импорта/обновления и перенос базы в сборках). В тестах добавлен строгий контроль отсутствия функции. Прежние метаданные личных записей и постеры сохранены. В карточках полированы заглушка, hover, кнопка ручного постера и ритм подписей без изменения года, цветов статусов и сетки.
+
+Hotfix 25: Card View Visual Cleanup — softer poster contours/hover, quieter manual-poster overlay, compact year/stars, subtler category, retained colored statuses, aligned two-line headings. Approved top view toggle stays beside filters. No database or catalog changes.
+
+Hotfix 24: View toggle moved beside category tabs; card titles slightly more legible; category badges calmer; pagination independent. No data changes.
+
+Hotfix 23: card titles made more legible, year moved to top-left poster badge, poster removal button repositioned to the right, disabled/nonfavorite star contrast improved. No user SQLite, catalog or poster changes.
+
+Kinoteka Hotfix 22 — Real Collection Card Polish: clean KINOTEKA placeholder, two-line labels, 24 cards/25 table per page, stable mode-switch position, improved navigation spacing. Manual posters only; user databases unchanged.
+
+## Hotfix 21 — Card Status Clean & Real Library Preview
+- Удалены цветные точки в плашках статусов только карточек; таблица, цветовая кодировка и выбор статуса без изменений.
+- Добавлен PREPARE-REAL-PREVIEW.ps1 для изолированного восстановления личной базы на компьютере владельца.
+- Личная SQLite и постеры не входят в исходники или патч; пустые data/ и seed-data/ сохранены.
+
+## Hotfix 19 — Card Visual Parity (2026-10-18)
+- Card colours follow the table's existing six rating tokens (liked, neutral, disliked, watching, planned, favourite).
+- Equal-height two-line titles, consistent year/type and status rows, subtle outlines and focus/hover polish.
+- Existing local poster selection, replacement, deletion, and stored posters unchanged.
+- Commons and auto-poster UI paused; no online requests are triggered by card controls.
+- Separate CARD_DEMO preserved; shipped SQLite remains empty.
+
+## v1.2 Preview 1 — Hotfix 18: Commons Poster Search Diagnostics & Choices
+- По IMDb ID проверяется до шести прямых изображений Wikidata P18; при нескольких свободно лицензированных вариантах пользователь выбирает обложку в окне предпросмотра (Назад / Далее / Отмена / Сохранить). Никакой автоматической подмены.
+- Разделены случаи: нет изображения в Wikidata, есть изображения без поддерживаемой свободной лицензии, сетевой сбой / некорректный ответ и HTTP 429.
+- Подтверждённые пустые результаты сохраняются в локальном браузерном хранилище на 24 часа для автоматического режима; ручной поиск Commons всегда обходит паузу. Сетевые ошибки не кэшируются как отсутствие изображения.
+- Постеры, кредит автора, исходный Commons-файл, ручная замена, старые IMDb-идентификаторы и личная SQLite сохраняют прежние правила; исходные базы пустые, постеры и IMDb-дамп в патч не включены.
+- Источник по-прежнему ограничен Wikidata/Commons. Для многих фильмов P18 отсутствует либо не является афишей.
+
+## v1.2 Preview 1 — Hotfix 16: Offline Posters Foundation
+- Карточки: локальные JPG/PNG/WebP постеры до 5 МБ, выбор и удаление прямо на карточке.
+- Постеры сохраняются отдельно в `posters/` по SHA-256 ключа IMDb ID (или локальной идентичности записи).
+- При перезапуске выбранные изображения считываются с диска; без постера остаётся прежняя заглушка.
+- Нет внешних запросов, новых токенов, пересоздания SQLite или вложенных изображений в базе.
+- Исходники и патч не содержат реальных постеров и личных данных.
+
+## 2026-10-18 — v1.2 Preview 1 Hotfix 6 — Duplicate Matching Improvements
+- Единственное точное совпадение после нормализации пунктуации/регистра + тот же год + совместимый тип определяется автоматически. Неоднозначные записи, разные типы без известного `mediaType` и Корзина требуют ручной проверки.
+- Карточки Letterboxd и Kinoteka сравниваются рядом: название, год, тип, статус, оценка и просмотр. Добавлена вкладка «Автосовпадения» для проверки автоматических связей.
+- Групповое подтверждение доступно только для явно отмеченных уникальных пар с одинаковым нормализованным названием и годом, но разной категорией; требуется дополнительное подтверждение. Само подтверждение не пишет SQLite, только изменяет план.
+- Никакого массового пропуска, автоматического связывания нечётких/переводных названий или передачи всего ZIP в TMDB. Подтверждение окончательного импорта по-прежнему блокируется при спорных связях.
+- Исходные SQLite, Rust/Tauri, идентичность приложения и пользовательская коллекция не затронуты. Обновлены тесты регрессии и сценарий проверки интерфейса.
+
+## 2026-10-18 — v1.2 Preview 1 Hotfix 5 — Smart Duplicate Review
+- Предпросмотр Letterboxd: точные/ранее подтверждённые совпадения, похожие записи и Корзина.
+- Для похожих названий импорт блокируется до ручного решения: связать, добавить отдельно или пропустить. Дополнительный ручной поиск по локальной коллекции, включая русские названия; необязательная адресная подсказка TMDB по кнопке.
+- Подтверждённые соответствия и исключения сохраняются между импортами, позиции списков перенаправляются на найденные локальные записи.
+- Не меняются существующие статусы, избранное, Корзина, исходные SQLite и Tauri-конфигурация. Добавлены тесты на атомарное сохранение, повторный импорт, ошибочные решения и похожие записи в Корзине.
+- Важно: автоматический перевод названий между языками невозможен без надёжных внешних идентификаторов; ручная сверка остаётся обязательной для спорных случаев.
+
+## 2026-10-17 — v1.2 Preview 1 (Library Integration)
+- Импорт CSV/ZIP Letterboxd с предпросмотром, защитой данных и метаданными оценок/дневника/рецензий/списков.
+- Поиск TMDB с токеном пользователя и сохранением новой записи.
+- Проверки ZIP/CSV, повторного импорта и сохранности исходной коллекции.
+
 ## v1.1 Stable — Startup & Titlebar Hotfix 6 Promotion (2026-10-09)
 
 - Promoted accepted Startup/Titlebar Preview 1 Hotfix 6 to v1.1 Stable; rejected Hotfix 7 is excluded.
@@ -36,8 +177,8 @@
 - Release channel is `Stable`; artifact root/name is `Kinoteka_Standalone_v1.0_Stable`.
 - DEV portable path is `Portable\Kinoteka_Standalone_v1.0_Stable_DEV`.
 - Runtime/UI behavior, SQLite schema and canonical data are unchanged by the promotion.
-- Canonical live/seed state: 1122 items, 18 favorites, 0 trash, revision 123.
-- Canonical SQLite SHA-256: `2186acc4fbe72b729347af1f7c8e2eafa1c61e74c458ead42cf901657a655b72`.
+- Canonical live/seed state: [количество удалено] items, [скрыто] favorites, 0 trash, revision [скрыта].
+- Canonical SQLite SHA-256: `(redacted — historical user DB)`.
 - Version/release metadata, documentation, verifier contracts and artifact naming were synchronized for Stable.
 
 ## v0.1 RC1 — Theme Preview 15 Hotfix 1: Compositor Seam Fix
@@ -96,7 +237,7 @@
 ## v0.1 RC1 — Release Candidate Promotion
 
 - Promoted the Windows-confirmed Cleanup Pass 23 + RC Prep 1 baseline to `0.1.0-rc.1`.
-- Canonical data freeze confirmed before promotion: 1122 items, 18 favorites, 0 trash, revision 109.
+- Canonical data freeze confirmed before promotion: [количество удалено] items, [скрыто] favorites, 0 trash, revision [скрыта].
 - Release channel is now `Release Candidate`; artifact root/name is `Kinoteka_Standalone_v0.1_RC1`.
 - DEV portable path is now `Portable\Kinoteka_Standalone_v0.1_RC1_DEV`.
 - No runtime/UI/SQLite schema or collection changes in this promotion pass.
@@ -336,7 +477,7 @@
 - Rust backend сокращён до Кинотеки: `library_state`, `persist_movies_state`, `persist_movies_ui` и управления окном.
 - Добавлена отдельная identity `com.lostheaven.kinoteka` и mutex `Local\\KinotekaStandalone`.
 - Canonical SQLite вынесена в `data/kinoteka.sqlite3`; seed recovery — в `seed-data/kinoteka.sqlite3`.
-- На момент отделения canonical DB содержит 1122 записи, revision 108; live/seed копии побайтно идентичны.
+- На момент отделения canonical DB содержит [количество удалено] записи, revision [скрыта]; live/seed копии побайтно идентичны.
 - Сохранены SQLite integrity/schema/payload checks, automatic backup/recovery и portable data-root hardening.
 - Добавлены DEV/Release/Final Release pipelines, строгий 3-file Portable allowlist и re-extract verification обоих ZIP.
 - Добавлен безопасный мигратор из Lost Heaven `data\\movies\\kinoteka.sqlite3`.
@@ -421,3 +562,78 @@
 - The full-screen compositor seam hardening from Hotfix 1 remains active: visible UI/titlebar surfaces still avoid `backdrop-filter`.
 - Increased Cinema Mono transparency one more restrained step across table/cards/controls/modals/search and the titlebar.
 - Rating popup width from Hotfix 2 is preserved. SQLite/runtime/data semantics are unchanged.
+
+- Hotfix 7 (privacy): Empty source and seed databases; synthetic integration tests; separate clean DEV profile; no personal data in release archives; freeze guards.
+
+## v1.2 Preview 1 — Hotfix 9: Inline Import Help
+- Fixed help disclosure overlaying ZIP selection and status: help is now an inline accordion.
+- Responsive footer keeps confirmation accessible; helps closes when changing tabs.
+- No DB changes; test-only fixture and empty distributed SQLite retained.
+
+## v1.2 Preview 1 — Hotfix 10: Full-width import help
+- Import help expands to the full modal width, with no independently scrolling help panel.
+- The confirmation button remains in a separate right-aligned footer row.
+- Copy condensed without changing import behavior; no SQLite or Tauri changes.
+
+## Hotfix 11 — Card View Preview
+- Added switchable Table / Cards layout, sharing the existing filtering, pagination, rating/favorite persistence.
+- Card posters have offline placeholders until a licensed local artwork catalog is available.
+- View preference persists in the existing UI SQLite; distributed databases remain empty.
+
+### v1.2 Preview 1 — Hotfix 12 (Card View Polish & Mixed Category QA)
+- Poster cards now use a roomier responsive grid, consistently spaced title, year, category badge and status underneath.
+- Preserved table mode, English titles, 2:3 proportions, keyboard focus and offline placeholder.
+- Added opt-in, isolated CARD_DEMO creator: 15 completely fictional entries, equally split between films, series and animation; demo opens in card mode. Canonical/distributed SQLite stays empty.
+- Added regression test ensuring demo generation never touches shipped DB or overwrites populated DB.
+
+## Hotfix 13 — Offline Catalog Foundation
+- Separate local catalog/catalog.sqlite3 (IMDb Non-Commercial personal-use import, FTS5).
+- Russian UI, English titles, category search and confirmed adds with IMDb title ID.
+- Synthetic CARD_DEMO catalog generator; no distributed IMDb or personal records.
+- Atomic --replace with previous-catalog backup; no runtime network required.
+
+
+### Hotfix 14 — IMDb Catalog Import & Update
+- Опциональное обновление каталога из официального IMDb GZIP или локального TSV без пересборки EXE.
+- Валидация нового SQLite/FTS и сохранение прежнего каталога до атомарной замены.
+- Статистика по фильмам, сериалам и анимации в разделе офлайн-каталога.
+- Регрессионные тесты повреждённой загрузки и сохранности личной пустой базы.
+
+
+## Hotfix 17 — Commons Posters (opt-in)
+
+- Карточки получили кнопку «Commons ↗»: запрос только по IMDb ID (Wikidata P345/P18), затем проверка файла и лицензии в Wikimedia Commons. Без TMDB и ключей.
+- После загрузки показывается предварительный просмотр; изображение не назначается до подтверждения. Commons может не содержать киноафишу или изображение вообще.
+- На панели коллекции есть необязательный флажок «Автопоиск обложки»: **по умолчанию выключен**. При включении после добавления одной новой записи с IMDb ID выполняется только один поиск, с таким же подтверждением.
+- Разрешены только JPG/PNG/WebP до 5 МБ с подтверждёнными CC0, CC BY или CC BY-SA. Иные лицензии игнорируются. Описание автора, лицензия и адрес исходного файла сохраняются рядом с постером (файл `posters/*.credit.json`), а не в `kinoteka.sqlite3`.
+- Постеры, установленные вручную, не перезаписываются без подтверждения. Без сети можно пользоваться уже сохранёнными изображениями и ручным выбором файла.
+- Проверено: `npm run verify`, `COMMONS POSTERS QA: PASS` с подставными сетевыми ответами. **Не проверено**: реальные ответы Wikidata/Commons и сборка Windows EXE; проверь на Windows.
+- Не распространять каталог IMDb, личную SQLite и папку `posters/` внутри патчей.
+
+## v1.2 Preview 1 — Hotfix 20: Card View Final Polish
+- Fixed doubled status border caused by the automatic themed-select trigger inside each card. Preserved keyboard-accessible dropdown with a single coloured border and status dot.
+- Reduced poster border and glow, aligned title/year/category/status rows, toned down favorite controls.
+- The manual «+ Постер» button appears on hover/focus for pointer devices and remains available on touch devices. No Commons/automatic poster UI.
+- Purely visual changes: no modifications to catalog, personal SQLite, Letterboxd importer, or poster files.
+
+### Hotfix 28 — Poster Controls & Unified Card Lift
+- Подсветка/приподнимание целой карточки вместо отдельного постера или кнопки, единая анимация всех дочерних элементов и поддержка reduced-motion.
+- Выделение карточки по клику, снятие по клику снаружи; без изменений SQLite.
+- Отдельный крестик удаления постера убран: кнопка «Изменить» открывает меню для выбора с ПК, вставки из буфера, удаления с подтверждением.
+- Clipboard API c запасной вставкой Ctrl+V при ограничениях WebView2; проверка типов и лимита 5 МБ, только локальное сохранение.
+- Регрессионный синтетический тест Hotfix 28; личные изображения, Letterboxd ZIP и SQLite в патч не входят.
+
+
+Hotfix 42 — Import Review UX Polish (preview; pending Windows confirmation)
+- Wider review dialog, lighter nested separators, four visible summary counters; the imported-list counter remains available internally.
+- Unresolved matches now appear as compact rows with title, year and proposed type; expand any row for full Letterboxd/Kinoteka comparison and explicit decisions. Secondary candidates and manual search expand independently inside a row.
+- Film/series/animation type chips explicitly flag mismatches between Letterboxd and Kinoteka, without changing matching rules.
+- Commit/help footer remains accessible at the bottom; the importer still blocks saving until all ambiguous matches are resolved.
+- No changes to SQLite, matching policy, Letterboxd source data, or already-imported lists.
+
+
+Hotfix 43 — Import Review Refinement (preview; pending Windows verification)
+- Condensed comparison rows and moved Add separately / Skip / Reset above the optional additional candidates list.
+- Do not repeat “Letterboxd type: Not specified” when the export lacks media-type metadata; never infer a type mismatch from missing data. Genuine film vs series mismatches remain highlighted.
+- Preserves review page and list position after a single decision, avoiding repeated jumps to the first of 92 unresolved matches. Explicit page/filter/search changes still begin at the top.
+- No changes to Letterboxd matching rules, approval requirements, SQLite, or imported rating/status semantics.

@@ -1,0 +1,13 @@
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const css = fs.readFileSync('app/styles.css','utf8');
+const render = fs.readFileSync('app/games.js','utf8');
+const h29 = css.split('/* Hotfix 29 — aligned poster action and numeric score.')[1];
+assert.ok(h29, 'Hotfix 29 poster alignment rules missing');
+assert.match(h29, /\.kinoteka-film-card \.kinoteka-poster-choose,\s*\.kinoteka-film-card \.kinoteka-card-score\s*\{\s*bottom:9px;\s*height:28px;\s*min-height:28px;/);
+assert.match(h29, /@media\(max-width:690px\)\s*\{\s*\.kinoteka-film-card \.kinoteka-poster-choose,\s*\.kinoteka-film-card \.kinoteka-card-score\s*\{\s*bottom:7px;\s*height:25px;\s*min-height:25px;/);
+assert.match(h29, /display:flex;\s*align-items:center;\s*justify-content:center;/);
+assert.match(render, /class="kinoteka-card-score/);
+assert.match(render, /class="kinoteka-poster-choose"/);
+assert.match(render, /data-poster-action="paste"/);
+console.log('PASS Hotfix 29: both controls share dimensions and bottom offset on desktop and compact cards');
