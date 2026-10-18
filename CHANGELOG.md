@@ -1,83 +1,87 @@
-## Hotfix 41 — Import Modal Polish / Hide Lists
+# История изменений Кинотеки 🎬
 
-Import Letterboxd modal now uses Kinoteka neutral chrome; retired visible My Lists tab only, keeping data and import engine intact.
+> Основной журнал ведётся на русском языке. [Исходная двуязычная версия](CHANGELOG_ORIGINAL.md) сохранена без изменений.
 
-## Hotfix 40 — Tooltip Policy (2026-10-18)
-- Native tooltips are available only on the seven top summary/status counters.
-- Full title hint remains on card names in Card view (the existing styled popup is used for clamped names).
-- Removed duplicate/native hints from year, category, rating, favorite, titlebar and table/cards view controls, retaining aria-labels.
-- No changes to database, library operations, layout or poster storage.
+## Hotfix 41 — Доработка окна импорта / скрытие списков
 
-## Hotfix 39 — Windows Auto-Hide Taskbar & Particle Edge Wrap
+Окно импорта Letterboxd получило нейтральное оформление Кинотеки. Скрыта только видимая вкладка «Мои списки»; сами данные и механизм импорта сохранены.
 
-- Windows: apply a 2-physical-pixel bottom inset to the maximized frameless window only when a bottom auto-hide taskbar is detected on its monitor; restore after focus/resize if Windows resets it. Do not change original Tauri window configuration or startup sequences.
-- Background: prevent long streaks spanning the canvas when a moving particle wraps to the opposite screen edge; keep regular short trails, particle count, colors, and animation.
-- No changes to the user's database, posters, ratings or card layout.
+## Hotfix 40 — Политика всплывающих подсказок (2026-10-18)
+- Стандартные подсказки оставлены только у семи верхних счётчиков сводки и статусов.
+- Подсказка с полным названием сохраняется у карточек в режиме карточек; для обрезанных названий используется существующее оформленное окно.
+- Убраны дублирующиеся и стандартные подсказки у года, категории, оценки, избранного, заголовка окна и переключателя таблицы/карточек; метки доступности `aria-label` сохранены.
+- База данных, операции с коллекцией, компоновка и хранение постеров не изменены.
 
-## Hotfix 38 — Soft Poster Glass & Selection Focus
+## Hotfix 39 — Автоскрываемая панель задач Windows и переход частиц через край
 
-- Subtle transparency on empty-poster surfaces only; real poster images and overlay controls stay sharp.
-- In card mode, selecting one card gently dims other cards until Esc or another selection; no movement.
-- Table/Cards view switch now matches the category filter buttons.
-- No library-data or storage change.
+- Windows: для развёрнутого безрамочного окна добавлен нижний отступ в 2 физических пикселя только при наличии автоматически скрываемой нижней панели задач на том же мониторе. Если Windows сбрасывает отступ, он восстанавливается после фокусировки или изменения размера. Исходные настройки окна Tauri и порядок запуска не изменены.
+- Фон: устранены длинные полосы через весь холст при переходе частицы на противоположный край; короткие следы, количество, цвета и анимация частиц сохранены.
+- Пользовательская база, постеры, оценки и расположение карточек не изменены.
 
-## Hotfix 37 — Escape Deselection & Stationary Cards (2026-10-18)
-- Esc clears selected card; dialog, poster menu and context menu retain dismissal priority.
-- Disabled card lift on hover, keyboard focus and selection, preserving cyan selection highlight.
-- No data, poster, status, score, grid size or table changes.
+## Hotfix 38 — Лёгкая прозрачность постеров и фокус на выбранной карточке
 
-### Hotfix 36 — Category Badges & Top Alignment
+- Небольшая прозрачность применяется только к пустым областям постеров; настоящие изображения и расположенные поверх кнопки остаются чёткими.
+- В режиме карточек выбор одной карточки мягко приглушает остальные до нажатия Esc или смены выбора, без перемещения карточек.
+- Переключатель таблицы и карточек теперь оформлен в стиле кнопок фильтра категорий.
+- Библиотека и хранение данных не менялись.
+
+## Hotfix 37 — Снятие выделения по Esc и неподвижные карточки (2026-10-18)
+- Esc снимает выделение карточки; закрытие диалогов, меню постера и контекстного меню остаётся приоритетным.
+- Подъём карточки при наведении, фокусе с клавиатуры и выборе отключён, бирюзовая подсветка выделения сохранена.
+- Данные, постеры, статусы, оценки, размер сетки и таблица не изменены.
+
+### Hotfix 36 — Значки категорий и выравнивание верхнего края
 - Год и значок категории объединены в компактную группу с одинаковой высотой и адаптивным зазором.
 - Убраны дополнительные 16 px над сеткой карточек, чтобы таблица и карточки начинались на одной линии.
 - Без изменений коллекции, таблицы, постеров и кнопок.
 
-### Hotfix 35 — Selected Card Polish (2026-10-18)
-- One neutral cyan selection outline, independent of film rating; calm hover glow and whole-card lift.
-- No second poster highlight. The small "+" score chooser remains unchanged, with its 1–10 and viewing-status actions.
-- No personal data, poster files, SQLite changes or grid changes.
+### Hotfix 35 — Полировка выделенной карточки (2026-10-18)
+- Одна нейтральная бирюзовая рамка выделения независимо от оценки фильма; мягкое свечение при наведении и подъём всей карточки.
+- Вторая подсветка постера убрана. Маленький переключатель оценки «+» с вариантами 1–10 и действиями статуса просмотра не изменён.
+- Личные данные, файлы постеров, SQLite и сетка не затронуты.
 
-### Hotfix 34 — Single Card Highlight & Full Titles (2026-10-18)
-- One active outer card border; no doubled poster border on hover/selection.
-- Three uniform lines per title; full names appear on title hover/keyboard card focus when truncated.
-- No changes to user database, poster contents, card count, or table.
-- Confirmed self-hosted Inter (Regular/Medium/SemiBold/Bold); automated local-font asset checks added, with no external font source.
+### Hotfix 34 — Единая подсветка карточки и полные названия (2026-10-18)
+- Одна внешняя рамка активной карточки; двойная рамка постера при наведении и выборе убрана.
+- Для каждого названия отведены три строки; при обрезке полное название показывается при наведении на него или фокусе карточки с клавиатуры.
+- Пользовательская база, содержимое постеров, количество карточек и таблица не изменены.
+- Подтверждено локальное использование Inter (Regular/Medium/SemiBold/Bold); добавлены автоматические проверки файлов шрифта без внешнего источника.
 
-## Hotfix 33 — Card Actions & Clearer Category Icons
+## Hotfix 33 — Действия с карточками и более понятные значки категорий
 
 - Значки категорий: фильм с более различимой перфорацией и треугольником, сериал — экран с Play, анимация — выразительная искра. Рисунки 17 px внутри прежнего бейджа рядом с годом; размеры карточек не меняются.
 - Правый клик по карточке открывает меню «Скопировать название и год» / «Удалить карточку». Удаление запрашивает подтверждение и переносит запись в существующую корзину с возможностью восстановления; не удаляет локальный постер.
 - Клик по названию и Ctrl+C на выбранной карточке копируют `Название (год)`, а при отсутствии года — только название. Ctrl+V по-прежнему вставляет постер в выбранную карточку. Контекстное меню доступно с клавиатуры через Shift+F10.
 - В патч не включены пользовательские SQLite, каталог, экспорт Letterboxd и локальные постеры.
 
-## Hotfix 32 — Category Icons on Posters (Preview 1)
+## Hotfix 32 — Значки категорий на постерах (Preview 1)
 
-- Added film/series/animation SVG icons directly on poster, immediately to the right of the existing year.
-- Kept status-colored year, optional favorite star, score/status at bottom-right and action button at bottom-left.
-- Removed redundant category badges beneath card names (card view only); table and filters unchanged.
-- Accessible Russian tooltips; no remote resources, database changes or personal data included.
+- На постерах справа от года добавлены SVG-значки фильма, сериала и анимации.
+- Сохранены цвет года по статусу, необязательная звезда избранного, оценка/статус справа внизу и кнопка действия слева внизу.
+- Лишние значки категории под названием удалены только в режиме карточек; таблица и фильтры не менялись.
+- Сохранены русские доступные подсказки; нет внешних ресурсов, изменений БД или пользовательских данных.
 
-## Hotfix 31 — Selected Card Ctrl+V & Poster Label (2026-10-18)
+## Hotfix 31 — Ctrl+V для выбранной карточки и подпись постера (2026-10-18)
 
-- In card mode, clicking a card selects it; Ctrl+V sends clipboard image to the selected card using native poster storage. No action without selection; text inputs and dialogs preserve normal paste.
-- Existing poster replacements request confirmation; cancellation leaves local files untouched.
-- On empty cards, the manual action is simply «Постер» (not «+ Постер»). Existing images keep the «Изменить» label and the same menu.
-- Compact action and «Смотрю»/«План» badges share one bottom row without wrapping; grid sizes and database formats unchanged.
-- Includes no personal SQLite, images, Letterboxd exports or IMDb catalog.
+- Нажатие на карточку выбирает её; Ctrl+V вставляет изображение из буфера в выбранную карточку через нативное хранилище постеров. Без выбранной карточки действие не выполняется; в текстовых полях и диалогах вставка работает обычным образом.
+- При замене существующего постера запрашивается подтверждение; отмена не затрагивает локальные файлы.
+- На пустой карточке действие ручной установки называется просто «Постер», без «+». Для существующих изображений сохраняются надпись «Изменить» и прежнее меню.
+- Компактная кнопка и статусы «Смотрю»/«План» располагаются в одном нижнем ряду без переноса; размеры сетки и формат БД не менялись.
+- Личные SQLite, изображения, экспорты Letterboxd и каталог IMDb в патч не включены.
 
-## Hotfix 30 — Unified Poster Status & Native Clipboard (2026-10-18)
+## Hotfix 30 — Единый статус постера и нативный буфер обмена (2026-10-18)
 
-- Card badge at bottom-right opens one menu for **1–10 / Смотрю / Запланировано**. Planned/watching appear directly on poster as colored compact labels; the duplicated status select under cards is gone.
-- Favorite stars are hidden when selecting one is impossible due to low numeric score or incompatible status; existing favorites are never silently removed.
-- Numeric values persist when switching to pending states but are temporarily hidden behind the current status label; favorites require confirmation before removal.
-- Native Windows clipboard insertion through a new Tauri command; no WebView2 browser clipboard permission prompt. Ctrl+V remains a fallback when necessary.
-- Titles/categories, 6-column grid, 24 cards/page, table, personal SQLite and posters unchanged. Synthetic QA and Chromium layout checks passed; native Windows build pending.
+- Значок статуса справа внизу карточки открывает единое меню **1–10 / Смотрю / Запланировано**. Статусы просмотра/планирования показаны прямо на постере компактными цветными плашками; дублирующий список статуса под карточкой удалён.
+- Звезда избранного скрывается, когда выбор недоступен из-за низкой числовой оценки или несовместимого статуса; уже добавленные в избранное записи автоматически не удаляются.
+- Числовые оценки сохраняются при переключении в статусы ожидания, но временно скрываются за текущей подписью статуса; удаление из избранного требует подтверждения.
+- Добавлена нативная вставка из буфера Windows через команду Tauri — без запроса разрешения WebView2 на буфер браузера. При необходимости Ctrl+V остаётся запасным способом.
+- Названия и категории, сетка из 6 столбцов, 24 карточки на страницу, таблица, личная SQLite и постеры не изменены. Синтетические тесты и проверки компоновки Chromium пройдены; нативная сборка Windows на этом этапе ожидала проверки.
 
-## Hotfix 29 — Poster Control Alignment
+## Hotfix 29 — Выравнивание элементов управления постером
 - Кнопка «Изменить» и оценка выровнены по нижнему краю (одинаковые bottom и height).
 - Выравнивание проверяется отдельно для стандартной и компактной ширины.
 - Логика и личные данные не меняются.
 
-## Hotfix 27 — Numeric Ratings (1–10)
+## Hotfix 27 — Числовые оценки (1–10)
 - Независимый числовой `score10` в JSON-состоянии SQLite с проверкой 1–10 в Rust.
 - Бейдж с одним числом в правом нижнем углу постера, интерактивный локальный редактор.
 - Импорт Letterboxd 0.5–5 звёзд → 1–10; статус нового фильма 1–4 / 5–6 / 7–10.
@@ -86,68 +90,68 @@ Import Letterboxd modal now uses Kinoteka neutral chrome; retired visible My Lis
 
 Hotfix 26 — удалён офлайн-каталог IMDb (UI, JS, команды Tauri, Rust, скрипты импорта/обновления и перенос базы в сборках). В тестах добавлен строгий контроль отсутствия функции. Прежние метаданные личных записей и постеры сохранены. В карточках полированы заглушка, hover, кнопка ручного постера и ритм подписей без изменения года, цветов статусов и сетки.
 
-Hotfix 25: Card View Visual Cleanup — softer poster contours/hover, quieter manual-poster overlay, compact year/stars, subtler category, retained colored statuses, aligned two-line headings. Approved top view toggle stays beside filters. No database or catalog changes.
+Hotfix 25 — Визуальная очистка режима карточек: мягче контуры постеров и подсветка при наведении, спокойнее кнопка ручного постера, компактнее год и звёзды, сдержаннее значок категории, сохранены цветные статусы и выровнены двухстрочные заголовки. Одобренный переключатель представления остаётся рядом с фильтрами. База данных и каталог не изменены.
 
-Hotfix 24: View toggle moved beside category tabs; card titles slightly more legible; category badges calmer; pagination independent. No data changes.
+Hotfix 24 — Переключатель представления перенесён рядом с вкладками категорий; названия карточек стали немного читабельнее, значки категорий — спокойнее, пагинация — независимой. Данные не менялись.
 
-Hotfix 23: card titles made more legible, year moved to top-left poster badge, poster removal button repositioned to the right, disabled/nonfavorite star contrast improved. No user SQLite, catalog or poster changes.
+Hotfix 23 — Повышена читаемость заголовков карточек; год перенесён в верхний левый угол постера, кнопка удаления постера — вправо; улучшена контрастность неактивной звезды. Пользовательская SQLite, каталог и постеры не изменены.
 
-Kinoteka Hotfix 22 — Real Collection Card Polish: clean KINOTEKA placeholder, two-line labels, 24 cards/25 table per page, stable mode-switch position, improved navigation spacing. Manual posters only; user databases unchanged.
+Kinoteka Hotfix 22 — Полировка карточек реальной коллекции: чистая заглушка KINOTEKA, двухстрочные названия, 24 карточки или 25 строк таблицы на страницу, сохранение позиции при переключении вида и улучшенные отступы навигации. Только ручные постеры; пользовательские базы не менялись.
 
-## Hotfix 21 — Card Status Clean & Real Library Preview
+## Hotfix 21 — Очистка отображения статусов карточек и просмотр реальной библиотеки
 - Удалены цветные точки в плашках статусов только карточек; таблица, цветовая кодировка и выбор статуса без изменений.
 - Добавлен PREPARE-REAL-PREVIEW.ps1 для изолированного восстановления личной базы на компьютере владельца.
 - Личная SQLite и постеры не входят в исходники или патч; пустые data/ и seed-data/ сохранены.
 
-## Hotfix 19 — Card Visual Parity (2026-10-18)
-- Card colours follow the table's existing six rating tokens (liked, neutral, disliked, watching, planned, favourite).
-- Equal-height two-line titles, consistent year/type and status rows, subtle outlines and focus/hover polish.
-- Existing local poster selection, replacement, deletion, and stored posters unchanged.
-- Commons and auto-poster UI paused; no online requests are triggered by card controls.
-- Separate CARD_DEMO preserved; shipped SQLite remains empty.
+## Hotfix 19 — Визуальное соответствие карточек таблице (2026-10-18)
+- Цвета карточек соответствуют шести существующим значениям статусов таблицы: понравилось, нормально, не понравилось, смотрю, запланировано и избранное.
+- Названия одинаковой высоты в две строки, согласованное расположение года, типа и статуса, мягкие рамки и доработка фокуса/наведения.
+- Выбор, замена и удаление локальных постеров, а также уже сохранённые постеры не изменены.
+- Интерфейс Commons и автоматических постеров временно отключён; действия с карточками не вызывают сетевых запросов.
+- Отдельный демонстрационный набор `CARD_DEMO` сохранён; поставляемая SQLite остаётся пустой.
 
-## v1.2 Preview 1 — Hotfix 18: Commons Poster Search Diagnostics & Choices
+## v1.2 Preview 1 — Hotfix 18: Диагностика поиска постеров Commons и выбор изображений
 - По IMDb ID проверяется до шести прямых изображений Wikidata P18; при нескольких свободно лицензированных вариантах пользователь выбирает обложку в окне предпросмотра (Назад / Далее / Отмена / Сохранить). Никакой автоматической подмены.
 - Разделены случаи: нет изображения в Wikidata, есть изображения без поддерживаемой свободной лицензии, сетевой сбой / некорректный ответ и HTTP 429.
 - Подтверждённые пустые результаты сохраняются в локальном браузерном хранилище на 24 часа для автоматического режима; ручной поиск Commons всегда обходит паузу. Сетевые ошибки не кэшируются как отсутствие изображения.
 - Постеры, кредит автора, исходный Commons-файл, ручная замена, старые IMDb-идентификаторы и личная SQLite сохраняют прежние правила; исходные базы пустые, постеры и IMDb-дамп в патч не включены.
 - Источник по-прежнему ограничен Wikidata/Commons. Для многих фильмов P18 отсутствует либо не является афишей.
 
-## v1.2 Preview 1 — Hotfix 16: Offline Posters Foundation
+## v1.2 Preview 1 — Hotfix 16: Основа локального хранения постеров
 - Карточки: локальные JPG/PNG/WebP постеры до 5 МБ, выбор и удаление прямо на карточке.
 - Постеры сохраняются отдельно в `posters/` по SHA-256 ключа IMDb ID (или локальной идентичности записи).
 - При перезапуске выбранные изображения считываются с диска; без постера остаётся прежняя заглушка.
 - Нет внешних запросов, новых токенов, пересоздания SQLite или вложенных изображений в базе.
 - Исходники и патч не содержат реальных постеров и личных данных.
 
-## 2026-10-18 — v1.2 Preview 1 Hotfix 6 — Duplicate Matching Improvements
+## 2026-10-18 — v1.2 Preview 1 Hotfix 6 — Улучшение поиска совпадающих записей
 - Единственное точное совпадение после нормализации пунктуации/регистра + тот же год + совместимый тип определяется автоматически. Неоднозначные записи, разные типы без известного `mediaType` и Корзина требуют ручной проверки.
 - Карточки Letterboxd и Kinoteka сравниваются рядом: название, год, тип, статус, оценка и просмотр. Добавлена вкладка «Автосовпадения» для проверки автоматических связей.
 - Групповое подтверждение доступно только для явно отмеченных уникальных пар с одинаковым нормализованным названием и годом, но разной категорией; требуется дополнительное подтверждение. Само подтверждение не пишет SQLite, только изменяет план.
 - Никакого массового пропуска, автоматического связывания нечётких/переводных названий или передачи всего ZIP в TMDB. Подтверждение окончательного импорта по-прежнему блокируется при спорных связях.
 - Исходные SQLite, Rust/Tauri, идентичность приложения и пользовательская коллекция не затронуты. Обновлены тесты регрессии и сценарий проверки интерфейса.
 
-## 2026-10-18 — v1.2 Preview 1 Hotfix 5 — Smart Duplicate Review
+## 2026-10-18 — v1.2 Preview 1 Hotfix 5 — Умная ручная сверка дубликатов
 - Предпросмотр Letterboxd: точные/ранее подтверждённые совпадения, похожие записи и Корзина.
 - Для похожих названий импорт блокируется до ручного решения: связать, добавить отдельно или пропустить. Дополнительный ручной поиск по локальной коллекции, включая русские названия; необязательная адресная подсказка TMDB по кнопке.
 - Подтверждённые соответствия и исключения сохраняются между импортами, позиции списков перенаправляются на найденные локальные записи.
 - Не меняются существующие статусы, избранное, Корзина, исходные SQLite и Tauri-конфигурация. Добавлены тесты на атомарное сохранение, повторный импорт, ошибочные решения и похожие записи в Корзине.
 - Важно: автоматический перевод названий между языками невозможен без надёжных внешних идентификаторов; ручная сверка остаётся обязательной для спорных случаев.
 
-## 2026-10-17 — v1.2 Preview 1 (Library Integration)
+## 2026-10-17 — v1.2 Preview 1 (Интеграция библиотеки)
 - Импорт CSV/ZIP Letterboxd с предпросмотром, защитой данных и метаданными оценок/дневника/рецензий/списков.
 - Поиск TMDB с токеном пользователя и сохранением новой записи.
 - Проверки ZIP/CSV, повторного импорта и сохранности исходной коллекции.
 
-## v1.1 Stable — Startup & Titlebar Hotfix 6 Promotion (2026-10-09)
+## v1.1 Stable — Hotfix 6: утверждённый запуск и заголовок окна (2026-10-09)
 
-- Promoted accepted Startup/Titlebar Preview 1 Hotfix 6 to v1.1 Stable; rejected Hotfix 7 is excluded.
-- Smooth 1.73s startup handoff, early centered 42px titlebar, custom vector window controls.
-- Native visible/maximized first paint; no late show/maximize; non-resizable edge and early button CSS.
-- Runtime and canonical SQLite state unchanged; version, release metadata, verifier contracts, and artifact naming updated.
-- Retains known short native black pre-WebView frame; Windows visual smoke test remains required.
+- Подтверждённая версия Startup/Titlebar Preview 1 Hotfix 6 переведена в v1.1 Stable; отклонённый Hotfix 7 не включён.
+- Плавный переход к интерфейсу за 1,73 секунды, раннее отображение центрированного заголовка высотой 42 px, собственные векторные кнопки окна.
+- Нативное окно отображается сразу в развёрнутом состоянии; поздние вызовы показа/разворачивания отсутствуют; сохранены настройки запрета изменения размера и ранние стили кнопок.
+- Работа приложения и каноническое состояние SQLite не менялись; обновлены версия, метаданные релиза, контракты проверок и имена артефактов.
+- Известный короткий чёрный кадр до появления WebView сохранён; визуальную проверку на Windows необходимо выполнять отдельно.
 
-## v1.0 Stable — Reset Fade Parity with Trash
+## v1.0 Stable — Единое затухание окна сброса и корзины
 
 - Затухание кнопки «Сбросить» переведено на тот же проверенный двухфазный принцип, что используется у Корзины: сначала заканчивается press/icon-анимация, затем отдельный CSS transition ведёт кнопку к неактивному состоянию.
 - Fade-кадр теперь полностью совпадает с фактическим финальным `:disabled` состоянием (border/background/color/opacity/filter/box-shadow), поэтому в конце больше нет визуального скачка.
@@ -155,7 +159,7 @@ Kinoteka Hotfix 22 — Real Collection Card Polish: clean KINOTEKA placeholder, 
 - `disabled=true` применяется только после `transitionend`; сохранён fallback `fade + 180 ms`, а повторный клик/Ctrl+Z во время анимации блокируется.
 - SQLite, канонические данные и остальной UI не менялись.
 
-## v1.0 Stable — Reset Animation Timing + Fade Handoff Fix
+## v1.0 Stable — Время анимации сброса и исправление перехода к затуханию
 
 - Основная анимация «Сбросить» ускорена умеренно: 0.94 → 0.82 с; иконка синхронизирована с той же длительностью.
 - Исправлен переход в неактивное состояние: после окончания press-анимации класс `reset-press` снимается сразу и без промежуточной паузы запускается transition-fade.
@@ -163,7 +167,7 @@ Kinoteka Hotfix 22 — Real Collection Card Polish: clean KINOTEKA placeholder, 
 - Добавлен 800 мс fallback, чтобы WebView2 не мог оставить кнопку активной, если `transitionend` не придёт из-за compositor/lifecycle-события.
 - Принятая плавная траектория вращения из Reset Animation Pause Fix сохранена; SQLite и канонические данные не менялись.
 
-## v1.0 Stable — Reset Animation Pause Fix
+## v1.0 Stable — Исправление паузы анимации сброса
 
 - Исправлена воспринимаемая пауза/ступенька в середине анимации кнопки «Сбросить».
 - Сохранены подтверждённые длительности и анимация самой кнопки/ripple из v1.8.32; изменён только трек иконки.
@@ -171,32 +175,32 @@ Kinoteka Hotfix 22 — Real Collection Card Polish: clean KINOTEKA placeholder, 
 - Для вращения иконки используется linear timing, чтобы границы keyframes не создавали визуальное зависание.
 - Runtime, SQLite, данные, фильтры и release-контракты не менялись.
 
-## v1.0 Stable — RC1 Promotion
+## v1.0 Stable — Перевод RC1 в стабильный выпуск
 
-- Promoted the confirmed `v0.1 RC1 Theme Preview 15 Hotfix 3` baseline to `1.0.0` Stable.
-- Release channel is `Stable`; artifact root/name is `Kinoteka_Standalone_v1.0_Stable`.
-- DEV portable path is `Portable\Kinoteka_Standalone_v1.0_Stable_DEV`.
-- Runtime/UI behavior, SQLite schema and canonical data are unchanged by the promotion.
-- Canonical live/seed state: [количество удалено] items, [скрыто] favorites, 0 trash, revision [скрыта].
-- Canonical SQLite SHA-256: `(redacted — historical user DB)`.
-- Version/release metadata, documentation, verifier contracts and artifact naming were synchronized for Stable.
+- Подтверждённая базовая версия `v0.1 RC1 Theme Preview 15 Hotfix 3` переведена в `1.0.0` Stable.
+- Канал выпуска — `Stable`; имя каталога/артефакта — `Kinoteka_Standalone_v1.0_Stable`.
+- Путь к DEV Portable — `Portable\Kinoteka_Standalone_v1.0_Stable_DEV`.
+- Работа приложения, интерфейс, схема SQLite и канонические данные при переводе не менялись.
+- Каноническое состояние live/seed: [количество удалено] записей, [скрыто] избранных, 0 записей в Корзине, ревизия [скрыта].
+- SHA-256 канонической SQLite: `(скрыто — историческая пользовательская база)`.
+- Согласованы версии и метаданные выпуска, документация, контракты проверок и имена артефактов Stable.
 
-## v0.1 RC1 — Theme Preview 15 Hotfix 1: Compositor Seam Fix
+## v0.1 RC1 — Theme Preview 15 Hotfix 1: Исправление артефакта композитора
 
 - Уточнена причина полноэкранных горизонтальных/вертикальных полос: это не короткие particle-glints, а WebView2 compositor seams, которые проявляются при hover-repaint поверх фиксированного анимированного canvas и `backdrop-filter` слоёв.
 - Прозрачность UI сохранена через RGBA-поверхности, но `backdrop-filter` убран с постоянно видимых/интерактивных поверхностей и titlebar.
-- Верхняя панель остаётся прозрачнее, но без blur-композитинга; line-free particle renderer из Theme Preview 15 сохранён.
-- SQLite/runtime/data contracts не менялись.
+- Верхняя панель остаётся более прозрачной, но без композитного размытия; рендерер частиц без длинных линий из Theme Preview 15 сохранён.
+- Контракты SQLite, работы приложения и данных не менялись.
 
-## v0.1 RC1 — Theme Preview 15: Softer Glass + Line-Free Living Particles
+## v0.1 RC1 — Theme Preview 15: Более мягкое стекло и частицы без линий
 
-- UI surfaces receive one additional restrained transparency step; particles read through the interface a little more clearly while text contrast is preserved.
-- The custom Tauri titlebar/top panel is now translucent monochrome glass (`rgba(3,3,4,.80)`) with blur; the existing first-paint/titlebar flicker fix is preserved.
-- Investigated the periodic horizontal/vertical background lines: they were drawn deliberately by the particle renderer's glint cross-flare strokes; fast particles also had short line streaks. Both straight-line drawing paths are retired.
-- Glints now render as point + soft circular halo only, preserving color/twinkle/chaos without horizontal or vertical bars.
-- SQLite, Modal Motion, No-Tab, semantic controls and particle counts/colors remain unchanged.
+- Прозрачность поверхностей интерфейса немного увеличена: частицы чуть заметнее сквозь элементы, контраст текста сохранён.
+- Собственная верхняя панель Tauri стала полупрозрачным монохромным стеклом (`rgba(3,3,4,.80)`) с размытием; ранее устранённое мерцание заголовка при запуске не возвращается.
+- Выяснено происхождение периодических горизонтальных и вертикальных полос: их рисовали декоративные перекрестия частиц и короткие следы быстрых частиц. Оба способа рисования прямых линий удалены.
+- Блики теперь состоят из точки и мягкого круглого ореола, сохраняя цвет и мерцание без полос.
+- SQLite, анимация модальных окон, политика No-Tab, семантические элементы управления, число и цвета частиц не изменены.
 
-## v0.1 RC1 — Theme Preview 14: White Trash Restore + White Close
+## v0.1 RC1 — Theme Preview 14: Белые кнопки восстановления и закрытия
 
 - В окне «Корзина» кнопки «Восстановить» переведены в нейтральный бело-графитовый стиль вместо контекстной цветовой окраски.
 - Нижняя кнопка «Закрыть» теперь визуально следует той же белой utility-логике, что и остальные нейтральные действия.
@@ -204,46 +208,46 @@ Kinoteka Hotfix 22 — Real Collection Card Polish: clean KINOTEKA placeholder, 
 - Runtime, SQLite, частицы фона, пагинация, поиск и прочие Theme Preview 1–13 contracts не менялись.
 
 
-## v0.1 RC1 — Theme Preview 6: Add Modal Semantic Mono
+## v0.1 RC1 — Theme Preview 6: Монохромное оформление окна добавления
 
 - Окно «Добавить запись» переведено на true-black/graphite surfaces без остаточного фиолетового chrome.
 - Фокус строки и полей теперь наследует цвет выбранного статуса записи: planned/liked/normal/disliked/in-progress/favorite.
 - Статус остаётся цветным только текстом/active focus, favorite использует золото только когда доступен/выбран.
 - «+ ещё запись» нейтрален в покое и становится фиолетовым только при взаимодействии; Cancel/Close нейтральны, основное Add-действие сохраняет единый violet action-accent.
-- SQLite, Modal Motion, No-Tab, Living Particles, titlebar fix и release contracts не менялись.
+- SQLite, анимации окон, политика No-Tab, живые частицы, исправление строки заголовка и контракты релиза не изменены.
 
-## v0.1 RC1 — Theme Preview 3: True Black Runtime + Contextual Filter Accent
+## v0.1 RC1 — Theme Preview 3: Полностью чёрный интерфейс и контекстные акценты фильтров
 
-- Убран последний runtime-override фиолетово-чёрного `#08070d`: root/route/titlebar first-paint теперь используют нейтральный `#020203`.
+- Убран последний переопределяющий стиль фиолетово-чёрного `#08070d`: корневая поверхность, переходы и первоначальная отрисовка заголовка теперь используют нейтральный `#020203`.
 - Активные кнопки категорий/года теперь наследуют цвет выбранной верхней quick-stat карточки (Смотрю/Понравилось/Нормально/Не понравилось/Запланировано/Избранное/Всего).
 - Карточка `Смотрю` при наведении теперь окрашивает цифру и подпись своим фиолетовым статусным цветом так же, как остальные статистические карточки.
-- Living Particles, SQLite, Modal Motion, No-Tab, RC1 Polish 1 и release contracts не менялись.
+- Живые частицы, SQLite, анимации окон, политика No-Tab, RC1 Polish 1 и контракты релиза не изменены.
 
 
-## v0.1 RC1 — Theme Preview 1: Cinema Mono + Living Particles
-- Added an optional visual preview pass with monochrome passive chrome on a black background.
-- Kept semantic and interactive controls colorful so actions remain easy to identify.
-- Reworked the background particle field to use the full hue wheel with slow per-particle color cycling while preserving the 90 FPS cap and hidden-window pause.
-- No SQLite, storage, modal timing, No-Tab, or release-version changes.
-# Kinoteka Standalone — Changelog
+## v0.1 RC1 — Theme Preview 1: Cinema Mono и живые частицы
+- Добавлен необязательный визуальный вариант с монохромными неактивными элементами на чёрном фоне.
+- Семантические и интерактивные элементы оставлены цветными, чтобы действия было легко различать.
+- Фоновое поле частиц охватывает весь цветовой круг и медленно меняет оттенки отдельных частиц; сохранены ограничение в 90 FPS и пауза при скрытом окне.
+- SQLite, хранение данных, длительность анимаций модальных окон, политика No-Tab и версия релиза не изменены.
+# Kinoteka Standalone — История изменений
 
-## v0.1 RC1 — Canonical Icon Refresh
+## v0.1 RC1 — Обновление фирменной иконки
 
 - Добавлена собственная иконка Кинотеки в едином визуальном стиле с Игротекой: кинематографическая хлопушка, карточки и фиолетово-розово-золотая палитра.
 - Обновлены Windows `src-tauri/icons/icon.ico` и встроенный `app/favicon.ico`; добавлен канонический исходник `src-tauri/icons/icon.png`.
-- Standalone verifier теперь проверяет SHA-256 канонических icon assets и совпадение favicon с Windows icon.
-- Версия, runtime/UI, SQLite schema и canonical data не менялись.
+- Проверяющий скрипт Standalone теперь контролирует SHA-256 канонических файлов иконок и совпадение favicon с иконкой Windows.
+- Версия, работа приложения и интерфейса, схема SQLite и канонические данные не менялись.
 
-## v0.1 RC1 — Release Candidate Promotion
+## v0.1 RC1 — Переход к кандидату на выпуск
 
-- Promoted the Windows-confirmed Cleanup Pass 23 + RC Prep 1 baseline to `0.1.0-rc.1`.
-- Canonical data freeze confirmed before promotion: [количество удалено] items, [скрыто] favorites, 0 trash, revision [скрыта].
-- Release channel is now `Release Candidate`; artifact root/name is `Kinoteka_Standalone_v0.1_RC1`.
-- DEV portable path is now `Portable\Kinoteka_Standalone_v0.1_RC1_DEV`.
-- No runtime/UI/SQLite schema or collection changes in this promotion pass.
+- Проверенная на Windows основа Cleanup Pass 23 + RC Prep 1 переведена в `0.1.0-rc.1`.
+- Перед переводом в RC1 подтверждена фиксация канонических данных: [количество удалено] записей, [скрыто] избранных, 0 записей в Корзине, ревизия [скрыта].
+- Канал выпуска изменён на `Release Candidate`; имя каталога и артефакта — `Kinoteka_Standalone_v0.1_RC1`.
+- Путь к DEV Portable — `Portable\Kinoteka_Standalone_v0.1_RC1_DEV`.
+- В этой операции логика приложения, интерфейс, схема SQLite и коллекция не менялись.
 
 
-## RC Prep 1 — Canonical Data Freeze Tooling
+## RC Prep 1 — Инструменты фиксации канонических данных
 
 - Добавлен отдельный `FREEZE-CANONICAL-DATA.cmd/.ps1`: он переносит только явно проверенную Portable DEV SQLite в canonical `data` и `seed-data` перед RC.
 - Перед записью source DB проходит semantic SQLite verifier; работающая Кинотека и `-wal/-shm/-journal` sidecars блокируют freeze.
@@ -251,26 +255,26 @@ Kinoteka Hotfix 22 — Real Collection Card Polish: clean KINOTEKA placeholder, 
 - После копирования live/seed повторно проверяются и обязаны совпасть с source по SHA-256; затем запускается полный `npm run verify`.
 - По умолчанию freeze блокирует непустую Корзину; намеренное сохранение Trash требует явного `-AllowTrash`.
 - SHA-256 реализован через .NET, без `Get-FileHash`, для совместимости с Windows PowerShell 5.1.
-- `MAKE-FINAL-RELEASE` теперь включает freeze-tooling в Source ZIP; runtime/UI/SQLite schema и пользовательские данные самим патчем не менялись.
+- `MAKE-FINAL-RELEASE` теперь включает инструменты фиксации данных в исходный ZIP; само исправление не меняет работу приложения, интерфейс, схему SQLite и пользовательские данные.
 
-## Cleanup Pass 23 — Runtime Performance & Semantic DB Validation
+## Cleanup Pass 23 — Производительность и семантическая проверка базы
 
 - Ограничена декоративная фоновая анимация максимумом 90 FPS; на 180 Гц она больше не рендерится на каждом refresh-cycle.
 - Canvas-анимация полностью ставится на паузу при `document.hidden` и безопасно возобновляется при возврате окна без большого скачка `dt`.
 - Удалены доказанно неиспользуемые `dust`/`streaks` генераторы и массивы, которые создавались при каждом rebuild, но никогда не отрисовывались.
 - Rust runtime/recovery validation теперь проверяет семантику записей, категорий, годов, рейтингов, favorite references, Trash records и обязательные UI-state поля, а не только типы верхнего уровня.
-- Те же semantic contracts добавлены в standalone/migration/release SQLite verifiers, чтобы DEV, recovery и release проверяли одинаковую модель данных.
+- Те же семантические контракты добавлены в проверки SQLite для Standalone, миграции и релиза, чтобы разработка, восстановление и публикация проверяли одинаковую модель данных.
 - SQLite live/seed, пользовательские данные, Modal Motion Pass 2, No-Tab policy и CSS-визуал не менялись.
 
 
-## Cleanup Pass 22 — CSS Consolidation III
+## Cleanup Pass 22 — Объединение CSS, этап III
 
-- Removed dead Trash CSS for retired `trash-activate` / `trash-deactivate` classes.
-- Removed unused V841–V844 Trash keyframes and reduced-motion branches tied only to those retired classes.
-- Preserved the active v1.8.49+ `trash-transition-in/out`, `trash-dot-enter/exit`, `trash-fade-out` and `trashDotAppearV849` runtime path.
-- No HTML/JS behavior, SQLite, Rust/Tauri, Modal Motion Pass 2, No-Tab policy, or release pipeline changes.
+- Удалены неиспользуемые CSS-правила Корзины для упразднённых классов `trash-activate` и `trash-deactivate`.
+- Удалены неиспользуемые анимации V841–V844 и ветви `reduced-motion`, связанные только с ними.
+- Сохранён действующий путь анимаций v1.8.49+: `trash-transition-in/out`, `trash-dot-enter/exit`, `trash-fade-out` и `trashDotAppearV849`.
+- HTML/JS, SQLite, Rust/Tauri, анимации модальных окон, политика No-Tab и публикационный процесс не менялись.
 
-## v0.1 Preview — Cleanup Pass 21: CSS Consolidation II
+## v0.1 Preview — Cleanup Pass 21: Объединение CSS, этап II
 
 - Удалены полностью вытесненные исторические Trash CSS-слои `v1.18` и `v1.23`; сохранено только реально действующее `flex:0 0 auto!important` для `.trash-modal .trash-actions`.
 - Удалены устаревшие PATCH 025/PATCH 027 favorite-star overrides, потому что канонический PATCH 028 задаёт те же/более поздние итоговые значения.
@@ -278,261 +282,261 @@ Kinoteka Hotfix 22 — Real Collection Card Polish: clean KINOTEKA placeholder, 
 - Итоговые effective declarations для затронутых selectors/media contexts проверены до/после и сохранены.
 - HTML/JS, Modal Motion Pass 2, No-Tab, SQLite, Rust/Tauri и release pipeline не менялись.
 
-## v0.1 Preview — Cleanup Pass 20: CSS Consolidation I
+## v0.1 Preview — Cleanup Pass 20: Объединение CSS, этап I
 
 - Удалены только точные дубликаты top-level CSS rules, где более позднее правило уже полностью повторяло тот же selector и declarations.
 - Финальный cascade и визуальный результат намеренно сохранены: остаётся последняя каноническая копия каждого совпадающего правила.
 - Не выполнялось рискованное объединение конфликтующих historical override-слоёв; это оставлено для отдельного этапа после Windows-проверки.
-- Добавлен verifier guard на отсутствие точных duplicate top-level rules и marker текущего CSS consolidation pass.
+- Добавлена автоматическая проверка отсутствия точных дубликатов CSS-правил верхнего уровня и отметка текущего этапа объединения CSS.
 - HTML/JS, Modal Motion Pass 2, No-Tab, SQLite, Rust/Tauri и release pipeline не менялись.
 
-## v0.1 Preview — Cleanup Pass 19: Dead Code + Behavior Preservation
+## v0.1 Preview — Cleanup Pass 19: Удаление мёртвого кода с сохранением поведения
 
 - Удалены доказанно мёртвые frontend-состояния `paginationRenderCache`, `persistedTrashJSON` и `trashIndicatorDeferred`.
-- Удалены write-only поля `lastModified`/`lastModifiedReason`: они не входят в canonical SQLite persistence contract и никогда не читаются UI/backend.
-- Add/rating/favorite confirmed-write и rollback-пути сохранены без изменения пользовательского поведения.
+- Удалены поля `lastModified`/`lastModifiedReason`, в которые только выполнялась запись: они не входят в контракт постоянного хранения SQLite и нигде не читались интерфейсом или серверной частью.
+- Сохранены подтверждённые операции добавления, изменения оценки и избранного, а также пути отката ошибок без изменения поведения пользователя.
 - `renderTrash()` теперь напрямую синхронизирует индикатор Корзины без неиспользуемого deferred-флага.
-- Добавлены verifier guards на отсутствие retired residue и сохранение критичных write/rollback bindings.
-- SQLite, Rust/Tauri, Modal Motion Pass 2, No-Tab policy и release pipeline не менялись.
+- Добавлены проверки отсутствия устаревшего кода и сохранности критически важных связей сохранения и отката.
+- SQLite, Rust/Tauri, анимация модальных окон, политика No-Tab и выпуск приложения не менялись.
 
-## v0.1 Preview — Cleanup Pass 16: Functional Integrity
+## v0.1 Preview — Cleanup Pass 16: Целостность функций
 
 - Добавлена единая каноническая идентичность записи `тип + нормализованное название + год`; она используется при добавлении, подсветке дубликатов и восстановлении из Корзины.
 - Одинаковые названия с разными годами или типами больше не считаются дубликатами; точная совпадающая запись по-прежнему блокируется.
 - Исправлен `Escape` при непустом поиске: удалена ссылка на несуществующий `searchRenderTimer` и мёртвый `scheduleSearchRender()`.
-- Verifier проверяет все три identity call-site и отсутствие retired search-timer residue, а также семантические fixtures для года/типа.
-- SQLite, Rust/Tauri, данные, modal motion и release pipeline не менялись.
+- Проверяющий скрипт контролирует три места использования идентичности, отсутствие старого таймера поиска и синтетические сценарии для года и типа.
+- SQLite, Rust/Tauri, данные, анимации модальных окон и выпуск приложения не менялись.
 
-## v0.1 Preview — Modal Motion Pass 2: Mirrored Open/Close Motion
+## v0.1 Preview — Modal Motion Pass 2: Симметричная анимация открытия и закрытия
 
 - Закрытие всех модальных окон теперь визуально зеркалит открытие: тот же fade/scale/vertical/backdrop path.
 - Канонические тайминги: 280 ms открытие, 260 ms закрытие; close остаётся чуть быстрее, но больше не ощущается резким.
 - `prefers-reduced-motion` и последовательность confirm → SQLite → Trash сохранены.
 
-## v0.1 Preview — Cleanup Pass 15: Canonical Frontend Persistence Helpers
+## v0.1 Preview — Cleanup Pass 15: Единые вспомогательные функции сохранения
 
-- Оставшиеся frontend-only helper/state identifiers с игровым наследием переведены на нейтральный entry namespace: `migrateEntryStatuses`, `entryNameNormCache`/`entryNameNorm`, `persistedEntriesJSON`, `entriesDirty`, `nextProvisionalEntryId`.
+- Остаточные имена вспомогательных функций и состояний интерфейса, унаследованные от игрового проекта, переведены на нейтральные имена записей: `migrateEntryStatuses`, `entryNameNormCache`/`entryNameNorm`, `persistedEntriesJSON`, `entriesDirty`, `nextProvisionalEntryId`.
 - Переименование механическое и не меняет массив `games`, SQLite/schema-поле `game`, sort keys `game-asc/game-desc` или backend API `getGamesSync`/`replaceGamesConfirmed`; эти контракты намеренно сохранены для совместимости данных.
 - Все call-sites в `core.js`, `games.js`, `trash.js` и `runtime.js` синхронизированы; verifier запрещает возврат старых frontend helper-имён и проверяет новые bindings.
-- UI, modal motion, SQLite, Rust/Tauri и build/release/migration pipeline не менялись.
+- Интерфейс, анимации окон, SQLite, Rust/Tauri и процессы сборки, выпуска и миграции не менялись.
 
-## v0.1 Preview — Modal Motion Pass 1: Unified Modal Animations
+## v0.1 Preview — Modal Motion Pass 1: Общие анимации модальных окон
 
 - Все модальные окна Кинотеки переведены на один motion-contract: мягкий fade backdrop + лёгкий подъём/scale карточки при открытии и зеркально более быстрый close.
 - Канонические тайминги централизованы: 280 ms для открытия и 240 ms для закрытия с единым `cubic-bezier(.22,.61,.36,1)`.
-- Единая анимация применяется к Add Entry, Корзине, Year Picker, confirm/delete modal и runtime `KinotekaDialog` alert/confirm.
+- Общая анимация действует в окнах добавления, Корзины, выбора года, подтверждения/удаления и системных диалогах `KinotekaDialog`.
 - Удалены конфликтующие исторические modal keyframes и прежний блок, полностью отключавший modal-анимации; Hotfix 2 сохраняет последовательность confirm → SQLite → Trash, но визуально использует общий motion-system.
 - `prefers-reduced-motion` сохранён: при системном отключении анимаций modal close завершается без ожидания motion.
 - SQLite, Rust/Tauri, persistence и функциональная логика записей не менялись. Verifier контролирует единый CSS/JS motion-contract и запрещает возврат старых modal overrides.
 
-## v0.1 Preview — Cleanup Pass 14 Hotfix 2: Smooth Confirmed Trash Close
+## v0.1 Preview — Cleanup Pass 14 Hotfix 2: Плавное закрытие Корзины после подтверждения
 
 - После подтверждения «Удалить навсегда» и «Очистить корзину» модальные окна теперь закрываются последовательно: сначала confirm, затем после успешной SQLite-операции сама Корзина.
 - Для этих двух destructive-путей добавлена отдельная мягкая fade/scale-анимация закрытия; глобальная политика мгновенного закрытия остальных модалок не менялась.
 - Корзина закрывается только после успешной записи в SQLite; при ошибке остаётся открытой и показывает сообщение об ошибке.
-- Restore-путь, SQLite, Rust/Tauri и release pipeline не менялись.
+- Восстановление записей, SQLite, Rust/Tauri и выпуск приложения не менялись.
 - Verifier проверяет обе destructive-ветки, последовательность закрытия и scoped CSS-анимацию.
 
-## v0.1 Preview — Cleanup Pass 14 Hotfix 1: Trash Modal Stability
+## v0.1 Preview — Cleanup Pass 14 Hotfix 1: Стабильность окна Корзины
 
 - Исправлено мерцание/двойное закрытие при безвозвратном удалении записи и очистке Корзины.
 - Confirm-modal теперь полностью завершает своё закрытие до выполнения SQLite-операции, поэтому два modal-backdrop больше не закрываются одновременно.
 - После «Удалить навсегда» и «Очистить корзину» окно Корзины остаётся открытым и обновляется на месте, включая состояние «Корзина пуста».
-- Restore-путь не менялся; SQLite, Rust/Tauri, CSS и release pipeline не затронуты.
-- Добавлены verifier guards на sequencing confirm-close и запрет автоматического закрытия Корзины после destructive actions.
+- Порядок восстановления не менялся; SQLite, Rust/Tauri, CSS и выпуск приложения не затронуты.
+- Добавлены автоматические проверки последовательности закрытия после подтверждения и запрет самопроизвольного закрытия Корзины после необратимых действий.
 
-## v0.1 Preview — Cleanup Pass 14
+## v0.1 Preview — Cleanup Pass 14: Согласование функций копирования и удаления
 
 - Активные UI helpers `selectGameRow()` и `copyGameNameFromRow()` переименованы в `selectEntryRow()` и `copyEntryNameFromRow()` без изменения поведения выбора строки и копирования названия с годом.
-- Все call-sites синхронизированы; добавлены verifier guards против возврата старых helper-имен и рассинхронизации copy binding.
-- SQLite/schema-модель `game`, sort keys `game-asc/game-desc` и backend-контракт намеренно не переименовывались.
+- Все места вызова согласованы; добавлены проверки отсутствия старых имён вспомогательных функций и правильной связи функции копирования.
+- Модель SQLite с полем `game`, ключи сортировки `game-asc/game-desc` и контракт серверной части сознательно оставлены прежними.
 
-# Changelog — Kinoteka Standalone
+# История изменений — Kinoteka Standalone
 
-## v0.1 Preview — Cleanup Pass 13: Canonical Active Entry Identifiers
+## v0.1 Preview — Cleanup Pass 13: Единые идентификаторы активных записей
 
 - Оставшиеся активные UI id `addGameTitle`/`addGameRow` переведены на `addEntryTitle`/`addEntryRow`; `aria-labelledby` и JS-binding синхронизированы.
 - Функция удаления строки `deleteGameAtIndex()` переименована в `deleteEntryAtIndex()` во всех вызовах, включая контекстное удаление по названию.
 - Изменения механические: DOM-структура, визуальный UI, SQLite/schema, Rust/Tauri и persistence не менялись.
-- Добавлены verifier guards на согласованность modal aria/id, add-row binding и delete handler, чтобы не повторить selector-регрессию Pass 12.
+- Добавлены проверки согласованности `aria/id` в окнах, действий со строками добавления и обработчиков удаления во избежание прежней ошибки селекторов Pass 12.
 
-## v0.1 Preview — Cleanup Pass 12 Hotfix 1: Table Row Selector Sync
+## v0.1 Preview — Cleanup Pass 12 Hotfix 1: Синхронизация селекторов строк таблицы
 
 - Исправлена регрессия Pass 12: генератор строк таблицы продолжал создавать `class="game-name"`, тогда как обработчики копирования и удаления уже ожидали `.entry-name`.
 - Runtime-разметка таблицы теперь канонически создаёт `class="entry-name"`; восстановлены копирование названия с годом и удаление/контекстное удаление.
-- Verifier усилен отдельным guard на совпадение класса, создаваемого render-путём, с селекторами copy/delete handlers.
-- SQLite, Rust/Tauri, persistence, CSS и build/release/migration pipeline не менялись.
+- Проверка усилена отдельным контролем соответствия класса, который создаёт отрисовка, и селекторов обработчиков копирования и удаления.
+- SQLite, Rust/Tauri, сохранение данных, CSS, процессы сборки, релиза и миграции не менялись.
 
-## v0.1 Preview — Cleanup Pass 12: Canonical Entry Table & Delete Namespace
+## v0.1 Preview — Cleanup Pass 12: Единые имена элементов таблицы и удаления
 
 - Активный DOM/runtime namespace таблицы записей переведён с `gameEntries`/`.game-name`/`.game-col` на `entryEntries`/`.entry-name`/`.entry-col`.
-- `kinotekaAddGameModal` и внутренние modal-controller keys `add-game`/`games-trash`/`game-delete` заменены на `kinotekaAddEntryModal` и `add-entry`/`entries-trash`/`entry-delete`.
+- `kinotekaAddGameModal` и внутренние ключи окон `add-game`/`games-trash`/`game-delete` заменены на `kinotekaAddEntryModal` и `add-entry`/`entries-trash`/`entry-delete`.
 - Классы диалога удаления `delete-game-*` и id `deleteGameName` переведены на `delete-entry-*` / `deleteEntryName`.
 - Функция UI-добавления `addGame()` переименована в `addEntry()`; SQLite/schema-поле `game`, массив данных `games` и контракт backend намеренно не переименовывались.
 - Изменения механические: внешний вид, обработчики, persistence и данные не менялись. Добавлены verifier guards против возврата retired namespace.
-- Rust/Tauri, SQLite и build/release/migration pipeline не менялись.
+- Rust/Tauri, SQLite, процессы сборки, выпуска и миграции не менялись.
 
-## v0.1 Preview — Cleanup Pass 11: Canonical Add-Entry DOM Namespace
+## v0.1 Preview — Cleanup Pass 11: Единые DOM-имена добавляемых записей
 
 - Внутренние DOM/CSS-классы формы добавления переведены с исторического `game-entry-*` на собственный `kinoteka-entry-*` namespace.
 - `add-game-action`/`add-game-modal`/`add-game-form` переименованы в нейтральные `add-entry-*` классы.
 - Переименование механическое: структура формы, обработчики, визуальные параметры, значения полей и SQLite/schema-модель не менялись.
 - Добавлены verifier guards против возврата старых `game-entry-*`/`add-game-*` классов и против потери нового канонического namespace.
-- Rust/Tauri, SQLite, persistence и build/release/migration pipeline не менялись.
+- Rust/Tauri, SQLite, сохранение данных, процессы сборки, выпуска и миграции не менялись.
 
-## v0.1 Preview — Cleanup Pass 10: Canonical Record Terminology
+## v0.1 Preview — Cleanup Pass 10: Единая терминология записей
 
 - Исправлена остаточная user-visible игровая терминология в standalone Кинотеке: «Удалить игру?»/«Игра…» → «Удалить запись?»/«Запись…».
 - Accessibility-подпись кнопки Корзины больше не использует неверное множественное «игр»: теперь канонически `Корзина, записей: N`.
 - Исправлена повреждённая строка `записейу` → `запись` во всех error/fallback сообщениях Корзины.
 - Комментарии/diagnostic-текст в `core.js` приведены к термину «запись»; внутренняя SQLite/schema-модель и поле `game` намеренно не переименовывались.
-- Добавлены verifier guards против возврата этих user-visible хвостов; Rust/Tauri, SQLite и persistence/release pipeline не менялись.
+- Добавлены проверки отсутствия устаревших видимых пользователю элементов; Rust/Tauri, SQLite и процессы сохранения/выпуска не менялись.
 
-## v0.1 Preview — Cleanup Pass 9: Canonical Trash Modal Semantics
+## v0.1 Preview — Cleanup Pass 9: Единое поведение модального окна Корзины
 
 - Удалён исторический `history-modal` alias из единственного окна Корзины; остаётся канонический `trash-modal`.
 - `history-note` переименован в `trash-note` во всей активной HTML/CSS surface.
 - Визуальные параметры, DOM-структура окна, действия Корзины и runtime-логика не менялись.
 - Добавлены verifier guards против возврата `history-modal`/`history-note` и против потери канонических trash-селекторов.
-- SQLite, Rust/Tauri, persistence bridge и build/release/migration pipeline не менялись.
+- SQLite, Rust/Tauri, мост сохранения данных и процессы сборки, выпуска и миграции не менялись.
 
-## v0.1 Preview — Cleanup Pass 8: Retired Runtime Residue Cleanup
+## v0.1 Preview — Cleanup Pass 8: Удаление устаревших остатков кода
 
 - Удалён мёртвый `oldStatus`, который вычислялся при миграции записей, но никогда не использовался.
 - Удалён полностью no-op `saveStatus`/`updateSaveStatus`: соответствующего DOM-индикатора в standalone UI уже нет, поэтому код не мог ничего отображать.
 - Удалён изменяемый alias `pageSize`; пагинация теперь использует канонический `PAGE_SIZE=25` напрямую без изменения размера страницы.
 - Добавлены verifier guards против возврата этих retired runtime-хвостов и против случайного изменения канонической пагинации.
-- SQLite, Rust/Tauri, persistence bridge, UI-разметка/CSS и build/release/migration pipeline не менялись.
+- SQLite, Rust/Tauri, мост сохранения, разметка/CSS и процессы сборки, выпуска и миграции не менялись.
 
-## v0.1 Preview — Cleanup Pass 7: Hidden Statistics Cleanup
+## v0.1 Preview — Cleanup Pass 7: Очистка скрытой статистики
 
 - Удалён постоянно скрытый DOM-элемент `#stats` / `.count`, который больше не показывался в standalone UI.
 - Удалены неиспользуемые `statsRenderCache`, binding `stats`, расчёт «Показано X из Y» и мёртвый `statsCache`.
 - Удалены CSS-правила `.stats`, `.count`, `.countLabel`, `.countTotal`, относившиеся только к удалённому скрытому счётчику.
 - Действующие верхние quick-stat карточки (`Всего`, оценки, `Избранное`) и их фильтрация сохранены без изменения поведения.
-- Добавлен verifier guard против возврата hidden-count/statistics surface.
-- Rust/Tauri, SQLite и build/release/migration pipeline не менялись.
+- Добавлена проверка отсутствия удалённого скрытого счётчика и статистики.
+- Rust/Tauri, SQLite и процессы сборки, выпуска и миграции не менялись.
 
-## v0.1 Preview — Cleanup Pass 6: Non-Interactive Tooling
+## v0.1 Preview — Cleanup Pass 6: Сборочные скрипты без ожидания клавиши
 
 - Удалены ручные `pause` из `BUILD-RELEASE.cmd`, `MAKE-FINAL-RELEASE.cmd` и `MIGRATE-FROM-LOST-HEAVEN.cmd`.
 - Все штатные `.cmd` wrappers теперь завершаются автоматически и возвращают исходный exit code без ожидания клавиши.
 - `BUILD-DEV.cmd` остаётся в уже подтверждённом NoPause-виде.
-- Добавлен verifier guard против возврата ручного `pause` в build/release/migration wrappers.
+- Добавлена проверка отсутствия ручного `pause` в скриптах сборки, выпуска и миграции.
 - Runtime, UI, Rust/Tauri и SQLite не менялись.
 
-## v0.1 Preview — Cleanup Pass 5: Confirmed Write Hardening
+## v0.1 Preview — Cleanup Pass 5: Надёжность подтверждённой записи
 
 - Критичные сохранения списка переведены с `replaceGamesSync` на `replaceGamesConfirmed` и ожидают подтверждения SQLite backend.
 - Добавлена сериализованная `queuePersistence`, чтобы подтверждённые записи не пересекались с уже поставленными в очередь UI-write операциями.
 - Удалены устаревшие `replaceTrashSync`, `moveGameToTrashSync`, `restoreTrashSync`, `permanentlyDeleteTrashSync`, `emptyTrashSync`, `__flush` и мёртвые helpers старого fallback-пути.
 - Добавление, смена оценки/избранного и операции корзины теперь принимают изменение в UI только после успешной подтверждённой записи.
-- Добавлены verifier guards против возврата старого sync compatibility API.
+- Добавлены проверки отсутствия старого синхронного API совместимости.
 
-## v0.1 Preview — Cleanup Pass 4
+## v0.1 Preview — Cleanup Pass 4: Очистка устаревших статусов
 
 - Удалены остаточные CSS/themed-select селекторы старого игрового статуса `Прохожу`; в Кинотеке канонический статус просмотра — только `Смотрю`.
 - Сохранены действующие `rating-in-progress`, цветовая семантика и поведение карточки статистики `Смотрю`.
-- Данные, SQLite, Rust/Tauri backend, build/release/migration pipeline и пользовательская логика не менялись.
+- Данные, SQLite, Rust/Tauri, процессы сборки, выпуска и миграции и пользовательская логика не менялись.
 - Verifier получил Cleanup Pass 4 guards против возврата retired-термина `Прохожу` и проверяет наличие канонического `Смотрю`.
 
-## v0.1 Preview — Cleanup Pass 3
+## v0.1 Preview — Cleanup Pass 3: Очистка неиспользуемых ветвей и стилей
 
 - Удалён недостижимый `duplicateOnly` state/filter branch; действующие поиск, quickFilter, сортировка, категория и год сохранены.
 - Canonical live/seed SQLite нормализованы: из `ui_state` удалён retired-ключ `duplicateOnly`; коллекция, корзина и revision не менялись.
-- Из `styles.css` удалены selector families элементов, которых больше нет в standalone DOM/runtime: старые sort/page-size/delete/add-choice/filter-chip/history-list элементы.
+- Из `styles.css` удалены группы селекторов элементов, отсутствующих в автономном интерфейсе: старые контролы сортировки, размера страницы, удаления, добавления, фильтров и истории.
 - Удалены доказанно неиспользуемые compatibility aliases (`setAddMode`, `openBulkModal`, `closeBulkModal`, `addMultipleGames`, `updateBulkInfo`) и `formatHistoryDate`.
 - Дубликатная подсветка строк (`duplicateNameSet`) сохранена — удалён только недостижимый режим фильтра «только дубликаты».
-- Очищены оставшиеся foreign-project упоминания только в комментариях runtime assets; canonical `com.lostheaven.kinoteka` и мигратор Lost Heaven сохранены намеренно.
-- Verifier получил Cleanup Pass 3 guards против возврата retired state, dead selectors и no-op aliases.
+- Убраны упоминания других проектов только из комментариев к файлам приложения; канонический идентификатор `com.lostheaven.kinoteka` и мигратор Lost Heaven намеренно оставлены.
+- Проверки Cleanup Pass 3 предотвращают возврат удалённых состояний, мёртвых селекторов и неиспользуемых псевдонимов.
 
-## v0.1 Preview — Cleanup Pass 2
+## v0.1 Preview — Cleanup Pass 2: Переименование пространств имён
 
 - Завершено переименование активных runtime namespaces из общего Lost Heaven/Игротека наследия в `Kinoteka`/`kinoteka-*`.
-- `LHModal`/`LHDialog` → `KinotekaModal`/`KinotekaDialog`; route API → `kinotekaRouteTransition`.
-- `lh-select-*`, `lh-route-*`, dialog/modal DOM classes, custom event/style IDs и приватные themed-select поля переведены в `kinoteka-*`.
+- `LHModal`/`LHDialog` заменены на `KinotekaModal`/`KinotekaDialog`, API переходов — на `kinotekaRouteTransition`.
+- CSS-классы `lh-select-*`, `lh-route-*`, классы окон, идентификаторы событий/стилей и внутренние поля тематических списков переименованы в `kinoteka-*`.
 - Исторические `igrotekaModal*` keyframes переименованы в `kinotekaModal*` без изменения анимационных параметров.
 - Runtime-комментарии очищены от старой идентичности; мигратор из Lost Heaven сохранён намеренно как compatibility tool.
-- Добавлены verifier guards, запрещающие возврат старых `LH*`, `lh*` и `igrotekaModal*` runtime namespaces.
-- Функциональная логика, Rust/Tauri backend, SQLite schema/data и release contracts не менялись.
+- Добавлены проверки, запрещающие возврат старых пространств имён `LH*`, `lh*` и `igrotekaModal*`.
+- Функциональная логика, серверная часть Rust/Tauri, схема/данные SQLite и контракты релиза не менялись.
 
 
-## v0.1 Preview — Cleanup Pass 1
+## v0.1 Preview — Cleanup Pass 1: Очистка наследия других проектов
 
 - Удалена неиспользуемая Budget-тема из standalone themed-select; Кинотека теперь жёстко использует library-палитру.
 - Удалён межпроектный `data-lh-select-theme` из HTML.
-- Исправлен user-visible fallback-заголовок встроенных alert/confirm: `Lost Heaven` → `Кинотека`.
-- Добавлены verifier guards против возврата Budget-theme branch и неверного modal fallback title.
-- Более широкие legacy namespaces (`LHModal`/`LHDialog`, `lh-select-*`, route/event names, `igrotekaModal*`) намеренно оставлены на следующие cleanup passes, чтобы не смешивать безопасное удаление dead code с runtime API rename.
+- Исправлен запасной заголовок системных предупреждений и подтверждений: `Lost Heaven` → «Кинотека».
+- Добавлены проверки, чтобы не возвращались ветка темы Budget и неверный запасной заголовок окна.
+- Более широкие устаревшие имена (`LHModal`/`LHDialog`, `lh-select-*`, имена переходов/событий, `igrotekaModal*`) намеренно оставлены для следующих этапов, чтобы не смешивать удаление мёртвого кода с переименованием действующего API.
 - Мигратор из Lost Heaven оставлен намеренно как compatibility tool и не является runtime-зависимостью.
 
 
-## v0.1 Preview — Initial Standalone Extraction
+## v0.1 Preview — Отделение самостоятельного приложения
 
 - Кинотека отделена от Lost Heaven Desktop в самостоятельный Tauri-проект.
 - За основу frontend взята актуальная Кинотека с cumulative PATCH 028, включая последние правки favorite-star parity и 4-значного поля года.
 - Удалена зависимость страницы от `../../shared`: необходимые shared-компоненты включены локально в standalone Source.
 - Добавлен отдельный standalone bridge `shared/kinoteka-bridge.js` без shell/Игротеки/Бюджета.
-- Добавлена standalone runtime identity `window.kinotekaRuntime` и отдельная database facade `window.kinotekaDatabase`.
+- Добавлены самостоятельное пространство приложения `window.kinotekaRuntime` и отдельный интерфейс базы `window.kinotekaDatabase`.
 - Rust backend сокращён до Кинотеки: `library_state`, `persist_movies_state`, `persist_movies_ui` и управления окном.
 - Добавлена отдельная identity `com.lostheaven.kinoteka` и mutex `Local\\KinotekaStandalone`.
-- Canonical SQLite вынесена в `data/kinoteka.sqlite3`; seed recovery — в `seed-data/kinoteka.sqlite3`.
+- Каноническая SQLite размещена в `data/kinoteka.sqlite3`; восстановительная копия — в `seed-data/kinoteka.sqlite3`.
 - На момент отделения canonical DB содержит [количество удалено] записи, revision [скрыта]; live/seed копии побайтно идентичны.
-- Сохранены SQLite integrity/schema/payload checks, automatic backup/recovery и portable data-root hardening.
-- Добавлены DEV/Release/Final Release pipelines, строгий 3-file Portable allowlist и re-extract verification обоих ZIP.
+- Сохранены проверки целостности SQLite, схемы и содержимого, автоматическое резервирование/восстановление и защита пути к данным Portable.
+- Добавлены сборочные цепочки DEV/Release/Final Release, строгий перечень трёх разрешённых файлов Portable и проверка повторного извлечения обоих ZIP.
 - Добавлен безопасный мигратор из Lost Heaven `data\\movies\\kinoteka.sqlite3`.
-- Добавлен standalone verifier для identity, JS syntax, backend/frontend surface, SQLite и release contracts.
-## Cleanup Pass 17 — Modal Lifecycle Hardening
-- Centralized backdrop and Escape dismissal in `KinotekaModal` for project modal overlays.
-- Removed duplicate project-level modal Escape/backdrop handlers.
-- Removed the unreachable legacy delete-confirmation modal path; context deletion still uses the confirmed async Trash path.
-- Removed dead modal helper residue (`closeBackdropAnimated`, `TRASH_MODAL_CLOSE_MS`) and duplicate scroll-lock observer.
-- No SQLite, Rust/Tauri, persistence, or Modal Motion timing changes.
-## Cleanup Pass 18 — Interaction & Persistence Hardening
-- Preserved the project-wide no-Tab policy: Tab remains intentionally suppressed and is not used for UI navigation.
-- Ctrl+Z now preserves native text undo while editing inputs/textareas/selects/contenteditable; Kinoteka reset remains available outside editors.
-- Clipboard writes are now confirmed asynchronously before success UI is shown, with a local execCommand fallback.
-- Rust startup SQLite validation now requires Kinoteka app identity, formatVersion 1, canonical arrays and a valid object ui_state row; persist_movies rejects foreign/wrong-version state too.
-- No SQLite data/schema, modal motion, or release layout changes.
+- Добавлен проверяющий скрипт Standalone для идентичности приложения, синтаксиса JS, интерфейсов Rust и JavaScript, SQLite и релизных контрактов.
+## Cleanup Pass 17 — Надёжность жизненного цикла модальных окон
+- Обработка закрытия по фону и Esc для окон проекта централизована в `KinotekaModal`.
+- Удалены дублирующие обработчики Esc и нажатия на фон модальных окон.
+- Удалён недостижимый старый сценарий подтверждения удаления; контекстное удаление по-прежнему проходит через подтверждённую асинхронную операцию Корзины.
+- Удалены неиспользуемые `closeBackdropAnimated`, `TRASH_MODAL_CLOSE_MS` и дублирующий наблюдатель блокировки прокрутки.
+- SQLite, Rust/Tauri, запись данных и время анимаций модальных окон не изменены.
+## Cleanup Pass 18 — Надёжность взаимодействий и сохранения
+- Сохранена политика проекта No-Tab: клавиша Tab намеренно блокируется и не используется для навигации по интерфейсу.
+- Ctrl+Z сохраняет стандартную отмену ввода при редактировании текстовых полей, списков и редактируемого содержимого; вне полей доступен сброс Кинотеки.
+- Перед показом успешного копирования теперь ожидается асинхронное подтверждение записи в буфер; предусмотрен локальный запасной вариант `execCommand`.
+- Начальная проверка SQLite в Rust требует идентичность приложения Kinoteka, `formatVersion` 1, канонические массивы и корректную строку объекта `ui_state`. `persist_movies` также отклоняет данные чужого приложения или другой версии формата.
+- Данные и схема SQLite, анимация окон и структура релиза не изменены.
 
-- RC1 Polish 1: native window stays hidden until the custom titlebar stylesheet and frontend state are ready, eliminating the startup titlebar/close-button flash.
-- RC1 Theme Preview 2: root surface changed from violet-black to neutral near-black (`#020203`); active media/year filters now receive a cyan border, glow and tinted fill matching the selected Total filter. Inactive filter chrome remains graphite; particles/semantic colors/data/runtime behavior are unchanged.
+- RC1, полировка 1: нативное окно остаётся скрытым до готовности стилей собственной строки заголовка и состояния интерфейса, чтобы при запуске не мигали заголовок и кнопка закрытия.
+- RC1, Theme Preview 2: основная поверхность изменена с фиолетово-чёрной на нейтральную почти чёрную (`#020203`); активные фильтры типа и года получили бирюзовую рамку, свечение и заливку по образцу выбранного фильтра «Всего». Неактивные элементы остаются графитовыми; частицы, смысловые цвета, данные и работа приложения не изменены.
 
 
-- RC1 Theme Preview 4: compact Add/Trash controls and pagination were brought into the Cinema Mono system. Add uses a restrained violet action accent; empty/disabled Trash is neutral graphite and becomes red only when actionable; pagination/reset hover and the current-page indicator inherit the active quick-stat color. No SQLite/runtime behavior changes.
+- RC1, Theme Preview 4: компактные кнопки добавления и Корзины, а также пагинация приведены к стилю Cinema Mono. У добавления — сдержанный фиолетовый акцент; пустая или недоступная Корзина остаётся графитовой и краснеет только при доступном действии. Подсветка пагинации и сброса, а также текущая страница следуют цвету активной карточки быстрой статистики. SQLite и логика приложения не изменены.
 
-## v0.1 RC1 — Theme Preview 5: Trash Modal Semantic Mono
+## v0.1 RC1 — Theme Preview 5: Монохромное оформление Корзины
 
 - Trash modal приведён к Cinema Mono: почти чёрные поверхности и нейтральные границы без старого фиолетового chrome.
-- Restore-action получил отдельный cyan recovery accent; permanent delete/empty trash остаются красными destructive actions.
+- Кнопка «Восстановить» получила отдельный бирюзовый акцент; окончательное удаление и очистка Корзины остаются красными как необратимые действия.
 - Close controls нейтральные в покое и подсвечиваются только мягким graphite hover.
-- Данные, SQLite, Trash sequencing, Modal Motion и runtime-поведение не менялись.
+- Данные, SQLite, последовательность Корзины, анимации окон и работа приложения не менялись.
 
-### RC1 Theme Preview 7 — Add-row Contextual Select Accent
-- Add Entry media-category select now inherits the current row rating accent instead of fixed violet.
-- Category popup surface is neutral black/graphite; hover and selected option are contextual to the row rating.
-- No persistence, SQLite, Modal Motion, No-Tab, particle, icon, or titlebar behavior changes.
-
-
-### RC1 Theme Preview 8 — Semantic Rating Select Surface
-- Rating dropdown selected-state background now follows the semantic rating color instead of fixed violet.
-- Add Entry rating trigger open/focus border and glow follow the current status color.
-- Rating popup surfaces stay true-black/graphite; every option keeps its own status color on hover/selection.
-- No persistence, SQLite, Modal Motion, No-Tab, particle, icon, or titlebar behavior changes.
-
-### RC1 Theme Preview 9 — Contextual Add Action Accent
-- The Add Entry primary action no longer keeps a fixed violet accent.
-- `Добавить записи` follows the semantic color of the last-focused add row: pink/gray/red/violet/blue/gold.
-- The small add-row `+` uses the same contextual accent on hover.
-- With multiple rows, the last-focused row defines the modal action color; data/persistence behavior is unchanged.
+### RC1 Theme Preview 7 — Контекстный цвет выбора категории при добавлении
+- Выбор типа произведения в строке добавления теперь использует акцент текущей оценки строки вместо постоянного фиолетового.
+- Всплывающий список категорий оформлен нейтральным чёрным и графитовым; подсветка и выбранный пункт соответствуют оценке строки.
+- Запись данных, SQLite, анимации окон, политика No-Tab, частицы, иконка и поведение заголовка не изменены.
 
 
+### RC1 Theme Preview 8 — Смысловые цвета выпадающего списка оценок
+- Фон выбранного значения оценки теперь использует её смысловой цвет вместо постоянного фиолетового.
+- Рамка и свечение открытого или сфокусированного поля оценки при добавлении повторяют цвет текущего статуса.
+- Всплывающий список остаётся чёрно-графитовым; каждый вариант сохраняет свой цвет при наведении и выборе.
+- Запись данных, SQLite, анимации окон, политика No-Tab, частицы, иконка и заголовок не изменены.
 
-### RC1 Theme Preview 10 — Contextual Trash Restore Accent
+### RC1 Theme Preview 9 — Контекстный цвет кнопки добавления
+- Основная кнопка окна добавления больше не использует постоянный фиолетовый цвет.
+- Кнопка `Добавить записи` принимает смысловой цвет последней выбранной строки добавления: розовый, серый, красный, фиолетовый, синий или золотой.
+- Маленькая кнопка `+` в строке добавления при наведении использует тот же контекстный акцент.
+- При нескольких строках цвет действия окна определяется последней выбранной строкой; работа с данными не изменилась.
+
+
+
+### RC1 Theme Preview 10 — Контекстный цвет восстановления из Корзины
 - Кнопка «Восстановить» в Корзине теперь принимает семантический цвет удалённой записи (понравилось/нормально/не понравилось/смотрю/запланировано/избранное).
 - Необратимые действия остаются красными, закрытие — нейтральным; SQLite и поведение Корзины не менялись.
 
-### RC1 Theme Preview 11 — Soft Glass Mono + White Add Action
+### RC1 Theme Preview 11 — Мягкое стекло и белая кнопка добавления
 - Основные graphite-поверхности получили лёгкую прозрачность: частицы мягко просматриваются через таблицу, карточки, фильтры и компактные контролы.
 - Корневой фон окна остаётся непрозрачным почти чёрным `#020203`; прозрачность применяется только к UI-поверхностям.
 - Модальные окна получили более осторожную glass-прозрачность с blur, чтобы сохранить читаемость.
@@ -540,67 +544,67 @@ Kinoteka Hotfix 22 — Real Collection Card Polish: clean KINOTEKA placeholder, 
 - SQLite, Living Particles, Modal Motion, No-Tab и runtime-поведение не менялись.
 
 
-### RC1 Theme Preview 12 — White Pagination + Wilder Living Particles
-- Pagination is now fixed to a neutral white/graphite treatment in all states; it no longer inherits semantic filter colors.
-- Hover, focus and current-page emphasis stay monochrome white to match the RC1 Cinema Mono direction.
-- Living Particles keep the same full-spectrum palette, but the field is denser and slightly more chaotic: more particles, more stars, more glints, and a bit more motion variety.
-- SQLite, Modal Motion, data semantics and runtime flows remain unchanged.
+### RC1 Theme Preview 12 — Белая пагинация и более живые частицы
+- Пагинация во всех состояниях использует нейтральные белые и графитовые цвета вместо цветов активных фильтров.
+- Подсветка при наведении, фокусе и на текущей странице остаётся монохромно-белой в стиле RC1 Cinema Mono.
+- «Живые частицы» сохранили полную палитру, но фон стал плотнее и немного хаотичнее: больше частиц, звёзд, бликов и разнообразия движения.
+- SQLite, анимации окон, смысл данных и работа приложения не изменены.
 
-### RC1 Theme Preview 13 — White Reset + Neutral Search Focus
-- Reset Filters is now a neutral white/graphite utility control in every state and no longer inherits semantic filter colors.
-- Search hover/focus chrome is fully monochrome white/graphite; the remaining violet focus ring was removed.
-- Theme Preview 12 white pagination and denser Living Particles remain unchanged.
-- No SQLite, persistence, Modal Motion or No-Tab behavior changes.
+### RC1 Theme Preview 13 — Белый сброс и нейтральный фокус поиска
+- Кнопка сброса фильтров во всех состояниях оформлена нейтральным белым и графитовым и больше не наследует цвета фильтров.
+- Поисковое поле при наведении и фокусе стало полностью монохромным; остаточная фиолетовая рамка фокуса удалена.
+- Белая пагинация и более плотные живые частицы из Theme Preview 12 сохранены.
+- SQLite, запись данных, анимации окон и политика No-Tab не изменены.
 
-### RC1 Theme Preview 15 Hotfix 2 — Wider Rating Menu
-- Rating popup width increased to 176 px so long labels such as «Не понравилось» and «Запланировано» no longer clip.
-- Rating popup is centered around the compact trigger where possible and no longer shows a horizontal scrollbar.
-- No SQLite/runtime data behavior changes.
+### RC1 Theme Preview 15 Hotfix 2 — Более широкое меню оценок
+- Ширина меню оценок увеличена до 176 px, чтобы длинные варианты «Не понравилось» и «Запланировано» не обрезались.
+- Меню оценки по возможности располагается по центру относительно компактной кнопки и больше не содержит горизонтальной полосы прокрутки.
+- SQLite и данные приложения не изменены.
 
-### RC1 Theme Preview 15 Hotfix 3 — Restored Local Glints + More Transparency
-- Restored the intended decorative glint cross (short local horizontal/vertical flare around a particle) and short streaks behind fast particles.
-- The full-screen compositor seam hardening from Hotfix 1 remains active: visible UI/titlebar surfaces still avoid `backdrop-filter`.
-- Increased Cinema Mono transparency one more restrained step across table/cards/controls/modals/search and the titlebar.
-- Rating popup width from Hotfix 2 is preserved. SQLite/runtime/data semantics are unchanged.
+### RC1 Theme Preview 15 Hotfix 3 — Возвращение локальных бликов и увеличение прозрачности
+- Возвращены декоративные крестообразные блики: короткие горизонтальные/вертикальные лучи возле частицы и небольшие следы быстрых частиц.
+- Исправление шва композитора из Hotfix 1 сохранено: видимые поверхности интерфейса и заголовка по-прежнему избегают `backdrop-filter`.
+- Прозрачность Cinema Mono ещё немного увеличена у таблицы, карточек, кнопок, модальных окон, поиска и строки заголовка.
+- Ширина меню оценок из Hotfix 2 сохранена. SQLite, поведение приложения и семантика данных не менялись.
 
-- Hotfix 7 (privacy): Empty source and seed databases; synthetic integration tests; separate clean DEV profile; no personal data in release archives; freeze guards.
+- Hotfix 7 (конфиденциальность): пустые исходная и стартовая базы; синтетические интеграционные тесты, отдельный чистый DEV-профиль; личных данных в релизных архивах нет; добавлены защитные проверки фиксации данных.
 
-## v1.2 Preview 1 — Hotfix 9: Inline Import Help
-- Fixed help disclosure overlaying ZIP selection and status: help is now an inline accordion.
-- Responsive footer keeps confirmation accessible; helps closes when changing tabs.
-- No DB changes; test-only fixture and empty distributed SQLite retained.
+## v1.2 Preview 1 — Hotfix 9: Встроенная справка по импорту
+- Исправлено наложение раскрываемой справки на выбор ZIP и статус: теперь справка — встроенный раскрывающийся блок.
+- Адаптивная нижняя панель оставляет подтверждение доступным; при смене вкладки справка закрывается.
+- База данных не изменена; синтетический тестовый набор и пустая поставляемая SQLite сохранены.
 
-## v1.2 Preview 1 — Hotfix 10: Full-width import help
-- Import help expands to the full modal width, with no independently scrolling help panel.
-- The confirmation button remains in a separate right-aligned footer row.
-- Copy condensed without changing import behavior; no SQLite or Tauri changes.
+## v1.2 Preview 1 — Hotfix 10: Справка по импорту на всю ширину
+- Справка разворачивается на всю ширину модального окна без собственной прокручиваемой области.
+- Кнопка подтверждения остаётся в отдельной строке справа внизу.
+- Текст сокращён без изменения работы импорта; SQLite и Tauri не менялись.
 
-## Hotfix 11 — Card View Preview
-- Added switchable Table / Cards layout, sharing the existing filtering, pagination, rating/favorite persistence.
-- Card posters have offline placeholders until a licensed local artwork catalog is available.
-- View preference persists in the existing UI SQLite; distributed databases remain empty.
+## Hotfix 11 — Предварительный просмотр в режиме карточек
+- Добавлен переключатель «Таблица / Карточки» с общими фильтрами, пагинацией и сохранением оценок/избранного.
+- До появления лицензированного локального каталога иллюстраций используются автономные заглушки постеров.
+- Выбранное представление сохраняется в существующем состоянии интерфейса SQLite; поставляемые базы остаются пустыми.
 
-### v1.2 Preview 1 — Hotfix 12 (Card View Polish & Mixed Category QA)
-- Poster cards now use a roomier responsive grid, consistently spaced title, year, category badge and status underneath.
-- Preserved table mode, English titles, 2:3 proportions, keyboard focus and offline placeholder.
-- Added opt-in, isolated CARD_DEMO creator: 15 completely fictional entries, equally split between films, series and animation; demo opens in card mode. Canonical/distributed SQLite stays empty.
-- Added regression test ensuring demo generation never touches shipped DB or overwrites populated DB.
+### v1.2 Preview 1 — Hotfix 12: Полировка карточек и тестирование смешанных категорий
+- Карточки постеров размещаются в более просторной адаптивной сетке с согласованными отступами названия, года, категории и статуса под постером.
+- Сохранены режим таблицы, английские названия, пропорции 2:3, фокус с клавиатуры и автономные заглушки.
+- Добавлен запускаемый по желанию изолированный генератор `CARD_DEMO`: 15 полностью вымышленных записей поровну для фильмов, сериалов и анимации; демо открывается в режиме карточек. Каноническая и поставляемая SQLite остаются пустыми.
+- Добавлен регрессионный тест, который гарантирует, что создание демо не затрагивает поставляемую БД и не перезаписывает заполненную базу.
 
-## Hotfix 13 — Offline Catalog Foundation
-- Separate local catalog/catalog.sqlite3 (IMDb Non-Commercial personal-use import, FTS5).
-- Russian UI, English titles, category search and confirmed adds with IMDb title ID.
-- Synthetic CARD_DEMO catalog generator; no distributed IMDb or personal records.
-- Atomic --replace with previous-catalog backup; no runtime network required.
+## Hotfix 13 — Основа автономного каталога
+- Отдельная локальная база `catalog/catalog.sqlite3`: импорт IMDb для некоммерческого личного использования, индекс FTS5.
+- Русский интерфейс, английские названия, поиск по категориям и подтверждаемое добавление по идентификатору IMDb.
+- Генератор синтетического каталога `CARD_DEMO`; настоящий IMDb и личные записи не распространяются.
+- Атомарная замена через `--replace` с резервной копией старого каталога; во время работы сеть не требуется.
 
 
-### Hotfix 14 — IMDb Catalog Import & Update
+### Hotfix 14 — Импорт и обновление каталога IMDb
 - Опциональное обновление каталога из официального IMDb GZIP или локального TSV без пересборки EXE.
 - Валидация нового SQLite/FTS и сохранение прежнего каталога до атомарной замены.
 - Статистика по фильмам, сериалам и анимации в разделе офлайн-каталога.
 - Регрессионные тесты повреждённой загрузки и сохранности личной пустой базы.
 
 
-## Hotfix 17 — Commons Posters (opt-in)
+## Hotfix 17 — Постеры Commons (по желанию)
 
 - Карточки получили кнопку «Commons ↗»: запрос только по IMDb ID (Wikidata P345/P18), затем проверка файла и лицензии в Wikimedia Commons. Без TMDB и ключей.
 - После загрузки показывается предварительный просмотр; изображение не назначается до подтверждения. Commons может не содержать киноафишу или изображение вообще.
@@ -610,13 +614,13 @@ Kinoteka Hotfix 22 — Real Collection Card Polish: clean KINOTEKA placeholder, 
 - Проверено: `npm run verify`, `COMMONS POSTERS QA: PASS` с подставными сетевыми ответами. **Не проверено**: реальные ответы Wikidata/Commons и сборка Windows EXE; проверь на Windows.
 - Не распространять каталог IMDb, личную SQLite и папку `posters/` внутри патчей.
 
-## v1.2 Preview 1 — Hotfix 20: Card View Final Polish
-- Fixed doubled status border caused by the automatic themed-select trigger inside each card. Preserved keyboard-accessible dropdown with a single coloured border and status dot.
-- Reduced poster border and glow, aligned title/year/category/status rows, toned down favorite controls.
-- The manual «+ Постер» button appears on hover/focus for pointer devices and remains available on touch devices. No Commons/automatic poster UI.
-- Purely visual changes: no modifications to catalog, personal SQLite, Letterboxd importer, or poster files.
+## v1.2 Preview 1 — Hotfix 20: Финальная полировка режима карточек
+- Исправлена двойная рамка статуса из-за автоматической кнопки `themed-select` в карточке. Сохранён доступный с клавиатуры список с одной цветной рамкой и точкой статуса.
+- Рамка и свечение постера смягчены, строки названия, года, категории и статуса выровнены; кнопки избранного стали спокойнее.
+- Ручная кнопка «+ Постер» появляется при наведении/фокусе на устройствах с указателем и остаётся доступной на сенсорных экранах. Интерфейс Commons и автоматических постеров не включён.
+- Изменения только визуальные: каталог, личная SQLite, импорт Letterboxd и файлы постеров не затронуты.
 
-### Hotfix 28 — Poster Controls & Unified Card Lift
+### Hotfix 28 — Элементы управления постерами и единое поднятие карточки
 - Подсветка/приподнимание целой карточки вместо отдельного постера или кнопки, единая анимация всех дочерних элементов и поддержка reduced-motion.
 - Выделение карточки по клику, снятие по клику снаружи; без изменений SQLite.
 - Отдельный крестик удаления постера убран: кнопка «Изменить» открывает меню для выбора с ПК, вставки из буфера, удаления с подтверждением.
@@ -624,16 +628,16 @@ Kinoteka Hotfix 22 — Real Collection Card Polish: clean KINOTEKA placeholder, 
 - Регрессионный синтетический тест Hotfix 28; личные изображения, Letterboxd ZIP и SQLite в патч не входят.
 
 
-Hotfix 42 — Import Review UX Polish (preview; pending Windows confirmation)
-- Wider review dialog, lighter nested separators, four visible summary counters; the imported-list counter remains available internally.
-- Unresolved matches now appear as compact rows with title, year and proposed type; expand any row for full Letterboxd/Kinoteka comparison and explicit decisions. Secondary candidates and manual search expand independently inside a row.
-- Film/series/animation type chips explicitly flag mismatches between Letterboxd and Kinoteka, without changing matching rules.
-- Commit/help footer remains accessible at the bottom; the importer still blocks saving until all ambiguous matches are resolved.
-- No changes to SQLite, matching policy, Letterboxd source data, or already-imported lists.
+## Hotfix 42 — Полировка ручной сверки импорта (Preview; ожидалась проверка Windows)
+- Окно сверки стало шире, вложенные разделители — мягче; видны четыре счётчика сводки, а счётчик импортированных списков остаётся доступен внутри механизма импорта.
+- Спорные совпадения показаны компактными строками с названием, годом и предполагаемым типом. Любую строку можно раскрыть для полного сравнения Letterboxd и Кинотеки и выбора решения. Дополнительные кандидаты и ручной поиск раскрываются внутри строки отдельно.
+- Значки типов «Фильм / Сериал / Анимация» явно показывают расхождения между Letterboxd и Кинотекой, но правила сопоставления не меняются.
+- Нижняя панель подтверждения и справки остаётся доступной; сохранение блокируется, пока не разрешены все спорные совпадения.
+- SQLite, политика сопоставления, исходные данные Letterboxd и уже импортированные списки не изменены.
 
 
-Hotfix 43 — Import Review Refinement (preview; pending Windows verification)
-- Condensed comparison rows and moved Add separately / Skip / Reset above the optional additional candidates list.
-- Do not repeat “Letterboxd type: Not specified” when the export lacks media-type metadata; never infer a type mismatch from missing data. Genuine film vs series mismatches remain highlighted.
-- Preserves review page and list position after a single decision, avoiding repeated jumps to the first of 92 unresolved matches. Explicit page/filter/search changes still begin at the top.
-- No changes to Letterboxd matching rules, approval requirements, SQLite, or imported rating/status semantics.
+## Hotfix 43 — Доработка ручной сверки импорта (Preview; ожидалась проверка Windows)
+- Строки сравнения стали компактнее. Действия «Добавить отдельно», «Пропустить» и «Сбросить» перенесены выше необязательного списка дополнительных кандидатов.
+- При отсутствии типа медиа в экспорте больше не дублируется «Тип Letterboxd: не указан» и не создаётся ложный конфликт типов. Настоящие расхождения «Фильм / Сериал» по-прежнему выделяются.
+- После решения сохраняются страница сверки и позиция списка: больше нет повторных переходов к первому из 92 спорных совпадений. Явное изменение страницы, фильтра или поиска, как и раньше, начинает список сверху.
+- Правила сопоставления Letterboxd, необходимость подтверждения, SQLite, оценки и статусы импортируемых записей не изменены.
