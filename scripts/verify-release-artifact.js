@@ -106,7 +106,7 @@ if (!live.equals(seed)) throw new Error('Release live and seed SQLite must be by
 const exeSize = fs.statSync(path.join(target,'Kinoteka.exe')).size;
 if (exeSize < 1024 * 1024) throw new Error('Kinoteka.exe is unexpectedly small.');
 const dbSha = crypto.createHash('sha256').update(live).digest('hex');
-console.log('Kinoteka v1.2 Preview 1 release artifact verification OK');
+console.log('Kinoteka v1.2 Stable release artifact verification OK');
 console.log(`- EXE: ${(exeSize/1024/1024).toFixed(2)} MB`);
 console.log('- Exact portable allowlist OK (3 runtime files)');
 console.log('- SQLite integrity/schema/state/journal_mode OK');

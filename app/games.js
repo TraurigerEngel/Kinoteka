@@ -461,7 +461,11 @@ posterChooser.addEventListener('change',async()=>{
 });
 
 // Hotfix 27 — explicit local numerical rating editor, 1–10; blank = no score.
+// Hotfix 45: prevent opening two score editors on fast/double clicks.
+let scoreDialogActive = false;
 function askScore10(entry){
+  if(scoreDialogActive) return Promise.resolve(undefined);
+  scoreDialogActive = true;
   return new Promise(resolve=>{
     const layer=document.createElement('div');
     layer.className='kinoteka-score-modal-layer';
@@ -474,7 +478,7 @@ function askScore10(entry){
     const help=document.createElement('p');help.textContent='1–4 — Не понравилось · 5–6 — Нормально · 7–10 — Понравилось';
     const grid=document.createElement('div');grid.className='kinoteka-score-modal-grid';
     let finished=false;
-    const close=(value)=>{if(finished)return;finished=true;document.removeEventListener('keydown',keyHandler,true);layer.remove();resolve(value);};
+    const close=(value)=>{if(finished)return;finished=true;scoreDialogActive=false;document.removeEventListener('keydown',keyHandler,true);layer.remove();resolve(value);};
     const keyHandler=e=>{if(e.key==='Escape'){e.preventDefault();e.stopImmediatePropagation();close(undefined);}};
     for(let n=1;n<=10;n++){
       const b=document.createElement('button');b.type='button';b.textContent=String(n);
@@ -881,7 +885,21 @@ function render(){
   if(currentPage>totalPages)currentPage=totalPages;
   const pageRows=allRows.slice((currentPage-1)*pageSize,currentPage*pageSize);
   if(tableWrap) tableWrap.hidden=kinotekaViewMode!=="table"||pageRows.length===0;
-  if(emptyResults) emptyResults.hidden=pageRows.length!==0;
+  if(emptyResults){
+    emptyResults.hidden=pageRows.length!==0;
+    if(pageRows.length===0){
+      const hasOtherFilters=Boolean(search.value.trim()||mediaYear||mediaCategory!=="Все");
+      if(games.length===0) emptyResults.textContent="Коллекция пока пуста. Нажми «+», чтобы добавить запись.";
+      else if(quickFilter){
+        const label=quickFilter==='favorite'?'Избранное':quickFilter;
+        emptyResults.textContent=hasOtherFilters
+          ? `Нет записей в разделе «${label}» с выбранными условиями поиска. Сбрось фильтры, чтобы увидеть коллекцию.`
+          : `В разделе «${label}» пока нет записей. Выбери «Все» в верхних счётчиках, чтобы увидеть коллекцию.`;
+      }else{
+        emptyResults.textContent="По выбранным условиям ничего не найдено. Сбрось фильтры, чтобы увидеть коллекцию.";
+      }
+    }
+  }
 
   const dupKeys=duplicateIdentitySet;
   let identityKey="",tableKey="";

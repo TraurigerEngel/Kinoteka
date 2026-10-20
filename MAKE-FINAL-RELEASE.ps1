@@ -48,23 +48,23 @@ function Expand-ZipToDirectory {
   [System.IO.Compression.ZipFile]::ExtractToDirectory($ZipPath, $DestinationDir)
 }
 
-$releaseName = 'Kinoteka_Standalone_v1.2_Preview_1'
+$releaseName = 'Kinoteka_Standalone_v1.2_Stable'
 $portable = Join-Path $PSScriptRoot ('Release\' + $releaseName)
-$artifacts = Join-Path $PSScriptRoot 'Artifacts'
+$artifacts = Join-Path $PSScriptRoot 'Artifacts\Kinoteka_v1.2_Stable'
 $portableZip = Join-Path $artifacts ($releaseName + '_Portable.zip')
 $sourceZip = Join-Path $artifacts ($releaseName + '_Source.zip')
-$sourceStage = Join-Path $PSScriptRoot '.release-source-stage'
-$verifyStage = Join-Path $PSScriptRoot '.release-verify-stage'
-$sourceVerifyStage = Join-Path $PSScriptRoot '.release-source-verify-stage'
+$sourceStage = Join-Path $PSScriptRoot '.stable-release-source-stage'
+$verifyStage = Join-Path $PSScriptRoot '.stable-release-verify-stage'
+$sourceVerifyStage = Join-Path $PSScriptRoot '.stable-release-source-verify-stage'
 
 if (Test-Path -LiteralPath $artifacts) { throw 'Artifacts directory already exists. Refusing to overwrite archives. Use a fresh source folder.' }
 if (Test-Path -LiteralPath $portable) { throw 'Release directory already exists. Refusing to overwrite SQLite. Use a fresh source folder.' }
-Write-Host '=== KINOTEKA STANDALONE v1.2 PREVIEW 1 / FINAL RELEASE ===' -ForegroundColor Magenta
+Write-Host '=== KINOTEKA STANDALONE v1.2 STABLE / FINAL RELEASE ===' -ForegroundColor Magenta
 
-& (Join-Path $PSScriptRoot 'BUILD-RELEASE.ps1')
+& (Join-Path $PSScriptRoot 'BUILD-RELEASE.ps1') -SkipNpmCi
 if ($LASTEXITCODE -ne 0) { throw "BUILD-RELEASE failed: $LASTEXITCODE" }
 
-New-Item -ItemType Directory -Path $artifacts | Out-Null
+New-Item -ItemType Directory -Path $artifacts -Force | Out-Null
 foreach ($tmp in @($sourceStage,$verifyStage,$sourceVerifyStage)) {
   if (Test-Path -LiteralPath $tmp) { Remove-Item -LiteralPath $tmp -Recurse -Force }
 }
@@ -74,7 +74,7 @@ New-ZipFromDirectory -SourceDir $portable -DestinationZip $portableZip
 
 Write-Host "`n[2/4] Packing clean source ZIP..." -ForegroundColor Cyan
 New-Item -ItemType Directory -Force -Path $sourceStage | Out-Null
-foreach ($dir in @('app','scripts')) {
+foreach ($dir in @('app','scripts','test-data')) {
   Copy-Item -LiteralPath (Join-Path $PSScriptRoot $dir) -Destination (Join-Path $sourceStage $dir) -Recurse -Force
 }
 foreach ($dbdir in @('data','seed-data')) {
@@ -98,14 +98,18 @@ $rootFiles = @(
   'MAKE-FINAL-RELEASE.cmd','MAKE-FINAL-RELEASE.ps1',
   'FREEZE-CANONICAL-DATA.cmd','FREEZE-CANONICAL-DATA.ps1',
   'MIGRATE-FROM-LOST-HEAVEN.cmd','MIGRATE-FROM-LOST-HEAVEN.ps1',
-  'START-HERE.txt','README.md','CHANGELOG.md','RELEASE_NOTES_v1.0_STABLE.md','RELEASE_NOTES_v1.1_STABLE.md','RELEASE_NOTES_v1.2_PREVIEW_1.md','RELEASE-CHECKLIST.md'
+  'PREPARE-REAL-PREVIEW.ps1',
+  'START-HERE.txt','README.md','CHANGELOG.md','RELEASE_NOTES_v1.0_STABLE.md','RELEASE_NOTES_v1.1_STABLE.md','RELEASE_NOTES_v1.2_PREVIEW_1.md','RELEASE_NOTES_v1.2_STABLE.md','RELEASE-CHECKLIST.md'
 )
 foreach ($file in $rootFiles) {
   $src = Join-Path $PSScriptRoot $file
   if (Test-Path -LiteralPath $src) { Copy-Item -LiteralPath $src -Destination (Join-Path $sourceStage $file) -Force }
 }
-node --no-warnings (Join-Path $sourceStage 'scripts\verify-standalone.js')
-if ($LASTEXITCODE -ne 0) { throw "source staging verification failed: $LASTEXITCODE" }
+Push-Location -LiteralPath $sourceStage
+try {
+  npm run verify
+  if ($LASTEXITCODE -ne 0) { throw "source staging full verification failed: $LASTEXITCODE" }
+} finally { Pop-Location }
 New-ZipFromDirectory -SourceDir $sourceStage -DestinationZip $sourceZip
 
 Write-Host "`n[3/4] Re-extracting and verifying ZIPs..." -ForegroundColor Cyan
@@ -114,8 +118,11 @@ node --no-warnings scripts\verify-release-artifact.js $verifyStage
 if ($LASTEXITCODE -ne 0) { throw "re-extracted portable verification failed: $LASTEXITCODE" }
 
 Expand-ZipToDirectory -ZipPath $sourceZip -DestinationDir $sourceVerifyStage
-node --no-warnings (Join-Path $sourceVerifyStage 'scripts\verify-standalone.js')
-if ($LASTEXITCODE -ne 0) { throw "re-extracted source verification failed: $LASTEXITCODE" }
+Push-Location -LiteralPath $sourceVerifyStage
+try {
+  npm run verify
+  if ($LASTEXITCODE -ne 0) { throw "re-extracted source full verification failed: $LASTEXITCODE" }
+} finally { Pop-Location }
 
 Write-Host "`n[4/4] Writing hashes and metadata..." -ForegroundColor Cyan
 $portableHash = Get-Sha256Hex -Path $portableZip
@@ -130,9 +137,9 @@ if ($exeHash -ne $reextractedExeHash) { throw 'EXE hash mismatch after ZIP re-ex
 
 $meta = [ordered]@{
   product = 'Kinoteka Standalone'
-  version = '1.2.0-preview.1'
-  channel = 'Preview'
-  release = 'v1.2 Preview 1'
+  version = '1.2.0'
+  channel = 'Stable'
+  release = 'v1.2 Stable (HF49)'
   generated_at = (Get-Date).ToString('o')
   portable_sha256 = $portableHash
   source_sha256 = $sourceHash

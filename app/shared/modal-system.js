@@ -97,35 +97,11 @@
 
   // Kinoteka themed alert/confirm dialogs. These replace native browser dialogs
   // while keeping the same async interaction style everywhere in the app.
-  function ensureDialogStyles(){
-    if(document.getElementById('kinoteka-dialog-runtime-style')) return;
-    const style=document.createElement('style');
-    style.id='kinoteka-dialog-runtime-style';
-    style.textContent=`
-      .kinoteka-native-dialog-layer{position:fixed;inset:0;z-index:10000;display:flex;align-items:center;justify-content:center;padding:22px;background:rgba(5,4,8,.74);backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px)}
-      .kinoteka-native-dialog{width:min(520px,calc(100vw - 44px));border:1px solid #2a2331;border-radius:16px;background:linear-gradient(180deg,rgba(20,17,27,.985),rgba(11,10,16,.99));box-shadow:0 24px 70px rgba(0,0,0,.58),0 0 0 1px rgba(185,92,255,.05),0 0 42px rgba(145,80,220,.08);color:#f1edf5;font-family:"Inter",sans-serif;overflow:hidden}
-      .kinoteka-native-dialog-head{display:flex;align-items:center;padding:15px 17px 13px;border-bottom:1px solid rgba(65,54,75,.75)}
-      .kinoteka-native-dialog-title{font-size:14px;font-weight:650;letter-spacing:.01em}
-      .kinoteka-native-dialog-body{padding:17px;color:#d5cddd;font-size:13px;line-height:1.52;white-space:pre-wrap;word-break:break-word}
-      .kinoteka-native-dialog-path{margin-top:10px;padding:10px 11px;border:1px solid rgba(65,54,75,.78);border-radius:10px;background:#0c0b10;color:#b9a9c4;font-size:11px;line-height:1.45;word-break:break-all}
-      .kinoteka-native-dialog-actions{display:flex;justify-content:flex-end;align-items:center;gap:8px;padding:0 17px 16px}
-      .kinoteka-native-dialog-btn{height:34px;border:1px solid #332b3c;background:#131018;color:#d9d1de;border-radius:10px;padding:0 13px;cursor:pointer;font:inherit;font-size:12px;line-height:1;transition:background-color .14s ease,border-color .14s ease,color .14s ease,transform .09s ease}
-      .kinoteka-native-dialog-btn:hover{transform:translateY(-1px);border-color:#4a3c56;background:#191420}
-      .kinoteka-native-dialog-btn.primary{border-color:#67427f;background:#241530;color:#f0e8f5}
-      .kinoteka-native-dialog-btn.primary:hover{border-color:#8a5ca8;background:#301a40}
-      .kinoteka-native-dialog-btn.success{border-color:#456957;background:#14231c;color:#dff5e8}
-      .kinoteka-native-dialog-btn.success:hover{border-color:#5b8c70;background:#183025}
-      .kinoteka-native-dialog-btn.danger{border-color:#6f3d4d;background:#24141a;color:#f3dbe2}
-      .kinoteka-native-dialog-btn.danger:hover{border-color:#98576a;background:#311821}
-      .kinoteka-native-dialog-btn.copy{margin-right:auto}
-      html.kinoteka-dialog-open,body.kinoteka-dialog-open{overflow:hidden!important}
-    `;
-    document.head.appendChild(style);
-  }
+  // Dialog presentation lives in modal-system.css, loaded with the document.
+  // Runtime <style> injection was fragile and could leave the overlay in normal flow.
 
   function normalizeDialogText(value){ return String(value ?? ''); }
   function createDialog(options={}){
-    ensureDialogStyles();
     const layer=document.createElement('div'); layer.className='kinoteka-native-dialog-layer'; layer.setAttribute('role','presentation');
     const dialog=document.createElement('section'); dialog.className='kinoteka-native-dialog'; dialog.setAttribute('role','dialog'); dialog.setAttribute('aria-modal','true');
     const head=document.createElement('div'); head.className='kinoteka-native-dialog-head';
@@ -182,9 +158,23 @@
     requestAnimationFrame(()=>{layer.classList.add('open');ok.focus({preventScroll:true});});
     return promise;
   }
+  // A modal must never create a second stack of prompts: rapid clicks can arrive
+  // before the first confirmation completes. Extra confirmations are cancelled,
+  // not shared, so one approval cannot authorise multiple database mutations.
+  let activeNativeDialog = false;
+  function showNativeDialog(options){
+    if(activeNativeDialog) return Promise.resolve(options.confirm ? false : undefined);
+    activeNativeDialog = true;
+    try{
+      return createDialog(options).finally(()=>{ activeNativeDialog = false; });
+    }catch(error){
+      activeNativeDialog = false;
+      throw error;
+    }
+  }
   window.KinotekaDialog={
-    alert(message,options={}){ return createDialog({...options,confirm:false,message}); },
-    confirm(message,options={}){ return createDialog({...options,confirm:true,message}); }
+    alert(message,options={}){ return showNativeDialog({...options,confirm:false,message}); },
+    confirm(message,options={}){ return showNativeDialog({...options,confirm:true,message}); }
   };
 
   window.KinotekaModal = { bind, get: id => controllers.get(id) || null, updateLock, motion: MOTION };

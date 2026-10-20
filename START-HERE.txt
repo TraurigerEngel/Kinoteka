@@ -1,45 +1,24 @@
-KINOTEKA STANDALONE v1.2 PREVIEW 1 — LIBRARY INTEGRATION
-======================================================
-Windows 11 / Tauri 2. Based on v1.1 Stable; original canonical SQLite is preserved.
+КИНОТЕКА STANDALONE v1.2 STABLE (HF49)
+====================================
 
-FULL = complete buildable source. Unpack to a NEW folder (do not overwrite v1.1 Stable).
-OVERLAY = changed/new files only. Apply to an extracted v1.1 Stable SOURCE folder,
-          not to its portable EXE. Rebuild on Windows after applying the overlay.
+Актуальная стабильная версия для Windows 11 x64 / Tauri 2.
 
-In PowerShell in the v1.2 source folder:
-  .\BUILD-DEV.cmd
+Готовый запуск:
+  Распакуйте Portable в новую папку и запустите Kinoteka.exe.
+  Не перезаписывайте рабочую data/kinoteka.sqlite3: в дистрибутиве база ПУСТАЯ.
 
-This runs npm ci (unless already present), npm run verify and the Tauri/Rust build.
-Requirements: Windows 11, WebView2, Node.js 22+, npm, Rust 1.90+ with Windows MSVC toolchain.
-The compiled preview is written to:
-  Portable\Kinoteka_Standalone_v1.2_Preview_1_DEV\Kinoteka.exe
+Работа с исходниками:
+  1. Установите Node.js 22.13+, npm 10+, Rust/MSVC.
+  2. npm ci
+  3. npm run verify
+  4. BUILD-RELEASE.cmd
 
-For a release build use .\BUILD-RELEASE.cmd in a separate source folder.
-Do NOT place v1.2 Preview in an existing production Portable directory and
-NEVER use FREEZE-CANONICAL-DATA to sync user data from a different copy.
+В версии v1.2 HF49 исправлена геометрия окна, взаимодействие с автоскрываемой
+панелью задач Windows 11, поведение модальных окон. Поиск TMDB удалён (HF44).
+Остались локальная коллекция, ручные постеры/Commons и импорт Letterboxd.
 
-IN THE APPLICATION:
-  1. Click 'Импорт и каталог' -> 'Импорт Letterboxd'.
-  2. Select the official ZIP export from https://letterboxd.com/user/exportdata/
-     (or a standalone watched/ratings/diary/reviews/watchlist CSV).
-  3. Check the preview and click 'Подтвердить импорт в SQLite'.
-     A regular SQLite backup is created before one confirmed write.
-  4. Under 'Мои списки' you can browse imported lists.
-  5. Under 'Поиск TMDB' paste your own API Read Access Token, search a title,
-     then click '+ В коллекцию'. The token is not saved.
+При работе с GitHub проверьте README.md, GITHUB_PRIVACY_RU.md,
+RELEASE_NOTES_v1.2_STABLE.md. Старые релизы сохранены.
 
-LIMITATIONS (this is a Preview):
-  * Letterboxd matches use normalized title + year + category. Russian and
-    English names for the same film may not be recognized as duplicates.
-  * Ratings, diary, reviews, tags, links and lists are retained in the SQLite
-    JSON payload (letterboxd metadata); detailed movie-card UI is future work.
-  * Only currently active watched/ratings/diary/reviews/watchlist and lists
-    are imported. Deleted entries, comments, likes and profile are skipped.
-  * TMDB search needs an API token and working network connection.
-  * This Full ZIP contains SOURCE; it is not a precompiled Windows EXE.
-
-CANONICAL INITIAL DATA:
-  [количество удалено] records / [скрыто] favorites / 0 trash / revision [скрыта].
-  Unchanged seed/live SHA256: (redacted — historical user DB).
-
-v1.1 Stable remains the rollback version.
+СОБЛЮДАЙТЕ КОНФИДЕНЦИАЛЬНОСТЬ: не коммитьте личную базу, постеры,
+пользовательские ZIP/CSV, резервные копии, ключи, логи и токены.

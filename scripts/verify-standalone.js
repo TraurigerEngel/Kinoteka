@@ -48,11 +48,11 @@ function assertUiSemantics(ui,label) {
 
 
 const root = path.resolve(__dirname, '..');
-const EXPECTED_VERSION = '1.2.0-preview.1';
-const EXPECTED_RELEASE_NAME = 'Kinoteka_Standalone_v1.2_Preview_1';
+const EXPECTED_VERSION = '1.2.0';
+const EXPECTED_RELEASE_NAME = 'Kinoteka_Standalone_v1.2_Stable';
 
 const mustExist = [
-  'package.json','package-lock.json','README.md','CHANGELOG.md','START-HERE.txt','RELEASE_NOTES_v1.0_STABLE.md','RELEASE_NOTES_v1.1_STABLE.md','RELEASE-CHECKLIST.md',
+  'package.json','package-lock.json','README.md','CHANGELOG.md','START-HERE.txt','RELEASE_NOTES_v1.0_STABLE.md','RELEASE_NOTES_v1.1_STABLE.md','RELEASE_NOTES_v1.2_STABLE.md','RELEASE-CHECKLIST.md',
   'app/index.html','app/core.js','app/games.js','app/trash.js','app/runtime.js','app/favicon.ico',
   'app/shared/kinoteka-bridge.js','app/shared/modal-system.js','app/shared/themed-select.js',
   'app/shared/browser-guard.js','app/shared/route-transition.js','app/shared/tauri-titlebar.css',
@@ -105,20 +105,20 @@ const canonicalSummaryHelper = fs.readFileSync(path.join(root,'scripts/kinoteka-
 
 // Identity/version consistency.
 if (pkg.name !== 'kinoteka-standalone' || pkg.version !== EXPECTED_VERSION) throw new Error('package.json identity/version mismatch.');
-if (pkg.description !== 'Kinoteka Standalone v1.2 Preview 1 — Library Integration') throw new Error('package.json description mismatch.');
+if (pkg.description !== 'Kinoteka Standalone v1.2 Stable — HF49 Verified') throw new Error('package.json description mismatch.');
 if (lock.name !== pkg.name || lock.version !== EXPECTED_VERSION) throw new Error('package-lock root identity/version mismatch.');
 if (lock.packages?.['']?.name !== pkg.name || lock.packages?.['']?.version !== EXPECTED_VERSION) throw new Error('package-lock package identity/version mismatch.');
 if (lock.packages?.['']?.description !== pkg.description) throw new Error('package-lock description mismatch.');
-if (!/name\s*=\s*"kinoteka-standalone"/.test(cargo) || !/version\s*=\s*"1\.2\.0-preview\.1"/.test(cargo)) throw new Error('Cargo package identity/version mismatch.');
+if (!/name\s*=\s*"kinoteka-standalone"/.test(cargo) || !/version\s*=\s*"1\.2\.0"/.test(cargo)) throw new Error('Cargo package identity/version mismatch.');
 if (!/name\s*=\s*"kinoteka"/.test(cargo) || !/name\s*=\s*"kinoteka_standalone_lib"/.test(cargo)) throw new Error('Cargo binary/library identity mismatch.');
-if (!/name = "kinoteka-standalone"\nversion = "1\.2\.0-preview\.1"/.test(cargoLock)) throw new Error('Cargo.lock root package identity/version mismatch.');
+if (!/name = "kinoteka-standalone"\nversion = "1\.2\.0"/.test(cargoLock)) throw new Error('Cargo.lock root package identity/version mismatch.');
 
 // Guard against accidental release-version replacement in third-party Cargo.lock entries.
 // The project version belongs only to the local kinoteka-standalone package, never to crates.io packages.
 const cargoLockPackages = [...cargoLock.matchAll(/\[\[package\]\]\r?\nname = "([^"]+)"\r?\nversion = "([^"]+)"/g)];
 if (cargoLockPackages.length < 200) throw new Error('Cargo.lock package inventory is unexpectedly short.');
 for (const [, name, version] of cargoLockPackages) {
-  if (name !== 'kinoteka-standalone' && (version === EXPECTED_VERSION || version.includes(`+spec-${EXPECTED_VERSION}`))) {
+  if (name !== 'kinoteka-standalone' && version.includes(`+spec-${EXPECTED_VERSION}`)) {
     throw new Error(`Cargo.lock corrupt third-party package version: ${name} ${version}`);
   }
 }
@@ -1043,8 +1043,8 @@ for (const token of [
 // Release/migration contracts.
 const releaseText = `${buildDev}\n${buildRelease}\n${makeRelease}`;
 for (const token of [EXPECTED_RELEASE_NAME,'kinoteka.exe','Kinoteka.exe','kinoteka.sqlite3']) if (!releaseText.includes(token)) throw new Error(`Release identity/path missing: ${token}`);
-for (const token of ["version = '1.2.0-preview.1'","channel = 'Preview'","release = 'v1.2 Preview 1'",'System.IO.Compression.ZipFile','SHA256']) if (!makeRelease.includes(token)) throw new Error(`Final release contract missing: ${token}`);
-if (!makeRelease.includes('.release-verify-stage') || !makeRelease.includes('.release-source-verify-stage')) throw new Error('ZIP re-extract verification pipeline is missing.');
+for (const token of ["version = '1.2.0'","channel = 'Stable'","release = 'v1.2 Stable (HF49)'",'System.IO.Compression.ZipFile','SHA256']) if (!makeRelease.includes(token)) throw new Error(`Final release contract missing: ${token}`);
+if (!makeRelease.includes('.stable-release-verify-stage') || !makeRelease.includes('.stable-release-source-verify-stage')) throw new Error('ZIP re-extract verification pipeline is missing.');
 if (!migrate.includes('data\\movies\\kinoteka.sqlite3') || migrate.includes('data\\games\\kinoteka.sqlite3')) throw new Error('Lost Heaven Kinoteka migration path is wrong.');
 if (!migrate.includes('verify-sqlite-db.js')) throw new Error('Migration SQLite verifier is missing.');
 

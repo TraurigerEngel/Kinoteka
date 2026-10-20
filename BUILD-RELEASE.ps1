@@ -1,4 +1,4 @@
-param([switch]$SkipNpmCi)
+param([switch]$SkipNpmCi = $true)
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 Set-Location -LiteralPath $PSScriptRoot
@@ -19,13 +19,15 @@ function Get-Sha256Hex {
   return ([System.BitConverter]::ToString($hash) -replace '-', '').ToLowerInvariant()
 }
 
-$releaseName = 'Kinoteka_Standalone_v1.2_Preview_1'
+$releaseName = 'Kinoteka_Standalone_v1.2_Stable'
 $out = Join-Path $PSScriptRoot ('Release\' + $releaseName)
 $manifestPath = Join-Path $PSScriptRoot 'src-tauri\Cargo.toml'
 $lockPath = Join-Path $PSScriptRoot 'src-tauri\Cargo.lock'
+$env:CARGO_NET_OFFLINE = 'true'
+$env:npm_config_offline = 'true'
 if (Test-Path -LiteralPath $out) { throw 'Release v1.2 Preview 1 output already exists. Refusing to overwrite a possibly used SQLite database. Use a fresh source folder.' }
 
-Write-Host '=== KINOTEKA STANDALONE v1.2 PREVIEW 1 / RELEASE BUILD ===' -ForegroundColor Magenta
+Write-Host '=== KINOTEKA STANDALONE v1.2 STABLE / RELEASE BUILD ===' -ForegroundColor Magenta
 
 foreach ($tool in @('rustc','cargo','npm','node')) {
   if (-not (Get-Command $tool -ErrorAction SilentlyContinue)) { throw "$tool was not found." }
@@ -35,8 +37,7 @@ if (-not (Test-Path -LiteralPath $lockPath)) { throw 'Cargo.lock is required for
 
 Write-Host "`n[1/5] Locked dependencies..." -ForegroundColor Cyan
 if (-not $SkipNpmCi) {
-  npm ci
-  if ($LASTEXITCODE -ne 0) { throw "npm ci failed: $LASTEXITCODE" }
+  throw 'Stable release does not support npm ci. Install dependencies separately only if strictly needed.'
 } elseif (-not (Test-Path -LiteralPath (Join-Path $PSScriptRoot 'node_modules'))) {
   throw 'node_modules is missing while -SkipNpmCi was requested.'
 } else {
@@ -44,6 +45,9 @@ if (-not $SkipNpmCi) {
 }
 cargo metadata --locked --format-version 1 --no-deps --manifest-path $manifestPath | Out-Null
 if ($LASTEXITCODE -ne 0) { throw "cargo metadata --locked failed: $LASTEXITCODE" }
+# Stable packaging is strictly offline; missing crates cause a clear failure.
+$env:CARGO_NET_OFFLINE = 'true'
+$env:npm_config_offline = 'true'
 $lockBefore = Get-Sha256Hex -Path $lockPath
 
 Write-Host "`n[2/5] Verifying source..." -ForegroundColor Cyan

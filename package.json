@@ -1,22 +1,22 @@
 {
-    "name":  "kinoteka-standalone",
-    "version":  "1.2.0-preview.1",
-    "private":  true,
-    "description":  "Kinoteka Standalone v1.2 Preview 1 — Library Integration",
-    "scripts":  {
-                    "tauri":  "tauri",
-                    "dev":  "tauri dev",
-                    "build:dev":  "tauri build --no-bundle",
-                    "build:release":  "tauri build --no-bundle --config src-tauri/tauri.release.conf.json",
-                    "verify":  "node scripts/verify-standalone.js \u0026\u0026 node scripts/test-integration.js \u0026\u0026 node scripts/test-synthetic-fixture.js \u0026\u0026 node scripts/test-card-view.js \u0026\u0026 node scripts/test-card-demo.js \u0026\u0026 node scripts/test-posters.js \u0026\u0026 node scripts/test-commons-posters.js \u0026\u0026 node scripts/test-card-visual-parity.js \u0026\u0026 node scripts/test-card-final-polish.js \u0026\u0026 node scripts/test-card-real-polish.js \u0026\u0026 node scripts/test-card-year-badge.js \u0026\u0026 node scripts/test-card-typography-viewbar.js \u0026\u0026 node scripts/test-card-visual-cleanup.js \u0026\u0026 node scripts/test-numeric-scores.js \u0026\u0026 node scripts/test-poster-controls-hf28.js \u0026\u0026 node scripts/test-poster-alignment-hf29.js \u0026\u0026 node scripts/test-card-status-unified-hf30.js \u0026\u0026 node scripts/test-selected-card-paste-hf31.js \u0026\u0026 node scripts/test-card-media-icons-hf32.js \u0026\u0026 node scripts/test-card-context-hf33.js \u0026\u0026 node scripts/test-card-single-outline-hf34.js \u0026\u0026 node scripts/test-local-inter-hf34.js \u0026\u0026 node scripts/test-card-highlight-hf35.js \u0026\u0026 node scripts/test-card-header-rhythm-hf36.js \u0026\u0026 node scripts/test-card-stationary-escape-hf37.js \u0026\u0026 node scripts/test-card-hf38-surface-focus-view-switch.js \u0026\u0026 node scripts/test-taskbar-particles-hf39.js \u0026\u0026 node scripts/test-tooltip-policy-hf40.js \u0026\u0026 node scripts/test-import-modal-hf41.js \u0026\u0026 node scripts/test-import-review-hf42.js \u0026\u0026 node scripts/test-import-review-hf43.js",
-                    "test:integration":  "node scripts/test-integration.js",
-                    "demo:cards":  "node scripts/create-card-demo.js"
-                },
-    "devDependencies":  {
-                            "@tauri-apps/cli":  "2.12.0"
-                        },
-    "engines":  {
-                    "node":  "\u003e=22.13.0",
-                    "npm":  "\u003e=10.0.0"
-                }
+  "name": "kinoteka-standalone",
+  "version": "1.2.0",
+  "private": true,
+  "description": "Kinoteka Standalone v1.2 Stable — HF49 Verified",
+  "scripts": {
+    "tauri": "tauri",
+    "dev": "tauri dev",
+    "build:dev": "tauri build --no-bundle",
+    "build:release": "tauri build --no-bundle --config src-tauri/tauri.release.conf.json",
+    "verify": "node scripts/test-no-tmdb-search.js && node scripts/verify-standalone.js && node scripts/test-integration.js && node scripts/test-synthetic-fixture.js && node scripts/test-card-view.js && node scripts/test-card-demo.js && node scripts/test-posters.js && node scripts/test-commons-posters.js && node scripts/test-card-visual-parity.js && node scripts/test-card-final-polish.js && node scripts/test-card-status-clean.js && node scripts/test-card-real-polish.js && node scripts/test-card-year-badge.js && node scripts/test-card-typography-viewbar.js && node scripts/test-card-visual-cleanup.js && node scripts/test-offline-catalog-removal.js && node scripts/test-numeric-scores.js && node scripts/test-poster-controls-hf28.js && node scripts/test-poster-alignment-hf29.js && node scripts/test-card-status-unified-hf30.js && node scripts/test-selected-card-paste-hf31.js && node scripts/test-card-media-icons-hf32.js && node scripts/test-card-context-hf33.js && node scripts/test-card-single-outline-hf34.js && node scripts/test-local-inter-hf34.js && node scripts/test-card-highlight-hf35.js && node scripts/test-card-header-rhythm-hf36.js && node scripts/test-card-stationary-escape-hf37.js && node scripts/test-card-hf38-surface-focus-view-switch.js && node scripts/test-taskbar-particles-hf39.js && node scripts/test-tooltip-policy-hf40.js && node scripts/test-import-modal-hf41.js && node scripts/test-import-review-hf42.js && node scripts/test-import-review-hf43.js && node scripts/test-dialog-hf45.js && node scripts/test-window-geometry-hf46.js && node scripts/test-taskbar-hotedge-hf47.js && node scripts/test-taskbar-window-mode-hf48.js && node scripts/test-taskbar-frame-hf49.js && node scripts/test-stable-release-hf50.js",
+    "test:integration": "node scripts/test-integration.js",
+    "demo:cards": "node scripts/create-card-demo.js"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "2.12.0"
+  },
+  "engines": {
+    "node": ">=22.13.0",
+    "npm": ">=10.0.0"
+  }
 }

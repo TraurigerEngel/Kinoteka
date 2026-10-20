@@ -151,3 +151,69 @@ html.modal-open,body.modal-open{overflow:hidden!important;}
 
 /* Kinoteka native-dialog replacement. Runtime behavior lives in modal-system.js. */
 .kinoteka-dialog-open,.kinoteka-dialog-open body{overflow:hidden!important}
+
+
+/* Hotfix 45: permanent geometry for native alert/confirm dialogs.
+   Never depend on runtime-injected <style>; otherwise failed CSS injection
+   could append raw dialogs below the film list instead of showing a modal. */
+.kinoteka-native-dialog-layer{
+  position:fixed!important;
+  inset:0!important;
+  z-index:10000!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  box-sizing:border-box!important;
+  padding:22px!important;
+  background:rgba(5,4,8,.74);
+  backdrop-filter:blur(7px);
+  -webkit-backdrop-filter:blur(7px);
+}
+.kinoteka-native-dialog{
+  width:min(520px,calc(100vw - 44px))!important;
+  max-height:calc(100vh - 44px)!important;
+  box-sizing:border-box!important;
+  overflow-y:auto!important;
+  border:1px solid #2a2331!important;
+  border-radius:16px!important;
+  background:linear-gradient(180deg,rgba(20,17,27,.985),rgba(11,10,16,.99))!important;
+  box-shadow:0 24px 70px rgba(0,0,0,.58),0 0 0 1px rgba(185,92,255,.05),0 0 42px rgba(145,80,220,.08)!important;
+  color:#f1edf5!important;
+  font-family:"Inter",system-ui,sans-serif!important;
+}
+.kinoteka-native-dialog-head{
+  display:flex!important;align-items:center!important;
+  padding:15px 17px 13px!important;
+  border-bottom:1px solid rgba(65,54,75,.75)!important;
+}
+.kinoteka-native-dialog-title{font-size:14px!important;font-weight:650!important;letter-spacing:.01em!important;}
+.kinoteka-native-dialog-body{
+  padding:17px!important;color:#d5cddd!important;
+  font-size:13px!important;line-height:1.52!important;
+  white-space:pre-wrap!important;overflow-wrap:anywhere!important;
+}
+.kinoteka-native-dialog-actions{
+  display:flex!important;justify-content:flex-end!important;
+  align-items:center!important;gap:8px!important;
+  padding:0 17px 16px!important;
+}
+.kinoteka-native-dialog-btn{
+  min-height:34px!important;
+  border:1px solid #332b3c!important;
+  border-radius:10px!important;
+  background:#131018!important;
+  color:#d9d1de!important;
+  padding:0 13px!important;
+  cursor:pointer!important;
+  font-family:inherit!important;font-size:12px!important;line-height:1!important;
+  transition:background-color .14s ease,border-color .14s ease,color .14s ease,transform .09s ease!important;
+}
+.kinoteka-native-dialog-btn:hover{transform:translateY(-1px)!important;border-color:#4a3c56!important;background:#191420!important;}
+.kinoteka-native-dialog-btn.primary{border-color:#67427f!important;background:#241530!important;color:#f0e8f5!important;}
+.kinoteka-native-dialog-btn.primary:hover{border-color:#8a5ca8!important;background:#301a40!important;}
+.kinoteka-native-dialog-btn.success{border-color:#456957!important;background:#14231c!important;color:#dff5e8!important;}
+.kinoteka-native-dialog-btn.success:hover{border-color:#5b8c70!important;background:#183025!important;}
+.kinoteka-native-dialog-btn.danger{border-color:#6f3d4d!important;background:#24141a!important;color:#f3dbe2!important;}
+.kinoteka-native-dialog-btn.danger:hover{border-color:#98576a!important;background:#311821!important;}
+.kinoteka-native-dialog-btn.copy{margin-right:auto!important;}
+html.kinoteka-dialog-open,body.kinoteka-dialog-open{overflow:hidden!important;}

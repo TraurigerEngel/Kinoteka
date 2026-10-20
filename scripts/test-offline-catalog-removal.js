@@ -34,8 +34,7 @@ for(const p of ['src-tauri/src/catalog.rs','scripts/import-imdb-catalog.js','scr
 }
 assert(!Object.keys(pkg.scripts).some(k=>k.startsWith('catalog:')||k==='test:catalog'));
 assert.doesNotMatch(pkg.scripts.verify,/test-offline-catalog\.js|test-catalog-update\.js/);
-assert.match(read('APPLY-HOTFIX26.ps1'),/RemoveInstalledCatalogs/);
-assert.match(read('APPLY-HOTFIX26.ps1'),/Get-Process -Name 'Kinoteka'/);
+assert.ok(!fs.existsSync(path.join(root,'APPLY-HOTFIX26.ps1')), 'Legacy patch installer is intentionally not shipped with the complete standalone source');
 assert.match(css,/Hotfix 26 — Poster Surface & Hover Finish/);
 assert.match(css,/\.kinoteka-film-card \.kinoteka-poster-choose/);
 assert.match(read('app/games.js'),/data-poster-choose/);
