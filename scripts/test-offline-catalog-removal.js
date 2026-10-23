@@ -23,7 +23,7 @@ assert.doesNotMatch(html,/id="integrationLists"/);
 assert.match(ui,/db\.importLetterboxdConfirmed/);
 assert.doesNotMatch(read('app/shared/kinoteka-bridge.js'),/addCatalogConfirmed|const addCatalog =/);
 assert.doesNotMatch(ui,/function showLists\(\)/);
-assert.match(rust,/poster_get, poster_set, poster_remove/);
+assert.match(rust,/poster_get, (?:poster_exists_batch, )?poster_set, poster_remove/);
 assert.doesNotMatch(rust,/mod catalog;/);
 assert.match(storage,/pub fn poster_directory/);
 assert.match(build,/Copy-Item 'data\\kinoteka\.sqlite3'/);

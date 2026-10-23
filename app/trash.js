@@ -323,5 +323,3 @@ $("addEntryRow").onclick=addEntryRow;
 $("cancelAdd").onclick=closeModal;
 $("closeAdd").onclick=closeModal;
 $("saveAdd").onclick=addEntry;
-
-

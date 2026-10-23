@@ -42,13 +42,13 @@ function assertStateSemantics(state,label) {
 function assertUiSemantics(ui,label) {
   if (!ui || typeof ui !== 'object' || Array.isArray(ui)) throw new Error(`UI state is invalid: ${label}`);
   for (const key of ['search','sort','quickFilter','mediaCategory','mediaYear']) if (typeof ui[key] !== 'string') throw new Error(`UI key ${key} is invalid: ${label}`);
-  if (!['game-asc','game-desc'].includes(ui.sort)) throw new Error(`UI sort is invalid: ${label}`);
+  if (!['game-asc','game-desc','year-desc','year-asc','score-desc','score-asc','added-desc','added-asc','status','category','favorite-first','score-missing','poster-missing','random'].includes(ui.sort)) throw new Error(`UI sort is invalid: ${label}`);
   if (!['Все','Фильмы','Сериалы','Анимация'].includes(ui.mediaCategory)) throw new Error(`UI mediaCategory is invalid: ${label}`);
 }
 
 
 const root = path.resolve(__dirname, '..');
-const EXPECTED_VERSION = '1.2.0';
+const EXPECTED_VERSION = '1.2.1';
 const EXPECTED_RELEASE_NAME = 'Kinoteka_Standalone_v1.2_Stable';
 
 const mustExist = [
@@ -105,13 +105,13 @@ const canonicalSummaryHelper = fs.readFileSync(path.join(root,'scripts/kinoteka-
 
 // Identity/version consistency.
 if (pkg.name !== 'kinoteka-standalone' || pkg.version !== EXPECTED_VERSION) throw new Error('package.json identity/version mismatch.');
-if (pkg.description !== 'Kinoteka Standalone v1.2 Stable — HF49 Verified') throw new Error('package.json description mismatch.');
+if (pkg.description !== 'Kinoteka Standalone v1.2.1 Stable — HF60 Verified') throw new Error('package.json description mismatch.');
 if (lock.name !== pkg.name || lock.version !== EXPECTED_VERSION) throw new Error('package-lock root identity/version mismatch.');
 if (lock.packages?.['']?.name !== pkg.name || lock.packages?.['']?.version !== EXPECTED_VERSION) throw new Error('package-lock package identity/version mismatch.');
 if (lock.packages?.['']?.description !== pkg.description) throw new Error('package-lock description mismatch.');
-if (!/name\s*=\s*"kinoteka-standalone"/.test(cargo) || !/version\s*=\s*"1\.2\.0"/.test(cargo)) throw new Error('Cargo package identity/version mismatch.');
+if (!/name\s*=\s*"kinoteka-standalone"/.test(cargo) || !/version\s*=\s*"1\.2\.1"/.test(cargo)) throw new Error('Cargo package identity/version mismatch.');
 if (!/name\s*=\s*"kinoteka"/.test(cargo) || !/name\s*=\s*"kinoteka_standalone_lib"/.test(cargo)) throw new Error('Cargo binary/library identity mismatch.');
-if (!/name = "kinoteka-standalone"\nversion = "1\.2\.0"/.test(cargoLock)) throw new Error('Cargo.lock root package identity/version mismatch.');
+if (!/name = "kinoteka-standalone"\nversion = "1\.2\.1"/.test(cargoLock)) throw new Error('Cargo.lock root package identity/version mismatch.');
 
 // Guard against accidental release-version replacement in third-party Cargo.lock entries.
 // The project version belongs only to the local kinoteka-standalone package, never to crates.io packages.

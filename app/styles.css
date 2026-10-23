@@ -5275,3 +5275,117 @@ html{background:#020203!important;background-color:#020203!important}
   #kinotekaCardGrid > .kinoteka-film-card,
   .kinoteka-viewbar .kinoteka-view-btn{transition:none!important}
 }
+
+/* HF53 — sorting and search stay together. Static wrapper guarantees a grid slot
+   regardless of when the optional themed-select enhancement runs. No window changes. */
+.toolbar{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) max-content 225px 42px!important;
+  grid-auto-flow:row!important;
+  align-items:center!important;
+  column-gap:9px!important;
+  row-gap:8px!important;
+}
+.toolbar > .search-wrap{grid-column:1!important;grid-row:1!important;min-width:0!important}
+.toolbar > #mediaYearPicker{grid-column:2!important;grid-row:1!important}
+.toolbar > .kinoteka-sort-control{
+  grid-column:3!important;grid-row:1!important;
+  width:225px!important;min-width:0!important;height:42px!important;
+  display:flex!important;align-items:stretch!important;gap:7px!important;
+  position:relative!important;box-sizing:border-box!important;
+}
+.toolbar > .kinoteka-sort-control > .kinoteka-select-shell{
+  flex:1 1 auto!important;width:auto!important;min-width:0!important;
+  min-height:42px!important;align-self:stretch!important;
+}
+.toolbar > .kinoteka-sort-control > .kinoteka-select-shell .kinoteka-select-trigger,
+.toolbar > .kinoteka-sort-control > #sort:not(.kinoteka-native-select-source){
+  display:block!important;width:100%!important;height:42px!important;
+  min-width:0!important;min-height:42px!important;
+  box-sizing:border-box!important;padding:0 12px!important;
+  background:rgba(10,11,13,.64)!important;color:#e9e6ef!important;
+  border:1px solid rgba(186,171,204,.24)!important;border-radius:10px!important;
+  text-overflow:ellipsis!important;white-space:nowrap!important;
+}
+.toolbar > .kinoteka-sort-control > #sort:not(.kinoteka-native-select-source){
+  flex:1 1 auto!important;appearance:auto!important;cursor:pointer!important;
+}
+.toolbar > .kinoteka-sort-control > .kinoteka-select-shell .kinoteka-select-trigger:hover,
+.toolbar > .kinoteka-sort-control > #sort:not(.kinoteka-native-select-source):hover{
+  border-color:rgba(186,171,204,.50)!important;
+}
+.toolbar .kinoteka-sort-control > .kinoteka-reshuffle{
+  flex:0 0 38px!important;width:38px!important;height:42px!important;
+  min-width:38px!important;display:inline-flex!important;align-items:center!important;
+  justify-content:center!important;padding:0!important;
+  background:rgba(10,11,13,.64)!important;
+  border:1px solid rgba(186,171,204,.24)!important;
+  border-radius:10px!important;color:#e9e6ef!important;
+  cursor:pointer!important;font-size:22px!important;
+}
+.toolbar .kinoteka-sort-control > .kinoteka-reshuffle:hover{
+  border-color:rgba(186,171,204,.50)!important;background:#17131e!important;
+}
+.toolbar .kinoteka-sort-control > .kinoteka-reshuffle:focus-visible{
+  outline:2px solid #9972bf;outline-offset:2px;
+}
+.toolbar .kinoteka-sort-control > .kinoteka-reshuffle[hidden]{display:none!important}
+.toolbar > .resetFilters{grid-column:4!important;grid-row:1!important;justify-self:end!important}
+/* Keep horizontal search row at desktop width; use a predictable second row only
+   on genuinely narrow screens, rather than allowing an orphaned 1-character sort. */
+@media(max-width:900px){
+  .toolbar{grid-template-columns:minmax(0,1fr) max-content 42px!important}
+  .toolbar > .search-wrap{grid-column:1!important;grid-row:1!important}
+  .toolbar > #mediaYearPicker{grid-column:2!important;grid-row:1!important}
+  .toolbar > .resetFilters{grid-column:3!important;grid-row:1!important}
+  .toolbar > .kinoteka-sort-control{
+    grid-column:1 / 4!important;grid-row:2!important;
+    width:100%!important;max-width:none!important;
+  }
+}
+@media(max-width:440px){
+  .toolbar{grid-template-columns:minmax(0,1fr) 42px!important}
+  .toolbar > .search-wrap{grid-column:1!important;grid-row:1!important}
+  .toolbar > .resetFilters{grid-column:2!important;grid-row:1!important}
+  .toolbar > #mediaYearPicker{grid-column:1 / 3!important;grid-row:2!important;justify-self:stretch!important}
+  .toolbar > .kinoteka-sort-control{grid-column:1 / 3!important;grid-row:3!important}
+}
+
+/* HF59 — center movie titles within their own card width.
+   Card dimensions, three-line clipping, grid alignment, table view and buttons remain unchanged. */
+.kinoteka-film-card .kinoteka-card-title{
+  text-align:center;
+}
+
+
+/* HF60 — center sorting label and highlight non-default sort, matching active filters.
+   The neutral/default A→Я state is not an active filter; reset restores it.
+   Keep all changes scoped to sort, not the adjacent Reset control or popup. */
+.toolbar > .kinoteka-sort-control > .kinoteka-select-shell .kinoteka-select-trigger{
+  text-align:center!important;
+}
+.toolbar > .kinoteka-sort-control > .kinoteka-select-shell .kinoteka-select-label{
+  width:100%!important;
+  text-align:center!important;
+}
+.toolbar > .kinoteka-sort-control > #sort:not(.kinoteka-native-select-source){
+  text-align:center!important;
+  text-align-last:center!important;
+}
+/* Chromium/WebView2 updates :checked when the native select changes, including
+   JS-driven restores and reset, with no new state or persisted preferences. */
+.toolbar > .kinoteka-sort-control:has(> #sort > option:checked:not([value="game-asc"]))
+> .kinoteka-select-shell .kinoteka-select-trigger,
+.toolbar > .kinoteka-sort-control:has(> #sort > option:checked:not([value="game-asc"]))
+> #sort:not(.kinoteka-native-select-source){
+  border:1px solid var(--active-filter-color,var(--total))!important;
+  background:linear-gradient(180deg,
+    color-mix(in srgb,var(--active-filter-color,var(--total)) 18%,transparent),
+    color-mix(in srgb,var(--active-filter-color,var(--total)) 6%,transparent))!important;
+  color:color-mix(in srgb,var(--active-filter-color,var(--total)) 72%,white 28%)!important;
+  box-shadow:0 0 0 1px color-mix(in srgb,var(--active-filter-color,var(--total)) 20%,transparent),
+    0 0 18px color-mix(in srgb,var(--active-filter-color,var(--total)) 18%,transparent),
+    0 8px 22px color-mix(in srgb,var(--active-filter-color,var(--total)) 10%,transparent),
+    inset 0 0 14px color-mix(in srgb,var(--active-filter-color,var(--total)) 5.5%,transparent)!important;
+  text-shadow:0 0 8px color-mix(in srgb,var(--active-filter-color,var(--total)) 34%,transparent)!important;
+}

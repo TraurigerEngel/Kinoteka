@@ -1,0 +1,25 @@
+'use strict';
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const path=require('node:path');
+const root=path.resolve(__dirname,'..');
+const css=fs.readFileSync(path.join(root,'app/shared/themed-select.css'),'utf8');
+const js=fs.readFileSync(path.join(root,'app/shared/themed-select.js'),'utf8');
+const html=fs.readFileSync(path.join(root,'app/index.html'),'utf8');
+const pkg=require('../package.json');
+const block=css.match(/\.kinoteka-select-menu-sort\s*\{([^}]+)\}/);
+assert(block,'Dedicated sort popup CSS is missing');
+assert.match(block[1],/max-height:min\(244px,calc\(100vh - 20px\)\)/);
+assert.match(block[1],/scroll-snap-type:y mandatory/);
+assert.match(block[1],/scroll-padding-top:5px/);
+const option=css.match(/\.kinoteka-select-menu-sort \.kinoteka-select-option\s*\{([^}]+)\}/);
+assert(option,'Sorting option styles missing');
+assert.match(option[1],/scroll-snap-align:start/);
+assert.match(option[1],/min-height:29px/);
+assert.match(block[1],/padding:5px 4px 5px 5px/);
+assert.match(css,/\.kinoteka-select-menu-sort::-webkit-scrollbar\{width:5px;height:5px\}/);
+assert.match(js,/if \(select\.id === 'sort'\) return 'sort';/);
+assert.equal((html.match(/id="reset"/g)||[]).length,1,'Reset button must be preserved');
+assert.match(pkg.scripts.verify,/test-sort-dropdown-hf56\.js\s*&&\s*node scripts\/test-sort-save-hf57\.js\s*&&\s*node scripts\/test-hf58-data-sort.js\s*&&\s*node scripts\/test-card-title-center-hf59.js\s*&&\s*node scripts\/test-sort-field-highlight-hf60.js\s*&&\s*node scripts\/test-release-v121\.js$/);
+// This test intentionally changes no reset button or any toolbar CSS.
+console.log('HF56 SORT MENU: PASS (8 complete 29px rows, snap-aligned scrolling, reset untouched)');

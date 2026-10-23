@@ -48,14 +48,14 @@ main.wrap{position:relative;z-index:2}
 @media (max-width:860px){.media-type-col,.media-year-col,.rating-col,.table-wrap tbody td.media-type-cell,.table-wrap tbody td.media-year-cell,.table-wrap tbody td.rating-cell{width:120px!important}}
 
 .toolbar{
-  grid-template-columns:minmax(0,1fr) max-content 42px!important;
-  grid-auto-flow:column!important;
+  grid-template-columns:minmax(0,1fr) max-content 225px 42px!important;
+  grid-auto-flow:row!important;
   align-items:center!important;
   column-gap:8px!important;
 }
 .toolbar .search-wrap{grid-column:1!important;min-width:0!important;width:100%!important;}
 .toolbar #mediaYearPicker{grid-column:2!important;width:106px!important;min-width:106px!important;height:42px!important;min-height:42px!important;}
-.toolbar .resetFilters{grid-column:3!important;grid-row:1!important;width:42px!important;min-width:42px!important;height:42px!important;min-height:42px!important;}
+.toolbar .resetFilters{grid-column:4!important;grid-row:1!important;width:42px!important;min-width:42px!important;height:42px!important;min-height:42px!important;}
 .media-year-trigger{display:inline-flex;align-items:center;justify-content:center;gap:0;height:42px;min-height:42px;padding:0 10px;border:1px solid var(--border);border-radius:10px;background:var(--panel);color:var(--muted);font:inherit;cursor:pointer;transition:border-color .18s ease,background .18s ease,color .18s ease,transform .12s ease,box-shadow .18s ease;white-space:nowrap;}
 .media-year-trigger:hover{border-color:#5e3c78;background:#1b1722;color:#eee;transform:translateY(-1px)}
 .media-year-trigger:active{transform:translateY(1px) scale(.97)}
@@ -74,11 +74,16 @@ main.wrap{position:relative;z-index:2}
 .year-picker-option.all{grid-column:1 / -1}
 .year-picker-empty{padding:12px;border:1px dashed #30283a;border-radius:10px;color:#8d8598;text-align:center;font-size:14px}
 .media-meta-inline.rating-liked{color:var(--like)!important}.media-meta-inline.rating-normal{color:var(--normal)!important}.media-meta-inline.rating-disliked{color:var(--dislike)!important}.media-meta-inline.rating-planned{color:var(--planned)!important}.media-meta-inline.rating-in-progress{color:var(--progress)!important}.media-meta-inline.rating-favorite{color:var(--favorite)!important}
+@media (min-width:561px) and (max-width:900px){
+  .toolbar{grid-template-columns:minmax(0,1fr) max-content 42px!important;grid-auto-flow:row!important;}
+  .toolbar .resetFilters{grid-column:3!important;grid-row:1!important;}
+}
 @media(max-width:560px){
   .toolbar{grid-template-columns:minmax(0,1fr) 42px!important;grid-auto-flow:row!important;row-gap:8px!important;}
-  .toolbar .search-wrap{grid-column:1!important;grid-row:1!important;}
+  .toolbar .search-wrap{grid-column:1 / -1!important;grid-row:1!important;}
   .toolbar #mediaYearPicker{grid-column:1!important;grid-row:2!important;width:100%!important;min-width:0!important;}
   .toolbar .resetFilters{grid-column:2!important;grid-row:2!important;align-self:stretch!important;height:42px!important;min-height:42px!important;}
+  .toolbar > .kinoteka-sort-control{grid-column:1 / 3!important;grid-row:3!important;width:100%!important;max-width:100%!important;}
 }
 
 .table-wrap thead{display:none!important;}
@@ -226,6 +231,7 @@ main.wrap{position:relative;z-index:2}
   .toolbar .search-wrap{grid-column:1 / -1!important;grid-row:1!important;}
   .toolbar #mediaYearPicker{grid-column:1!important;grid-row:2!important;width:100%!important;min-width:0!important;}
   .toolbar .resetFilters{grid-column:2!important;grid-row:2!important;width:42px!important;min-width:42px!important;}
+  .toolbar > .kinoteka-sort-control{grid-column:1 / 3!important;grid-row:3!important;width:100%!important;max-width:100%!important;}
 }
 </style>
 
@@ -447,13 +453,26 @@ main.wrap{position:relative;z-index:2;}
 
   <div class="toolbar">
     <div class="search-wrap"><input id="search" type="search" aria-label="Поиск по названию" placeholder="Поиск по названию…" autocomplete="off"></div><select id="mediaCategoryFilter" class="media-filter-select" aria-label="Тип" hidden><option value="Все">Все</option><option value="Фильмы">Фильмы</option><option value="Сериалы">Сериалы</option><option value="Анимация">Анимация</option></select><button id="mediaYearPicker" class="media-year-trigger" type="button" aria-haspopup="dialog" aria-controls="yearPickerModal" aria-expanded="false"><span id="mediaYearLabel">Все годы</span></button><select id="mediaYearFilter" aria-hidden="true" tabindex="-1" hidden><option value="">Все годы</option></select>
-    <select id="sort" aria-label="Служебная сортировка" hidden tabindex="-1">
-      <option value="game-asc">Название А → Я</option>
-      <option value="game-desc">Название Я → А</option>
+    <div class="kinoteka-sort-control" role="group" aria-label="Управление сортировкой">
+      <select id="sort" aria-label="Сортировка коллекции">
+      <option value="game-asc">Название: А → Я</option>
+      <option value="game-desc">Название: Я → А</option>
+      <option value="year-desc">Год: сначала новые</option>
+      <option value="year-asc">Год: сначала старые</option>
+      <option value="score-desc">Оценка: 10 → 1</option>
+      <option value="score-asc">Оценка: 1 → 10</option>
+      <option value="added-desc">Недавно добавленные</option>
+      <option value="added-asc">Сначала добавленные</option>
+      <option value="status">По статусу</option>
+      <option value="category">По типу</option>
+      <option value="favorite-first">Избранное сначала</option>
+      <option value="score-missing">Без оценки сначала</option>
+      <option value="poster-missing">Без постера сначала</option>
     </select>
+    </div>
     <button type="button" class="smallBtn resetFilters" id="reset" aria-label="Сбросить фильтры"><span aria-hidden="true"><svg class="lucide lucide-rotate-ccw lucide-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"></path><path d="M3 3v5h5"></path></svg></span></button>
   </div>
-  
+
   <div class="list-nav" id="listNav">
     <div class="list-actions">
       <button class="add-entry-action" id="add" aria-label="Добавить запись" type="button"><span class="action-icon" aria-hidden="true"><svg class="lucide lucide-plus lucide-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg></span><span class="action-label">Добавить запись</span></button>
@@ -735,32 +754,3 @@ main.wrap{position:relative;z-index:2;}
 
 
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

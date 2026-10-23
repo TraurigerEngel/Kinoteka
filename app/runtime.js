@@ -13,7 +13,7 @@ function updateResetButtonState(){
   const enabled=active || animating;
   resetButton.disabled=!enabled;
   resetButton.setAttribute("aria-disabled",String(!enabled));
-  
+
 }
 let resetAnimationRunning=false;
 let resetAnimationTimer=null;
@@ -82,6 +82,7 @@ resetButton.onclick=()=>{
   search.value="";
   quickFilter="";
   sort.value="game-asc";
+  sort.dispatchEvent(new Event("change",{bubbles:true})); // Sync the themed dropdown label and sorting caches.
   mediaCategory="Все";
   mediaYear="";
   currentPage=1;
@@ -89,7 +90,7 @@ resetButton.onclick=()=>{
   if(mediaYearFilter)mediaYearFilter.value="";
   document.querySelectorAll('#mediaTabs [data-media-category]').forEach(tab=>tab.classList.toggle('active',tab.dataset.mediaCategory==='Все'));
   if(typeof syncYearFilterUI==='function')syncYearFilterUI();
-  filteredCache=null;
+  filteredCache=null;sortedRowsCache=null;
   saveUI();
   render();
   resetButton.disabled=false;

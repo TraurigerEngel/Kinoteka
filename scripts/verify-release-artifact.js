@@ -41,7 +41,7 @@ function assertStateSemantics(state,label) {
 function assertUiSemantics(ui,label) {
   if (!ui || typeof ui !== 'object' || Array.isArray(ui)) throw new Error(`UI state is invalid: ${label}`);
   for (const key of ['search','sort','quickFilter','mediaCategory','mediaYear']) if (typeof ui[key] !== 'string') throw new Error(`UI key ${key} is invalid: ${label}`);
-  if (!['game-asc','game-desc'].includes(ui.sort)) throw new Error(`UI sort is invalid: ${label}`);
+  if (!['game-asc','game-desc','year-desc','year-asc','score-desc','score-asc','added-desc','added-asc','status','category','favorite-first','score-missing','poster-missing','random'].includes(ui.sort)) throw new Error(`UI sort is invalid: ${label}`);
   if (!['Все','Фильмы','Сериалы','Анимация'].includes(ui.mediaCategory)) throw new Error(`UI mediaCategory is invalid: ${label}`);
 }
 

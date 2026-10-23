@@ -14,6 +14,7 @@ function migrateEntryStatuses(arr){
 }
 // Numerical rating is independent of the legacy categorical status.
 function validScore10(value){return Number.isInteger(value) && value >= 1 && value <= 10;}
+function validAddedAt(value){return typeof value==='string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/.test(value) && Number.isFinite(Date.parse(value)) && new Date(value).toISOString()===value;}
 function score10Status(value){return value >= 7 ? 'Понравилось' : value >= 5 ? 'Нормально' : 'Не понравилось';}
 const ratingOrder={"Понравилось":1,"Нормально":2,"Не понравилось":3,"Смотрю":4,"Запланировано":5,"Избранное":6,"":99};
 let games=[];
@@ -81,6 +82,10 @@ function entryIdentityKey(entry){
 
 let filteredCache=null;
 let sortedRowsCache=null;
+// HF58: existing films without addedAt keep an unknown date. No fabricated timestamps.
+let posterExistsByKey=new Map();
+let posterSortRequestId=0;
+let posterSortPending=false;
 let persistedEntriesJSON=null;
 let persistedUIJSON=null;
 let trashCache=null;
@@ -111,7 +116,8 @@ async function save(){
       year:item?.year==null||item.year===""?null:Number(item.year),
       rating:item?.rating||"Запланировано",
       score10:validScore10(item?.score10)?item.score10:null,
-      favorite:Boolean(item?.favorite)
+      favorite:Boolean(item?.favorite),
+      ...(validAddedAt(item?.addedAt)?{addedAt:item.addedAt}:{})
     }));
     const raw=JSON.stringify(rowsForDb);
     if(raw!==persistedEntriesJSON){
@@ -156,7 +162,7 @@ function scheduleSaveUI(){
   clearTimeout(saveUITimer);
   saveUITimer=setTimeout(()=>{saveUI();saveUITimer=null},250);
 }
-function loadUI(){try{const raw=db.getUISync();if(!raw){quickFilter="";return}const u=JSON.parse(raw)||{};search.value=u.search||"";sort.value=u.sort||"game-asc";quickFilter="";mediaCategory=u.mediaCategory||"Все";mediaYear=u.mediaYear||"";kinotekaViewMode=u.viewMode==="cards"?"cards":"table";if(mediaCategoryFilter)mediaCategoryFilter.value=mediaCategory;if(mediaYearFilter)mediaYearFilter.value=mediaYear}catch(e){quickFilter="";console.warn("Не удалось восстановить настройки интерфейса:",e)}}
+function loadUI(){try{const raw=db.getUISync();if(!raw){quickFilter="";return}const u=JSON.parse(raw)||{};search.value=u.search||"";sort.value=[...sort.options].some(o=>o.value===u.sort)?u.sort:"game-asc";if(u.sort==="random")scheduleSaveUI();quickFilter="";mediaCategory=u.mediaCategory||"Все";mediaYear=u.mediaYear||"";kinotekaViewMode=u.viewMode==="cards"?"cards":"table";if(mediaCategoryFilter)mediaCategoryFilter.value=mediaCategory;if(mediaYearFilter)mediaYearFilter.value=mediaYear}catch(e){quickFilter="";console.warn("Не удалось восстановить настройки интерфейса:",e)}}
 
 function positionToastStack(stack){
   if(!stack) return;

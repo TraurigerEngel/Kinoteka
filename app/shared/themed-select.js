@@ -27,6 +27,8 @@
   };
 
   const kindFor = select => {
+    // HF55: sort has its own popup treatment; other themed selects stay unchanged.
+    if (select.id === 'sort') return 'sort';
     if (select.classList.contains('rating-select')) return 'rating-table';
     if (select.classList.contains('kinoteka-entry-rating')) return 'rating-entry';
     if (select.classList.contains('kinoteka-entry-category')) return 'media-category';

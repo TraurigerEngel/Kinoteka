@@ -368,3 +368,62 @@
   padding-left:10px!important;
   padding-right:10px!important;
 }
+
+
+/* HF55 — Compact Sorting Dropdown Polish.
+   Scope the visual changes to the collection sorter only. Keep every other
+   themed select (ratings, categories, imported rows) exactly as before. */
+.kinoteka-select-menu-sort{
+  /* 8 complete 29px rows + 5px padding above/below + 1px borders. */
+  max-height:min(244px,calc(100vh - 20px));
+  scroll-snap-type:y mandatory;
+  scroll-padding-top:5px;
+  padding:5px 4px 5px 5px;
+  overflow-x:hidden;
+  overflow-y:auto;
+  border:1px solid #363039;
+  border-radius:9px;
+  background:#0c0d0f;
+  box-shadow:0 14px 32px rgba(0,0,0,.48),0 0 0 1px rgba(255,255,255,.018) inset;
+  scrollbar-width:thin;
+  scrollbar-color:#47404e #121216;
+  color-scheme:dark;
+}
+.kinoteka-select-menu-sort::-webkit-scrollbar{width:5px;height:5px}
+.kinoteka-select-menu-sort::-webkit-scrollbar-track{
+  background:#121216;
+  border-radius:6px;
+}
+.kinoteka-select-menu-sort::-webkit-scrollbar-thumb{
+  background:#47404e;
+  border-radius:6px;
+}
+.kinoteka-select-menu-sort::-webkit-scrollbar-thumb:hover{background:#65556e}
+.kinoteka-select-menu-sort .kinoteka-select-option{
+  /* Scroll stops on full rows rather than leaving a clipped line at the bottom. */
+  scroll-snap-align:start;
+  min-height:29px;
+  padding:5px 8px;
+  border-radius:6px;
+  line-height:1.15;
+  font-size:12.5px;
+  letter-spacing:0;
+  transition:background-color .12s ease,color .12s ease;
+}
+.kinoteka-select-menu-sort .kinoteka-select-option:hover,
+.kinoteka-select-menu-sort .kinoteka-select-option:focus-visible,
+.kinoteka-select-menu-sort .kinoteka-select-option[data-active="1"]{
+  background:#211927;
+  color:#f1eaf6;
+}
+.kinoteka-select-menu-sort .kinoteka-select-option[aria-selected="true"]{
+  background:#2c1c36;
+  color:#f4e9ff;
+}
+.kinoteka-select-menu-sort .kinoteka-select-option[aria-selected="true"]:hover,
+.kinoteka-select-menu-sort .kinoteka-select-option[aria-selected="true"]:focus-visible{
+  background:#382143;
+}
+@media(prefers-reduced-motion:reduce){
+  .kinoteka-select-menu-sort .kinoteka-select-option{transition:none}
+}

@@ -37,7 +37,7 @@
     const size = Number(options.size || 18);
     const strokeWidth = Number(options.strokeWidth || 2);
     const cls = options.className ? ` lucide-icon ${esc(options.className)}` : ' lucide-icon';
-    const attrs = `class="lucide lucide-${esc(name)}${cls}" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${strokeWidth}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"`; 
+    const attrs = `class="lucide lucide-${esc(name)}${cls}" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${strokeWidth}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"`;
     const children = nodes.map(([tag, attrsObj]) => `<${tag} ${Object.entries(attrsObj).map(([k,v]) => `${k}="${esc(v)}"`).join(' ')}></${tag}>`).join('');
     return `<svg ${attrs}>${children}</svg>`;
   };

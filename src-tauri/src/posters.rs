@@ -65,6 +65,16 @@ fn checked_credit(input: Option<Value>) -> Result<Option<Value>, String> {
     Ok(Some(json!({"sourceUrl":source_url,"licenseUrl":license_url,"license":license,"author":author,"title":title})))
 }
 
+// HF52: existence-only, read-only and bounded for local sorting. No image data leaves Rust.
+pub fn exists_batch(keys: Vec<String>) -> Result<Vec<bool>, String> {
+    if keys.len() > 5000 { return Err("Слишком много постеров для проверки.".into()); }
+    let root=poster_root();
+    keys.into_iter().map(|key|{
+        let hash=key_hash(&key)?;
+        Ok(poster_file(&root,&hash).is_some())
+    }).collect()
+}
+
 pub fn get(key: String) -> Result<Value, String> {
     let hash = key_hash(&key)?;
     let Some((path, mime)) = poster_file(&poster_root(), &hash) else { return Ok(json!({"exists": false})); };

@@ -124,18 +124,71 @@ function closeModal(){
   kinotekaAddEntryModal?.close();
 }
 
-async function addEntry(){const rows=getAddRows();if(!validateAddRows(true))return;const addedItems=rows.map((item,index)=>({id:nextProvisionalEntryId(index),game:item.name,category:item.category,year:item.year?Number(item.year):null,rating:item.favorite?'Избранное':item.rating,favorite:item.favorite}));games.push(...addedItems);entriesDirty=true;if(!(await save())){games.splice(games.length-addedItems.length,addedItems.length);return;}refreshDuplicateSet();currentPage=1;closeModal();populateMediaYearFilter();render();toastMsg(addedItems.length===1?`«${addedItems[0].game}» добавлена.`:`Добавлено записей: ${addedItems.length}.`,"success");}
+async function addEntry(){const rows=getAddRows();if(!validateAddRows(true))return;const addedItems=rows.map((item,index)=>({id:nextProvisionalEntryId(index),game:item.name,category:item.category,year:item.year?Number(item.year):null,rating:item.favorite?'Избранное':item.rating,favorite:item.favorite,addedAt:new Date().toISOString()}));games.push(...addedItems);entriesDirty=true;if(!(await save())){games.splice(games.length-addedItems.length,addedItems.length);return;}refreshDuplicateSet();currentPage=1;closeModal();populateMediaYearFilter();render();toastMsg(addedItems.length===1?`«${addedItems[0].game}» добавлена.`:`Добавлено записей: ${addedItems.length}.`,"success");}
 
 
+// HF52: sorting never mutates games, SQLite IDs or card indices.
+const kinotekaStatusOrder={"Избранное":0,"Понравилось":1,"Нормально":2,"Не понравилось":3,"Смотрю":4,"Запланировано":5};
+const kinotekaCategoryOrder={"Фильмы":0,"Сериалы":1,"Анимация":2};
+// Legacy records have no trustworthy insertion date. Keep their original position;
+// all new records carry a real persisted UTC timestamp. No guess based on release year.
+function kinotekaCompareAdded(a,b,newestFirst){
+  const av=validAddedAt(a.g.addedAt)?Date.parse(a.g.addedAt):null;
+  const bv=validAddedAt(b.g.addedAt)?Date.parse(b.g.addedAt):null;
+  if(av===null||bv===null){
+    if(av===null&&bv===null)return newestFirst?b.i-a.i:a.i-b.i;
+    return newestFirst?(av===null?1:-1):(av===null?-1:1);
+  }
+  return (newestFirst?bv-av:av-bv)||(newestFirst?b.i-a.i:a.i-b.i);
+}
+function kinotekaPosterKey(g){return db.getPosterKeyFor?.({name:g.game,category:g.category,year:g.year})||'';}
+async function ensurePosterSortState(){
+  if(sort.value!=='poster-missing'||posterSortPending||!posterInvoke)return;
+  const keys=[...new Set(games.map(kinotekaPosterKey).filter(Boolean))];
+  const missing=keys.filter(k=>!posterExistsByKey.has(k));
+  if(!missing.length)return;
+  const generation=++posterSortRequestId;
+  posterSortPending=true;
+  try{
+    // Return booleans only: no image bytes, no personal data upload.
+    const found=await posterInvoke('poster_exists_batch',{keys:missing});
+    if(!Array.isArray(found)||found.length!==missing.length)throw new Error('Некорректный ответ проверки постеров');
+    missing.forEach((key,i)=>{if(!posterExistsByKey.has(key))posterExistsByKey.set(key,Boolean(found[i]));});
+    if(generation===posterSortRequestId&&sort.value==='poster-missing'){
+      sortedRowsCache=null;filteredCache=null;render();
+    }
+  }catch(e){console.warn('[Kinoteka HF52] Не удалось проверить наличие постеров:',e);}
+  finally{posterSortPending=false;}
+}
 function getSortedRows(){
   const sortKey=sort.value;
-  if(sortedRowsCache && sortedRowsCache.games===games && sortedRowsCache.sort===sortKey)return sortedRowsCache.rows;
+  const cacheKey=sortKey;
+  if(sortedRowsCache&&sortedRowsCache.games===games&&sortedRowsCache.sort===cacheKey)return sortedRowsCache.rows;
   const rows=games.map((g,i)=>({g,i,name:entryNameNorm(g)}));
+  const byName=(a,b)=>a.name.localeCompare(b.name,'ru')||(a.i-b.i);
+  const numeric=(a,b,dir,key)=>{
+    const va=key(a),vb=key(b),na=Number.isFinite(va),nb=Number.isFinite(vb);
+    if(!na||!nb)return na===nb?byName(a,b):(na?-1:1); // unknowns always last
+    return (va-vb)*dir||byName(a,b);
+  };
   rows.sort((a,b)=>{
-    if(sortKey==="rating")return (ratingOrder[a.g.rating]??90)-(ratingOrder[b.g.rating]??90)||a.name.localeCompare(b.name,"ru");
-    return (sortKey==="game-desc"?-1:1)*a.name.localeCompare(b.name,"ru");
+    if(sortKey==='game-desc')return -byName(a,b);
+    if(sortKey==='year-asc'||sortKey==='year-desc')return numeric(a,b,sortKey==='year-desc'?-1:1,r=>r.g.year==null||r.g.year===''?NaN:Number(r.g.year));
+    if(sortKey==='score-desc'||sortKey==='score-asc')return numeric(a,b,sortKey==='score-desc'?-1:1,r=>validScore10(r.g.score10)?r.g.score10:NaN);
+    if(sortKey==='added-asc'||sortKey==='added-desc')return kinotekaCompareAdded(a,b,sortKey==='added-desc');
+    if(sortKey==='status')return (kinotekaStatusOrder[a.g.rating]??99)-(kinotekaStatusOrder[b.g.rating]??99)||byName(a,b);
+    if(sortKey==='category')return (kinotekaCategoryOrder[a.g.category]??99)-(kinotekaCategoryOrder[b.g.category]??99)||byName(a,b);
+    if(sortKey==='favorite-first')return Number(Boolean(b.g.favorite))-Number(Boolean(a.g.favorite))||byName(a,b);
+    if(sortKey==='score-missing')return Number(validScore10(a.g.score10))-Number(validScore10(b.g.score10))||byName(a,b);
+    if(sortKey==='poster-missing'){
+      const ak=kinotekaPosterKey(a.g),bk=kinotekaPosterKey(b.g);
+      const av=ak&&posterExistsByKey.has(ak)?(posterExistsByKey.get(ak)?1:0):2;
+      const bv=bk&&posterExistsByKey.has(bk)?(posterExistsByKey.get(bk)?1:0):2;
+      return av-bv||byName(a,b);
+    }
+    return byName(a,b);
   });
-  sortedRowsCache={games,sort:sortKey,rows};
+  sortedRowsCache={games,sort:cacheKey,rows};
   return rows;
 }
 function filtered(){const rawSearch=search.value;let q,searchWords;if(searchQueryCache.raw===rawSearch){q=searchQueryCache.q;searchWords=searchQueryCache.words;}else{q=norm(rawSearch);searchWords=q?q.split(/\s+/).filter(Boolean):[];searchQueryCache={raw:rawSearch,q,words:searchWords};}const key=`${q}\u0000${sort.value}\u0000${quickFilter}\u0000${mediaCategory}\u0000${mediaYear}`;if(filteredCache&&filteredCache.games===games&&filteredCache.key===key)return filteredCache.rows;const rows=[];for(const row of getSortedRows()){const g=row.g;const quickOk=!quickFilter||(quickFilter==='favorite'?Boolean(g.favorite):g.rating===quickFilter);const searchOk=!searchWords.length||searchWords.every(word=>row.name.includes(word));const catOk=mediaCategory==='Все'||g.category===mediaCategory;const yearValue=g.year==null||g.year===""?null:Number(g.year);const yearOk=!mediaYear||(String(mediaYear).startsWith("decade:")?(yearValue!=null&&yearValue>=Number(mediaYear.slice(7))&&yearValue<=Number(mediaYear.slice(7))+9):String(yearValue??"")===String(mediaYear));if(quickOk&&searchOk&&catOk&&yearOk)rows.push(row);}filteredCache={games,key,rows};return rows;}
@@ -295,6 +348,8 @@ function posterCachePut(key,dataUrl){
 function posterRefreshKey(key,dataUrl,credit=null){
   if(credit)posterCredits.set(key,credit);else posterCredits.delete(key);
   posterCachePut(key,dataUrl);
+  posterExistsByKey.set(key,Boolean(dataUrl));
+  if(sort.value==='poster-missing'){sortedRowsCache=null;filteredCache=null;currentPage=1;queueMicrotask(()=>render());}
   kinotekaCardGrid?.querySelectorAll('.kinoteka-film-card').forEach(card=>{
     if(card.dataset.posterKey===key)applyPosterToCard(card,dataUrl);
   });
@@ -801,6 +856,8 @@ if(kinotekaCardGrid){
       try{
         if(!posterInvoke)throw new Error('Хранилище постеров недоступно.');
         await posterInvoke('poster_remove',{key});
+        posterExistsByKey.set(key,false);
+        if(sort.value==='poster-missing'){sortedRowsCache=null;filteredCache=null;currentPage=1;queueMicrotask(()=>render());}
         posterRefreshKey(key,null);
         toastMsg('Постер удалён.','success');
       }catch(error){toastMsg('Не удалось удалить постер: '+String(error?.message||error),'error');}
@@ -878,6 +935,7 @@ pagination.addEventListener("click",e=>{
 });
 
 function render(){
+  if(sort.value==='poster-missing')void ensurePosterSortState();
   const allRows=filtered();
   const filteredTotal=allRows.length;
   const pageSize=kinotekaViewMode==='cards'?CARD_PAGE_SIZE:PAGE_SIZE;
@@ -1289,6 +1347,12 @@ mediaCategoryFilter?.addEventListener('change',()=>{
 });
 window.addEventListener('kinoteka-media-category-change',e=>{mediaCategory=String(e.detail||'Все');if(mediaCategoryFilter)mediaCategoryFilter.value=mediaCategory;currentPage=1;filteredCache=null;saveUI();render();window.dispatchEvent(new CustomEvent('kinoteka-media-category-state',{detail:mediaCategory}));});
 mediaYearFilter?.addEventListener('change',()=>{mediaYear=mediaYearFilter.value||'';currentPage=1;filteredCache=null;saveUI();render();syncYearFilterUI();});
+// HF52: one control shared by card/table views; persist preference in existing UI JSON.
+sort.addEventListener('change',()=>{
+  currentPage=1;filteredCache=null;sortedRowsCache=null;
+  saveUI();render();
+  if(sort.value==='poster-missing')void ensurePosterSortState();
+});
 statCards.forEach(card=>{
   card.addEventListener("click",()=>{
     const r=card.dataset.filterRating;

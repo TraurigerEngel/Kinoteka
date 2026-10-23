@@ -23,6 +23,9 @@ fn persist_movies_ui(ui: String) -> Result<Value, String> {
 fn poster_get(key: String) -> Result<Value, String> { posters::get(key) }
 
 #[tauri::command]
+fn poster_exists_batch(keys: Vec<String>) -> Result<Vec<bool>, String> { posters::exists_batch(keys) }
+
+#[tauri::command]
 fn poster_set(key: String, data_url: String, source: Option<Value>) -> Result<Value, String> { posters::set(key, data_url, source) }
 
 #[tauri::command]
@@ -308,7 +311,16 @@ mod taskbar_autohide {
         let margins = [visual.left - current.left, visual.top - current.top,
                        current.right - visual.right, current.bottom - visual.bottom];
         if margins.iter().any(|v| *v < 0 || *v > MAX_FRAME_PX) { return None; }
+        // Stable HF51: preserve two real screen pixels for the auto-hide taskbar
+        // instead of the four reserved by HF49. Restore HF49's proven 4px gap
+        // with KINOTEKA_TASKBAR_GAP_PX=4 (no reinstall or source change).
+        // The older TASKBAR_NATIVE_GAP_PX remains untouched for legacy mode.
         let bottom = m.bottom - TASKBAR_NATIVE_GAP_PX;
+        let bottom = if std::env::var("KINOTEKA_TASKBAR_GAP_PX").ok().as_deref() == Some("4") {
+            bottom
+        } else {
+            bottom + 2
+        };
         if m.right - m.left < 780 || bottom - m.top < 620 { return None; }
         Some(Rect {
             left: m.left - margins[0],
@@ -399,7 +411,7 @@ pub fn run() {
         })
         .invoke_handler(tauri::generate_handler![
             library_state, persist_movies_state, persist_movies_ui,
-            poster_get, poster_set, poster_remove, poster_clipboard_set,
+            poster_get, poster_exists_batch, poster_set, poster_remove, poster_clipboard_set,
             window_minimize, window_close
         ])
         .run(tauri::generate_context!())

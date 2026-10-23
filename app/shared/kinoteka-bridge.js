@@ -187,6 +187,7 @@
     let uiRaw = seed.ui == null ? null : String(seed.ui);
 
     const validScore10 = n => Number.isInteger(n) && n >= 1 && n <= 10;
+    const validAddedAt = value => typeof value==='string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/.test(value) && Number.isFinite(Date.parse(value)) && new Date(value).toISOString()===value;
     const letterboxdScore10 = stars => {
       if (stars == null || stars === '') return null;
       const value = Number(stars);
@@ -206,7 +207,8 @@
           year,
           rating:x?.rating || 'Запланировано',
           score10:validScore10(x?.score10) ? x.score10 : null,
-          favorite:favorites.has(movieKey({category, name:x?.name, year}))
+          favorite:favorites.has(movieKey({category, name:x?.name, year})),
+          ...(validAddedAt(x?.addedAt)?{addedAt:x.addedAt}:{})
         };
         if (item.favorite) item.rating = 'Избранное';
         return item;
@@ -220,7 +222,8 @@
       year:(x?.year == null || x.year === '') ? null : Number(x.year),
       rating:x?.rating || 'Запланировано',
       score10:validScore10(x?.score10) ? x.score10 : null,
-      favorite:Boolean(x?.favorite)
+      favorite:Boolean(x?.favorite),
+      ...(validAddedAt(x?.addedAt)?{addedAt:x.addedAt}:{})
     })).filter(x => x.game);
 
     const normalizeGames = () => normalizeGamesFrom(state);
@@ -232,7 +235,8 @@
         category:x.category || 'Фильмы',
         year:(x.year == null || x.year === '') ? null : Number(x.year),
         rating:x.rating === 'Избранное' ? 'Понравилось' : (x.rating || 'Запланировано'),
-        ...(validScore10(x.score10) ? {score10:x.score10} : {})
+        ...(validScore10(x.score10) ? {score10:x.score10} : {}),
+        ...(validAddedAt(x.addedAt)?{addedAt:x.addedAt}:{})
       }));
       const favorites = games
         .filter(x => Boolean(x?.favorite) || x.rating === 'Избранное')
@@ -417,7 +421,7 @@
           const rating=score10!=null ? scoreStatus(score10) :
             item.watchlist&&!item.watched ? 'Запланировано' :
             item.watched?'Нормально':'Запланировано';
-          copy.items.push({name:row.name,category:'Фильмы',year:row.year,rating,
+          copy.items.push({name:row.name,category:'Фильмы',year:row.year,rating,addedAt:new Date().toISOString(),
             ...(score10!=null?{score10}: {})});
           existing.add(row.targetIdentity);
         }

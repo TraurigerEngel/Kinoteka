@@ -4,7 +4,8 @@ const fs=require('node:fs');
 const path=require('node:path');
 const css=fs.readFileSync(path.join(__dirname,'..','app','styles.css'),'utf8');
 const js=fs.readFileSync(path.join(__dirname,'..','app','games.js'),'utf8');
-const src=css.slice(css.indexOf('/* Hotfix 35 — one *neutral cyan* outline'));
+// HF53 changes toolbar grid only; keep the historical card-geometry check scoped to original card CSS.
+const src=css.slice(css.indexOf('/* Hotfix 35 — one *neutral cyan* outline'),css.indexOf('/* HF53 — sorting and search')>=0?css.indexOf('/* HF53 — sorting and search'):undefined);
 assert(src.length>1200,'Hotfix 35 CSS tail missing');
 assert.match(src,/\.kinoteka-film-card\.is-selected::after,[\s\S]*?border-color:rgba\(103,232,249,\.74\)/);
 assert.match(src,/\.kinoteka-film-card:hover::after,[\s\S]*?border-color:rgba\(103,232,249,\.42\)/);

@@ -1,7 +1,7 @@
 [package]
 name = "kinoteka-standalone"
-version = "1.2.0"
-description = "Kinoteka Standalone v1.2 Stable — HF49 Verified"
+version = "1.2.1"
+description = "Kinoteka Standalone v1.2.1 Stable — HF60 Verified"
 authors = ["Trauriger Engel"]
 edition = "2024"
 rust-version = "1.90"

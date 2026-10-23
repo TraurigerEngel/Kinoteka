@@ -112,6 +112,18 @@ fn valid_score10(value: Option<&Value>) -> bool {
     }
 }
 
+fn valid_added_at(value: Option<&Value>) -> bool {
+    match value {
+        None => true,
+        Some(Value::String(s)) => {
+            chrono::DateTime::parse_from_rfc3339(s)
+                .map(|ts| ts.to_rfc3339_opts(SecondsFormat::Millis, true) == *s)
+                .unwrap_or(false)
+        },
+        _ => false,
+    }
+}
+
 fn valid_trash_rating(value: Option<&Value>) -> bool {
     valid_item_rating(value) || value.and_then(Value::as_str) == Some("Избранное")
 }
@@ -125,7 +137,7 @@ fn state_semantics_valid(state: &Value) -> bool {
     for item in items {
         let Some(object) = item.as_object() else { return false; };
         let Some(name) = object.get("name").and_then(Value::as_str) else { return false; };
-        if name.trim().is_empty() || !valid_category(object.get("category")) || !valid_year(object.get("year")) || !valid_item_rating(object.get("rating")) || !valid_score10(object.get("score10")) {
+        if name.trim().is_empty() || !valid_category(object.get("category")) || !valid_year(object.get("year")) || !valid_item_rating(object.get("rating")) || !valid_score10(object.get("score10")) || !valid_added_at(object.get("addedAt")) {
             return false;
         }
         let category = object.get("category").and_then(Value::as_str).unwrap_or_default();
@@ -149,19 +161,23 @@ fn state_semantics_valid(state: &Value) -> bool {
             || !valid_category(object.get("category"))
             || !valid_year(object.get("year"))
             || !valid_trash_rating(object.get("rating")) || !valid_score10(object.get("score10"))
-            || !matches!(object.get("favorite"), Some(Value::Bool(_))) {
+            || !matches!(object.get("favorite"), Some(Value::Bool(_))) || !valid_added_at(object.get("addedAt")) {
             return false;
         }
     }
     true
 }
 
+// HF58: 13 active sorts. Accept legacy random UI only while it is migrated on load.
+const VALID_UI_SORTS: [&str; 13] = ["game-asc", "game-desc", "year-desc", "year-asc", "score-desc", "score-asc", "added-desc", "added-asc", "status", "category", "favorite-first", "score-missing", "poster-missing"];
+
 fn ui_semantics_valid(ui: &Value) -> bool {
     let Some(object) = ui.as_object() else { return false; };
     for key in ["search", "sort", "quickFilter", "mediaCategory", "mediaYear"] {
         if !object.get(key).map(Value::is_string).unwrap_or(false) { return false; }
     }
-    matches!(object.get("sort").and_then(Value::as_str), Some("game-asc") | Some("game-desc"))
+    object.get("sort").and_then(Value::as_str)
+        .map(|sort| VALID_UI_SORTS.contains(&sort) || sort == "random").unwrap_or(false)
         && matches!(object.get("mediaCategory").and_then(Value::as_str), Some("Все") | Some("Фильмы") | Some("Сериалы") | Some("Анимация"))
 }
 
@@ -467,4 +483,41 @@ pub fn read_state() -> Result<Value, String> {
     let state: String = db.query_row("SELECT payload FROM state WHERE id=1", [], |r| r.get(0)).map_err(|e| e.to_string())?;
     let ui: Option<String> = db.query_row("SELECT payload FROM ui_state WHERE id=1", [], |r| r.get(0)).ok();
     Ok(json!({"state": state, "ui": ui}))
+}
+
+#[cfg(test)]
+mod ui_sort_validation_hf57 {
+    use super::{ui_semantics_valid, VALID_UI_SORTS};
+    use serde_json::{json, Value};
+
+    fn ui_for(sort: &str) -> Value {
+        json!({"search":"", "sort":sort, "quickFilter":"",
+               "mediaCategory":"Все", "mediaYear":"",
+               "viewMode":"cards", "shuffleSeed":73129})
+    }
+
+    #[test]
+    fn all_thirteen_sort_options_can_be_saved_to_sqlite() {
+        assert_eq!(VALID_UI_SORTS.len(), 13);
+        for value in VALID_UI_SORTS {
+            assert!(ui_semantics_valid(&ui_for(value)), "rejected sort: {value}");
+        }
+    }
+
+    #[test]
+    fn legacy_random_ui_does_not_invalidate_an_existing_database() {
+        assert!(ui_semantics_valid(&ui_for("random")));
+    }
+
+    #[test]
+    fn unexpected_or_invalid_ui_is_rejected() {
+        assert!(!ui_semantics_valid(&ui_for("not-a-sort")));
+        assert!(!ui_semantics_valid(&ui_for("")));
+        let mut ui = ui_for("game-asc");
+        ui["mediaCategory"] = json!("Неизвестное");
+        assert!(!ui_semantics_valid(&ui));
+        let mut ui = ui_for("random");
+        ui["search"] = json!(123);
+        assert!(!ui_semantics_valid(&ui));
+    }
 }

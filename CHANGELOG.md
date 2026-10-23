@@ -1,3 +1,9 @@
+## v1.2.1 Stable — 2026-10-24
+
+- Релиз на базе подтверждённой HF60: 13 сортировок, синхронный сброс, центрированные названия карточек и поле сортировки, цветная подсветка активного значения.
+- Изменения только release metadata/packaging; дизайн и поведение HF60 сохранены.
+- Новые offline-сценарии релизной упаковки без перезаписи v1.2.0 и личных SQLite; проверка ZIP после повторной распаковки.
+
 ## Hotfix 44 — Remove TMDB Search from Current Product (2026-10-19)
 
 - Confirmed TMDB lookup and API-token UI/network integration are fully absent from the application; added a dedicated non-regression check to prevent them returning.
