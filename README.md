@@ -44,3 +44,12 @@ npm run verify
 - Приложение не является официальным клиентом Letterboxd, TMDB, Wikimedia Commons или IMDb.
 
 [Предыдущий Stable v1.2.0 (HF49)](https://github.com/TraurigerEngel/Kinoteka/releases/tag/v1.2.0) · [Preview 1](https://github.com/TraurigerEngel/Kinoteka/releases/tag/v1.2.0-preview.1)
+
+## Структура репозитория
+
+- `app/` и `src-tauri/` — интерфейс и Rust/Tauri, без изменений в уборке структуры.
+- `scripts/` — актуальные автоматические проверки (включая HF60).
+- `docs/hotfixes/` — заметки HF53–HF60; `docs/releases/` — история выпусков; `docs/archive/` — оригинальный журнал.
+- `tools/legacy/` — исторические инструменты сборки/миграции. Для текущей версии используйте **`MAKE-FINAL-RELEASE-v1.2.1.cmd` из корня**.
+
+Стабильные опубликованные архивы v1.2.0 и v1.2.1 неизменны; полная история доступна в [GitHub Releases](https://github.com/TraurigerEngel/Kinoteka/releases).

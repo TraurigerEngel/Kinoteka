@@ -5,7 +5,8 @@ param(
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
-Set-Location -LiteralPath $PSScriptRoot
+$ProjectRoot = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '..\..')).Path
+Set-Location -LiteralPath $ProjectRoot
 
 function Get-Sha256Hex {
   param([Parameter(Mandatory=$true)][string]$Path)
@@ -31,23 +32,23 @@ function Assert-NoSqliteSidecars {
 
 function Invoke-SqliteVerify {
   param([Parameter(Mandatory=$true)][string]$DbPath)
-  & node --no-warnings (Join-Path $PSScriptRoot 'scripts\verify-sqlite-db.js') $DbPath
+  & node --no-warnings (Join-Path $ProjectRoot 'scripts\verify-sqlite-db.js') $DbPath
   if ($LASTEXITCODE -ne 0) { throw ('SQLite verifier failed for {0} (exit {1}).' -f $DbPath,$LASTEXITCODE) }
 }
 
 function Read-DbSummary {
   param([Parameter(Mandatory=$true)][string]$DbPath)
-  $json = & node --no-warnings (Join-Path $PSScriptRoot 'scripts\kinoteka-db-summary.js') $DbPath
+  $json = & node --no-warnings (Join-Path $ProjectRoot 'scripts\kinoteka-db-summary.js') $DbPath
   if ($LASTEXITCODE -ne 0) { throw ('DB summary failed for {0} (exit {1}).' -f $DbPath,$LASTEXITCODE) }
   return ($json | Out-String | ConvertFrom-Json)
 }
 
-$portableDb = Join-Path $PSScriptRoot 'Portable\Kinoteka_Standalone_v1.2_Preview_1_DEV\data\kinoteka.sqlite3'
-$liveDb = Join-Path $PSScriptRoot 'data\kinoteka.sqlite3'
-$seedDb = Join-Path $PSScriptRoot 'seed-data\kinoteka.sqlite3'
-$stageRoot = Join-Path $PSScriptRoot '.canonical-freeze-stage'
+$portableDb = Join-Path $ProjectRoot 'Portable\Kinoteka_Standalone_v1.2_Preview_1_DEV\data\kinoteka.sqlite3'
+$liveDb = Join-Path $ProjectRoot 'data\kinoteka.sqlite3'
+$seedDb = Join-Path $ProjectRoot 'seed-data\kinoteka.sqlite3'
+$stageRoot = Join-Path $ProjectRoot '.canonical-freeze-stage'
 $stamp = Get-Date -Format 'yyyyMMdd-HHmmss'
-$backupRoot = Join-Path $PSScriptRoot ('CanonicalDataBackups\before-freeze-' + $stamp)
+$backupRoot = Join-Path $ProjectRoot ('CanonicalDataBackups\before-freeze-' + $stamp)
 $backupCreated = $false
 
 Write-Host '=== KINOTEKA CANONICAL DATA FREEZE ===' -ForegroundColor Magenta
@@ -72,7 +73,7 @@ $summary = Read-DbSummary -DbPath $portableDb
 if ([int]$summary.items -ne 0 -or [int]$summary.favorites -ne 0 -or [int]$summary.trash -ne 0 -or [int]$summary.revision -ne 0) {
   throw 'Privacy guard: a populated Portable DEV database must never be promoted to project data/seed-data. Only empty database templates are allowed.'
 }
-& node --no-warnings (Join-Path $PSScriptRoot 'scripts\verify-empty-db.js') $portableDb
+& node --no-warnings (Join-Path $ProjectRoot 'scripts\verify-empty-db.js') $portableDb
 if ($LASTEXITCODE -ne 0) { throw 'Privacy guard rejected freeze source.' }
 Write-Host ('Portable DEV: {0} items, {1} favorites, {2} trash, revision {3}' -f $summary.items,$summary.favorites,$summary.trash,$summary.revision)
 if ([int]$summary.trash -gt 0 -and -not $AllowTrash) {

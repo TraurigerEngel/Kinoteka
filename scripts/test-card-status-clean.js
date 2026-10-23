@@ -15,7 +15,7 @@ assert.match(css,/\.kinoteka-film-card \.kinoteka-card-status-dot\{display:none!
 assert.match(css,/\.kinoteka-film-card \.kinoteka-card-status\{gap:0\}/,'status text starts evenly');
 assert.match(html,/data-poster-choose/,'manual poster chooser retained');
 assert.match(css,/\.kinoteka-commons-optin,\.kinoteka-poster-auto\{display:none!important\}/,'automatic posters remain hidden');
-const helper=fs.readFileSync(path.join(root,'PREPARE-REAL-PREVIEW.ps1'),'utf8');
+const helper=fs.readFileSync(path.join(root,'tools/legacy/PREPARE-REAL-PREVIEW.ps1'),'utf8');
 for(const x of ['-SourceDb','-SourceArchive','Kinoteka_Standalone_v1.2_Preview_1_REAL_PREVIEW','verify-sqlite-db.js','kinoteka-db-summary.js','Kinoteka.exe','CLEAN_DEV','throw']) assert.ok(helper.includes(x),`missing recovery safeguard ${x}`);
 assert.ok(helper.includes('Test-Path -LiteralPath $target'), 'must refuse overwrite of REAL_PREVIEW');
 console.log('CARD STATUS CLEAN + REAL PREVIEW QA: PASS (no dots, same status actions, source isolation)');

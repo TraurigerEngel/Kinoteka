@@ -1,12 +1,13 @@
 param([string]$SourceDb = '')
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
-Set-Location -LiteralPath $PSScriptRoot
+$ProjectRoot = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '..\..')).Path
+Set-Location -LiteralPath $ProjectRoot
 
-$portable = Join-Path $PSScriptRoot 'Portable\Kinoteka_Standalone_v1.0_Stable_DEV'
+$portable = Join-Path $ProjectRoot 'Portable\Kinoteka_Standalone_v1.0_Stable_DEV'
 $targetDir = Join-Path $portable 'data'
 $target = Join-Path $targetDir 'kinoteka.sqlite3'
-$verifyDb = Join-Path $PSScriptRoot 'scripts\verify-sqlite-db.js'
+$verifyDb = Join-Path $ProjectRoot 'scripts\verify-sqlite-db.js'
 
 if (-not (Test-Path -LiteralPath $portable)) {
   throw 'Build the DEV version first with .\BUILD-DEV.cmd'
@@ -29,7 +30,7 @@ if (@($running).Count -gt 0) {
 
 $candidates = @()
 if ($SourceDb) { $candidates += $SourceDb }
-$parent = Split-Path -Parent $PSScriptRoot
+$parent = Split-Path -Parent $ProjectRoot
 $candidates += @(
   (Join-Path $parent 'LostHeavenDesktop_v3.00\Portable\LostHeaven_Desktop_v3.00_DEV\data\movies\kinoteka.sqlite3'),
   (Join-Path $parent 'LostHeavenDesktop_v3.00\data\movies\kinoteka.sqlite3')

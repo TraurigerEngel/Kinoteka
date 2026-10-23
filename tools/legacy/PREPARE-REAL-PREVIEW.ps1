@@ -9,7 +9,8 @@ param(
 )
 Set-StrictMode -Version Latest
 $ErrorActionPreference='Stop'
-$project=$PSScriptRoot
+$ProjectRoot = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '..\..')).Path
+$project=$ProjectRoot
 $clean=Join-Path $project 'Portable\Kinoteka_Standalone_v1.2_Preview_1_CLEAN_DEV'
 $target=Join-Path $project 'Portable\Kinoteka_Standalone_v1.2_Preview_1_REAL_PREVIEW'
 $stage=$target+'.stage.'+[guid]::NewGuid().ToString('N')

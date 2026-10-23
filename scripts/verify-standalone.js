@@ -52,7 +52,7 @@ const EXPECTED_VERSION = '1.2.1';
 const EXPECTED_RELEASE_NAME = 'Kinoteka_Standalone_v1.2_Stable';
 
 const mustExist = [
-  'package.json','package-lock.json','README.md','CHANGELOG.md','START-HERE.txt','RELEASE_NOTES_v1.0_STABLE.md','RELEASE_NOTES_v1.1_STABLE.md','RELEASE_NOTES_v1.2_STABLE.md','RELEASE-CHECKLIST.md',
+  'package.json','package-lock.json','README.md','CHANGELOG.md','START-HERE.txt','docs/releases/RELEASE_NOTES_v1.0_STABLE.md','docs/releases/RELEASE_NOTES_v1.1_STABLE.md','docs/releases/RELEASE_NOTES_v1.2_STABLE.md','RELEASE-CHECKLIST.md',
   'app/index.html','app/core.js','app/games.js','app/trash.js','app/runtime.js','app/favicon.ico',
   'app/shared/kinoteka-bridge.js','app/shared/modal-system.js','app/shared/themed-select.js',
   'app/shared/browser-guard.js','app/shared/route-transition.js','app/shared/tauri-titlebar.css',
@@ -61,10 +61,10 @@ const mustExist = [
   'src-tauri/tauri.conf.json','src-tauri/tauri.release.conf.json',
   'src-tauri/src/main.rs','src-tauri/src/lib.rs','src-tauri/src/storage.rs','src-tauri/icons/icon.ico','src-tauri/icons/icon.png',
   'scripts/verify-sqlite-db.js','scripts/verify-release-artifact.js','scripts/kinoteka-db-summary.js',
-  'BUILD-DEV.cmd','BUILD-DEV.ps1','BUILD-RELEASE.cmd','BUILD-RELEASE.ps1',
-  'MAKE-FINAL-RELEASE.cmd','MAKE-FINAL-RELEASE.ps1',
-  'FREEZE-CANONICAL-DATA.cmd','FREEZE-CANONICAL-DATA.ps1',
-  'MIGRATE-FROM-LOST-HEAVEN.cmd','MIGRATE-FROM-LOST-HEAVEN.ps1'
+  'BUILD-DEV.cmd','BUILD-DEV.ps1','tools/legacy/BUILD-RELEASE.cmd','tools/legacy/BUILD-RELEASE.ps1',
+  'tools/legacy/MAKE-FINAL-RELEASE.cmd','tools/legacy/MAKE-FINAL-RELEASE.ps1',
+  'tools/legacy/FREEZE-CANONICAL-DATA.cmd','tools/legacy/FREEZE-CANONICAL-DATA.ps1',
+  'tools/legacy/MIGRATE-FROM-LOST-HEAVEN.cmd','tools/legacy/MIGRATE-FROM-LOST-HEAVEN.ps1'
 ];
 for (const rel of mustExist) if (!fs.existsSync(path.join(root,rel))) throw new Error(`Required file is missing: ${rel}`);
 
@@ -97,10 +97,10 @@ const games = fs.readFileSync(path.join(root,'app/games.js'),'utf8');
 const runtime = fs.readFileSync(path.join(root,'app/runtime.js'),'utf8');
 const styles = fs.readFileSync(path.join(root,'app/styles.css'),'utf8');
 const buildDev = fs.readFileSync(path.join(root,'BUILD-DEV.ps1'),'utf8');
-const buildRelease = fs.readFileSync(path.join(root,'BUILD-RELEASE.ps1'),'utf8');
-const makeRelease = fs.readFileSync(path.join(root,'MAKE-FINAL-RELEASE.ps1'),'utf8');
-const migrate = fs.readFileSync(path.join(root,'MIGRATE-FROM-LOST-HEAVEN.ps1'),'utf8');
-const freezeCanonical = fs.readFileSync(path.join(root,'FREEZE-CANONICAL-DATA.ps1'),'utf8');
+const buildRelease = fs.readFileSync(path.join(root,'tools/legacy/BUILD-RELEASE.ps1'),'utf8');
+const makeRelease = fs.readFileSync(path.join(root,'tools/legacy/MAKE-FINAL-RELEASE.ps1'),'utf8');
+const migrate = fs.readFileSync(path.join(root,'tools/legacy/MIGRATE-FROM-LOST-HEAVEN.ps1'),'utf8');
+const freezeCanonical = fs.readFileSync(path.join(root,'tools/legacy/FREEZE-CANONICAL-DATA.ps1'),'utf8');
 const canonicalSummaryHelper = fs.readFileSync(path.join(root,'scripts/kinoteka-db-summary.js'),'utf8');
 
 // Identity/version consistency.
@@ -344,7 +344,7 @@ for (const token of ['await db.moveGameToTrash(gameId)','await db.restoreTrash(t
 }
 
 // Cleanup Pass 6: command wrappers must be non-interactive.
-for (const rel of ['BUILD-DEV.cmd','BUILD-RELEASE.cmd','MAKE-FINAL-RELEASE.cmd','FREEZE-CANONICAL-DATA.cmd','MIGRATE-FROM-LOST-HEAVEN.cmd']) {
+for (const rel of ['BUILD-DEV.cmd','tools/legacy/BUILD-RELEASE.cmd','tools/legacy/MAKE-FINAL-RELEASE.cmd','tools/legacy/FREEZE-CANONICAL-DATA.cmd','tools/legacy/MIGRATE-FROM-LOST-HEAVEN.cmd']) {
   const cmd = fs.readFileSync(path.join(root,rel),'utf8');
   if (/^\s*pause(?:\s|$)/im.test(cmd)) throw new Error(`Cleanup Pass 6 interactive pause returned: ${rel}`);
   if (!/exit \/b %(?:ERR|RC)%/i.test(cmd)) throw new Error(`Cleanup Pass 6 exit-code propagation missing: ${rel}`);
@@ -1064,7 +1064,7 @@ for (const token of [
   if (!freezeCanonical.includes(token)) throw new Error(`Canonical data freeze safety contract missing: ${token}`);
 }
 if (/Get-FileHash/i.test(freezeCanonical)) throw new Error('Canonical data freeze must stay PowerShell 5.1-safe and use .NET SHA-256, not Get-FileHash.');
-if (!makeRelease.includes("'FREEZE-CANONICAL-DATA.cmd','FREEZE-CANONICAL-DATA.ps1'")) throw new Error('Final Source ZIP must include canonical data freeze tooling.');
+if (!makeRelease.includes("'app','scripts','test-data','docs','tools'")) throw new Error('Final Source ZIP must preserve relocated historical tools and docs.');
 
 require('./verify-empty-db.js').verify();
 const sha = crypto.createHash('sha256').update(liveDb).digest('hex');
