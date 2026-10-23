@@ -1,7 +1,8 @@
 param([switch]$SkipNpmCi = $true)
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
-Set-Location -LiteralPath $PSScriptRoot
+$ProjectRoot = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '..\..')).Path
+Set-Location -LiteralPath $ProjectRoot
 
 function Get-Sha256Hex {
   param([Parameter(Mandatory=$true)][string]$Path)
@@ -20,9 +21,9 @@ function Get-Sha256Hex {
 }
 
 $releaseName = 'Kinoteka_Standalone_v1.2_Stable'
-$out = Join-Path $PSScriptRoot ('Release\' + $releaseName)
-$manifestPath = Join-Path $PSScriptRoot 'src-tauri\Cargo.toml'
-$lockPath = Join-Path $PSScriptRoot 'src-tauri\Cargo.lock'
+$out = Join-Path $ProjectRoot ('Release\' + $releaseName)
+$manifestPath = Join-Path $ProjectRoot 'src-tauri\Cargo.toml'
+$lockPath = Join-Path $ProjectRoot 'src-tauri\Cargo.lock'
 $env:CARGO_NET_OFFLINE = 'true'
 $env:npm_config_offline = 'true'
 if (Test-Path -LiteralPath $out) { throw 'Release v1.2 Preview 1 output already exists. Refusing to overwrite a possibly used SQLite database. Use a fresh source folder.' }
@@ -38,7 +39,7 @@ if (-not (Test-Path -LiteralPath $lockPath)) { throw 'Cargo.lock is required for
 Write-Host "`n[1/5] Locked dependencies..." -ForegroundColor Cyan
 if (-not $SkipNpmCi) {
   throw 'Stable release does not support npm ci. Install dependencies separately only if strictly needed.'
-} elseif (-not (Test-Path -LiteralPath (Join-Path $PSScriptRoot 'node_modules'))) {
+} elseif (-not (Test-Path -LiteralPath (Join-Path $ProjectRoot 'node_modules'))) {
   throw 'node_modules is missing while -SkipNpmCi was requested.'
 } else {
   Write-Host 'npm ci skipped; cached node_modules will be used.'
@@ -63,12 +64,12 @@ if ($lockBefore -ne $lockAfter) { throw 'Cargo.lock changed during release build
 Write-Host "`n[4/5] Creating clean portable directory..." -ForegroundColor Cyan
 New-Item -ItemType Directory -Path $out | Out-Null
 
-$exe = Join-Path $PSScriptRoot 'src-tauri\target\release\kinoteka.exe'
+$exe = Join-Path $ProjectRoot 'src-tauri\target\release\kinoteka.exe'
 if (-not (Test-Path -LiteralPath $exe)) { throw "EXE not found: $exe" }
 Copy-Item -LiteralPath $exe -Destination (Join-Path $out 'Kinoteka.exe') -Force
 
 foreach ($kind in @('data','seed-data')) {
-  $src = Join-Path $PSScriptRoot ($kind + '\kinoteka.sqlite3')
+  $src = Join-Path $ProjectRoot ($kind + '\kinoteka.sqlite3')
   $dstDir = Join-Path $out $kind
   New-Item -ItemType Directory -Force -Path $dstDir | Out-Null
   Copy-Item -LiteralPath $src -Destination (Join-Path $dstDir 'kinoteka.sqlite3') -Force

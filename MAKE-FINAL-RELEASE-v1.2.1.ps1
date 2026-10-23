@@ -74,7 +74,7 @@ New-ZipFromDirectory -SourceDir $portable -DestinationZip $portableZip
 
 Write-Host "`n[2/4] Packing clean source ZIP..." -ForegroundColor Cyan
 New-Item -ItemType Directory -Force -Path $sourceStage | Out-Null
-foreach ($dir in @('app','scripts','test-data')) {
+foreach ($dir in @('app','scripts','test-data','docs','tools')) {
   Copy-Item -LiteralPath (Join-Path $PSScriptRoot $dir) -Destination (Join-Path $sourceStage $dir) -Recurse -Force
 }
 foreach ($dbdir in @('data','seed-data')) {
@@ -94,14 +94,12 @@ foreach ($dir in @('src','icons','gen')) {
 
 $rootFiles = @(
   '.gitignore','package.json','package-lock.json',
-  'BUILD-DEV.cmd','BUILD-DEV.ps1','BUILD-RELEASE.cmd','BUILD-RELEASE.ps1',
-  'MAKE-FINAL-RELEASE.cmd','MAKE-FINAL-RELEASE.ps1',
-  'BUILD-RELEASE-v1.2.1.ps1','MAKE-FINAL-RELEASE-v1.2.1.ps1','BUILD-RELEASE-v1.2.1.cmd','MAKE-FINAL-RELEASE-v1.2.1.cmd',
-  'FREEZE-CANONICAL-DATA.cmd','FREEZE-CANONICAL-DATA.ps1',
-  'MIGRATE-FROM-LOST-HEAVEN.cmd','MIGRATE-FROM-LOST-HEAVEN.ps1',
-  'PREPARE-REAL-PREVIEW.ps1',
-  'HF52-NOTES.md','HF53-NOTES.md','HF54-NOTES.md','HF55-NOTES.md','HF56-NOTES.md','HF57-NOTES.md','HF58-NOTES.md','HF59-NOTES.md','HF60-NOTES.md',
-  'START-HERE.txt','README.md','CHANGELOG.md','RELEASE_NOTES_v1.0_STABLE.md','RELEASE_NOTES_v1.1_STABLE.md','RELEASE_NOTES_v1.2_PREVIEW_1.md','RELEASE_NOTES_v1.2_STABLE.md','RELEASE_NOTES_v1.2.1_STABLE.md','RELEASE-CHECKLIST.md'
+  'BUILD-DEV.cmd','BUILD-DEV.ps1',
+  'BUILD-RELEASE-v1.2.1.ps1','MAKE-FINAL-RELEASE-v1.2.1.ps1',
+  'BUILD-RELEASE-v1.2.1.cmd','MAKE-FINAL-RELEASE-v1.2.1.cmd',
+  'START-HERE.txt','README.md','CHANGELOG.md',
+  'RELEASE_NOTES_v1.2.1_STABLE.md','RELEASE-CHECKLIST.md',
+  'LICENSE','THIRD_PARTY_NOTICES.md'
 )
 foreach ($file in $rootFiles) {
   $src = Join-Path $PSScriptRoot $file

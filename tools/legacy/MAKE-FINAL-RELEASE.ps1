@@ -1,6 +1,7 @@
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
-Set-Location -LiteralPath $PSScriptRoot
+$ProjectRoot = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '..\..')).Path
+Set-Location -LiteralPath $ProjectRoot
 
 Add-Type -AssemblyName System.IO.Compression.FileSystem
 
@@ -49,19 +50,19 @@ function Expand-ZipToDirectory {
 }
 
 $releaseName = 'Kinoteka_Standalone_v1.2_Stable'
-$portable = Join-Path $PSScriptRoot ('Release\' + $releaseName)
-$artifacts = Join-Path $PSScriptRoot 'Artifacts\Kinoteka_v1.2_Stable'
+$portable = Join-Path $ProjectRoot ('Release\' + $releaseName)
+$artifacts = Join-Path $ProjectRoot 'Artifacts\Kinoteka_v1.2_Stable'
 $portableZip = Join-Path $artifacts ($releaseName + '_Portable.zip')
 $sourceZip = Join-Path $artifacts ($releaseName + '_Source.zip')
-$sourceStage = Join-Path $PSScriptRoot '.stable-release-source-stage'
-$verifyStage = Join-Path $PSScriptRoot '.stable-release-verify-stage'
-$sourceVerifyStage = Join-Path $PSScriptRoot '.stable-release-source-verify-stage'
+$sourceStage = Join-Path $ProjectRoot '.stable-release-source-stage'
+$verifyStage = Join-Path $ProjectRoot '.stable-release-verify-stage'
+$sourceVerifyStage = Join-Path $ProjectRoot '.stable-release-source-verify-stage'
 
 if (Test-Path -LiteralPath $artifacts) { throw 'Artifacts directory already exists. Refusing to overwrite archives. Use a fresh source folder.' }
 if (Test-Path -LiteralPath $portable) { throw 'Release directory already exists. Refusing to overwrite SQLite. Use a fresh source folder.' }
 Write-Host '=== KINOTEKA STANDALONE v1.2 STABLE / FINAL RELEASE ===' -ForegroundColor Magenta
 
-& (Join-Path $PSScriptRoot 'BUILD-RELEASE.ps1') -SkipNpmCi
+& (Join-Path $ProjectRoot 'tools\legacy\BUILD-RELEASE.ps1') -SkipNpmCi
 if ($LASTEXITCODE -ne 0) { throw "BUILD-RELEASE failed: $LASTEXITCODE" }
 
 New-Item -ItemType Directory -Path $artifacts -Force | Out-Null
@@ -74,35 +75,36 @@ New-ZipFromDirectory -SourceDir $portable -DestinationZip $portableZip
 
 Write-Host "`n[2/4] Packing clean source ZIP..." -ForegroundColor Cyan
 New-Item -ItemType Directory -Force -Path $sourceStage | Out-Null
-foreach ($dir in @('app','scripts','test-data')) {
-  Copy-Item -LiteralPath (Join-Path $PSScriptRoot $dir) -Destination (Join-Path $sourceStage $dir) -Recurse -Force
+foreach ($dir in @('app','scripts','test-data','docs','tools')) {
+  Copy-Item -LiteralPath (Join-Path $ProjectRoot $dir) -Destination (Join-Path $sourceStage $dir) -Recurse -Force
 }
 foreach ($dbdir in @('data','seed-data')) {
   $d = Join-Path $sourceStage $dbdir
   New-Item -ItemType Directory -Force -Path $d | Out-Null
-  Copy-Item -LiteralPath (Join-Path $PSScriptRoot ($dbdir + '\kinoteka.sqlite3')) -Destination (Join-Path $d 'kinoteka.sqlite3') -Force
+  Copy-Item -LiteralPath (Join-Path $ProjectRoot ($dbdir + '\kinoteka.sqlite3')) -Destination (Join-Path $d 'kinoteka.sqlite3') -Force
 }
 $srcTauriStage = Join-Path $sourceStage 'src-tauri'
 New-Item -ItemType Directory -Force -Path $srcTauriStage | Out-Null
 foreach ($file in @('build.rs','Cargo.toml','Cargo.lock','tauri.conf.json','tauri.release.conf.json')) {
-  Copy-Item -LiteralPath (Join-Path $PSScriptRoot ('src-tauri\' + $file)) -Destination (Join-Path $srcTauriStage $file) -Force
+  Copy-Item -LiteralPath (Join-Path $ProjectRoot ('src-tauri\' + $file)) -Destination (Join-Path $srcTauriStage $file) -Force
 }
 foreach ($dir in @('src','icons','gen')) {
-  $src = Join-Path $PSScriptRoot ('src-tauri\' + $dir)
+  $src = Join-Path $ProjectRoot ('src-tauri\' + $dir)
   if (Test-Path -LiteralPath $src) { Copy-Item -LiteralPath $src -Destination (Join-Path $srcTauriStage $dir) -Recurse -Force }
 }
 
 $rootFiles = @(
   '.gitignore','package.json','package-lock.json',
-  'BUILD-DEV.cmd','BUILD-DEV.ps1','BUILD-RELEASE.cmd','BUILD-RELEASE.ps1',
-  'MAKE-FINAL-RELEASE.cmd','MAKE-FINAL-RELEASE.ps1',
-  'FREEZE-CANONICAL-DATA.cmd','FREEZE-CANONICAL-DATA.ps1',
-  'MIGRATE-FROM-LOST-HEAVEN.cmd','MIGRATE-FROM-LOST-HEAVEN.ps1',
-  'PREPARE-REAL-PREVIEW.ps1',
-  'START-HERE.txt','README.md','CHANGELOG.md','RELEASE_NOTES_v1.0_STABLE.md','RELEASE_NOTES_v1.1_STABLE.md','RELEASE_NOTES_v1.2_PREVIEW_1.md','RELEASE_NOTES_v1.2_STABLE.md','RELEASE-CHECKLIST.md'
+  'BUILD-DEV.cmd','BUILD-DEV.ps1',
+  'BUILD-RELEASE-v1.2.1.ps1','MAKE-FINAL-RELEASE-v1.2.1.ps1',
+  'BUILD-RELEASE-v1.2.1.cmd','MAKE-FINAL-RELEASE-v1.2.1.cmd',
+  'START-HERE.txt','README.md','CHANGELOG.md',
+  'RELEASE_NOTES_v1.2.1_STABLE.md','RELEASE-CHECKLIST.md',
+  'LICENSE','THIRD_PARTY_NOTICES.md',
+  'FREEZE-CANONICAL-DATA.cmd','FREEZE-CANONICAL-DATA.ps1'
 )
 foreach ($file in $rootFiles) {
-  $src = Join-Path $PSScriptRoot $file
+  $src = Join-Path $ProjectRoot $file
   if (Test-Path -LiteralPath $src) { Copy-Item -LiteralPath $src -Destination (Join-Path $sourceStage $file) -Force }
 }
 Push-Location -LiteralPath $sourceStage
