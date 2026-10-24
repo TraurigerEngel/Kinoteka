@@ -55,6 +55,11 @@ const allowedFiles = new Set([
   'data/kinoteka.sqlite3',
   'seed-data/kinoteka.sqlite3'
 ]);
+// Historical builders retain their three-file format; current builds require documents.
+if (process.argv.includes('--with-docs')) {
+  require('./verify-release-docs.js').verify('portable', target);
+  for (const file of require('./verify-release-docs.js').portableDocs) allowedFiles.add(file);
+}
 const seenFiles = new Set();
 function walk(dir) {
   for (const ent of fs.readdirSync(dir,{withFileTypes:true})) {
@@ -108,6 +113,6 @@ if (exeSize < 1024 * 1024) throw new Error('Kinoteka.exe is unexpectedly small.'
 const dbSha = crypto.createHash('sha256').update(live).digest('hex');
 console.log('Kinoteka v1.2 Stable release artifact verification OK');
 console.log(`- EXE: ${(exeSize/1024/1024).toFixed(2)} MB`);
-console.log('- Exact portable allowlist OK (3 runtime files)');
+console.log(`- Exact portable allowlist OK (${allowedFiles.size} files)`);
 console.log('- SQLite integrity/schema/state/journal_mode OK');
 console.log(`- Canonical live/seed SQLite byte identity OK (${dbSha.slice(0,12)}...)`);

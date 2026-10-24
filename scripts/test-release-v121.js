@@ -30,3 +30,5 @@ assert.match(make,/Expand-ZipToDirectory/);
 for (const name of ['BUILD-RELEASE-v1.2.1.cmd','MAKE-FINAL-RELEASE-v1.2.1.cmd']) assert(fs.existsSync(path.join(root,name)),name);
 assert.match(read('RELEASE_NOTES_v1.2.1_STABLE.md'),/HF60/);
 console.log('v1.2.1 STABLE RELEASE: PASS (version lockstep, offline build, clean packaging, SHA-256, HF60 provenance)');
+
+require('./test-release-docs.js');

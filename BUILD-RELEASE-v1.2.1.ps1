@@ -35,6 +35,12 @@ foreach ($tool in @('rustc','cargo','npm','node')) {
 if (-not (Test-Path -LiteralPath $manifestPath)) { throw 'src-tauri\Cargo.toml is required for release builds.' }
 if (-not (Test-Path -LiteralPath $lockPath)) { throw 'Cargo.lock is required for release builds.' }
 
+# Fail before compilation; never clear or replace a working collection.
+node --no-warnings scripts\verify-empty-db.js
+if ($LASTEXITCODE -ne 0) { throw 'Release requires a separate source folder with empty data/ and seed-data/ databases. Do not clear your personal database.' }
+node scripts\verify-release-docs.js source $PSScriptRoot
+if ($LASTEXITCODE -ne 0) { throw 'Release documentation/privacy preflight failed.' }
+
 Write-Host "`n[1/5] Locked dependencies..." -ForegroundColor Cyan
 if (-not $SkipNpmCi) {
   throw 'Stable release does not support npm ci. Install dependencies separately only if strictly needed.'
@@ -74,8 +80,12 @@ foreach ($kind in @('data','seed-data')) {
   Copy-Item -LiteralPath $src -Destination (Join-Path $dstDir 'kinoteka.sqlite3') -Force
 }
 
+foreach ($file in @('LICENSE','THIRD_PARTY_NOTICES.md','GITHUB_PRIVACY_RU.md','README-PORTABLE.txt')) {
+  Copy-Item -LiteralPath (Join-Path $PSScriptRoot $file) -Destination (Join-Path $out $file)
+}
+
 Write-Host "`n[5/5] Verifying portable artifact..." -ForegroundColor Cyan
-node --no-warnings scripts\verify-release-artifact.js $out
+node --no-warnings scripts\verify-release-artifact.js $out --with-docs
 if ($LASTEXITCODE -ne 0) { throw "release artifact verification failed: $LASTEXITCODE" }
 
 $size = [math]::Round((Get-Item -LiteralPath (Join-Path $out 'Kinoteka.exe')).Length / 1MB, 2)
