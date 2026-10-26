@@ -99,11 +99,12 @@ $rootFiles = @(
   'BUILD-RELEASE-v1.2.1.cmd','MAKE-FINAL-RELEASE-v1.2.1.cmd',
   'START-HERE.txt','README.md','CHANGELOG.md',
   'RELEASE_NOTES_v1.2.1_STABLE.md','RELEASE-CHECKLIST.md',
-  'LICENSE','THIRD_PARTY_NOTICES.md'
+  'LICENSE','THIRD_PARTY_NOTICES.md','GITHUB_PRIVACY_RU.md','README-PORTABLE.txt'
 )
 foreach ($file in $rootFiles) {
   $src = Join-Path $PSScriptRoot $file
-  if (Test-Path -LiteralPath $src) { Copy-Item -LiteralPath $src -Destination (Join-Path $sourceStage $file) -Force }
+  if (-not (Test-Path -LiteralPath $src -PathType Leaf)) { throw "Required source file missing: $file" }
+  Copy-Item -LiteralPath $src -Destination (Join-Path $sourceStage $file)
 }
 Push-Location -LiteralPath $sourceStage
 try {
@@ -114,7 +115,7 @@ New-ZipFromDirectory -SourceDir $sourceStage -DestinationZip $sourceZip
 
 Write-Host "`n[3/4] Re-extracting and verifying ZIPs..." -ForegroundColor Cyan
 Expand-ZipToDirectory -ZipPath $portableZip -DestinationDir $verifyStage
-node --no-warnings scripts\verify-release-artifact.js $verifyStage
+node --no-warnings scripts\verify-release-artifact.js $verifyStage --with-docs
 if ($LASTEXITCODE -ne 0) { throw "re-extracted portable verification failed: $LASTEXITCODE" }
 
 Expand-ZipToDirectory -ZipPath $sourceZip -DestinationDir $sourceVerifyStage
@@ -139,6 +140,7 @@ $meta = [ordered]@{
   product = 'Kinoteka Standalone'
   version = '1.2.1'
   channel = 'Stable'
+  packaging_revision = 2
   release = 'v1.2.1 Stable (HF60)'
   generated_at = (Get-Date).ToString('o')
   portable_sha256 = $portableHash
